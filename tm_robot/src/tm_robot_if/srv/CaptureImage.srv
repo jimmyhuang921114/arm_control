@@ -1,0 +1,6 @@
+# srv/CaptureImage.srv
+
+sensor_msgs/Image mask
+---
+bool success
+string message

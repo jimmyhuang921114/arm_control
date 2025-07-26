@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor's Page</title>
+
+  <!-- Handsontable -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.js"></script>
+
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="../css/doctor_style.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <h2>系統選單</h2>
+    <button onclick="location.href='doctor.html'">開立處方籤</button>
+    <button onclick="location.href='Prescription.html'">病患處方籤</button>
+    <button onclick="location.href='Medicine.html'">藥物庫存</button>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h1>開立處方</h1>
+    </div>
+
+    <div class="table-container">
+      <form id="prescriptionForm">
+        <label for="PatientName">病患姓名</label><br />
+        <input type="text" id="PatientName" name="patientName" required /><br /><br />
+
+        <label for="id_number">身分證字號</label><br />
+        <input type="text" id="id_number" name="id_number" required /><br /><br />
+
+        <label>性別</label><br />
+        <input type="radio" id="Male" name="sex" value="Male" required />
+        <label for="Male">男性</label><br />
+        <input type="radio" id="Female" name="sex" value="Female" />
+        <label for="Female">女性</label><br /><br />
+
+        <label>處方藥物清單：</label>
+        <div id="excelTable" class="hot-container"></div><br />
+
+        <button type="submit">送出處方</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/doctor.js"></script>
+</body>
+</html>

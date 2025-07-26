@@ -1,0 +1,22 @@
+===for realsense
+ros2 launch realsense2_camera rs_launch.py rgb_camera.profile:=1280x720x30 camera_namespace:='/'
+ros2 launch realsense2_camera rs_launch.py rgb_camera.profile:=1280x720x30 camera_namespace:=''
+ros2 launch realsense2_camera rs_launch.py rgb_camera.profile:=1280x720x30 --show-args
+ros2 launch realsense2_camera rs_launch.py rgb_camera.profile:=1280x720x30 
+
+
+====aruco
+ros2 launch charuco_detector hand_eye_calibration.launch.py
+
+ros2 run visp_hand2eye_calibration visp_hand2eye_calibration_calibrator
+
+ros2 launch flexbe_app flexbe_full.launch
+
+
+path:/tm_ws/ubuntudocker
+
+
+
+ros2 launch tm5s_moveit_config tm5s_run_move_group.launch.py  robot_ip:=192.168.10.2
+
+

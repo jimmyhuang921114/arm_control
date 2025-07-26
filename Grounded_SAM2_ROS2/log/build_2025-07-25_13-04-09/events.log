@@ -1,0 +1,343 @@
+[0.000000] (-) TimerEvent: {}
+[0.000146] (SAM-2) JobQueued: {'identifier': 'SAM-2', 'dependencies': OrderedDict()}
+[0.000238] (groundedsam2) JobQueued: {'identifier': 'groundedsam2', 'dependencies': OrderedDict()}
+[0.000433] (tm_robot_if) JobQueued: {'identifier': 'tm_robot_if', 'dependencies': OrderedDict()}
+[0.000813] (SAM-2) JobStarted: {'identifier': 'SAM-2'}
+[0.003194] (groundedsam2) JobStarted: {'identifier': 'groundedsam2'}
+[0.005970] (tm_robot_if) JobStarted: {'identifier': 'tm_robot_if'}
+[0.099805] (-) TimerEvent: {}
+[0.200085] (-) TimerEvent: {}
+[0.300399] (-) TimerEvent: {}
+[0.400688] (-) TimerEvent: {}
+[0.501269] (-) TimerEvent: {}
+[0.601590] (-) TimerEvent: {}
+[0.701848] (-) TimerEvent: {}
+[0.802126] (-) TimerEvent: {}
+[0.902408] (-) TimerEvent: {}
+[1.002685] (-) TimerEvent: {}
+[1.102946] (-) TimerEvent: {}
+[1.203251] (-) TimerEvent: {}
+[1.303522] (-) TimerEvent: {}
+[1.403730] (-) TimerEvent: {}
+[1.414367] (tm_robot_if) JobProgress: {'identifier': 'tm_robot_if', 'progress': 'cmake'}
+[1.414682] (tm_robot_if) JobProgress: {'identifier': 'tm_robot_if', 'progress': 'build'}
+[1.415094] (tm_robot_if) Command: {'cmd': ['/usr/bin/cmake', '--build', '/workspace/build/tm_robot_if', '--', '-j24', '-l24'], 'cwd': '/workspace/build/tm_robot_if', 'env': OrderedDict([('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs'), ('NV_LIBCUBLAS_VERSION', '12.1.0.26-1'), ('NV_NVPROF_DEV_PACKAGE', 'cuda-nvprof-12-1=12.1.55-1'), ('NV_CUDA_COMPAT_PACKAGE', 'cuda-compat-12-1'), ('NV_CUDA_NSIGHT_COMPUTE_VERSION', '12.1.0-1'), ('HOSTNAME', 'iclab-System-Product-Name'), ('NVIDIA_CUDA_END_OF_LIFE', '1'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/workspace/install/tm_robot_if/lib:/workspace/install/interface/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'), ('NV_LIBNCCL_PACKAGE_VERSION', '2.17.1-1'), ('HOME', '/home/work'), ('OLDPWD', '/workspace/Grounded-SAM-2'), ('NV_CUDNN_PACKAGE_NAME', 'libcudnn8'), ('NV_LIBCUBLAS_DEV_VERSION', '12.1.0.26-1'), ('ROS_PYTHON_VERSION', '3'), ('NV_LIBNCCL_DEV_PACKAGE_VERSION', '2.17.1-1'), ('NV_LIBNPP_PACKAGE', 'libnpp-12-1=12.0.2.50-1'), ('NV_CUDNN_PACKAGE', 'libcudnn8=8.9.0.131-1+cuda12.1'), ('CUDA_VERSION', '12.1.0'), ('COLCON_PREFIX_PATH', '/workspace/install'), ('NV_NVPROF_VERSION', '12.1.55-1'), ('ROS_DISTRO', 'humble'), ('NV_LIBCUBLAS_PACKAGE_NAME', 'libcublas-12-1'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('NV_LIBCUSPARSE_VERSION', '12.0.2.55-1'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,utility'), ('NV_CUDA_LIB_VERSION', '12.1.0-1'), ('NV_LIBNCCL_PACKAGE_NAME', 'libnccl2'), ('NV_NVML_DEV_VERSION', '12.1.55-1'), ('NV_LIBNPP_DEV_PACKAGE', 'libnpp-dev-12-1=12.0.2.50-1'), ('TERM', 'xterm'), ('NV_CUDA_CUDART_VERSION', '12.1.55-1'), ('NV_CUDNN_PACKAGE_DEV', 'libcudnn8-dev=8.9.0.131-1+cuda12.1'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('NV_LIBCUBLAS_DEV_PACKAGE_NAME', 'libcublas-dev-12-1'), ('NV_LIBCUBLAS_PACKAGE', 'libcublas-12-1=12.1.0.26-1'), ('NVARCH', 'x86_64'), ('NV_LIBNCCL_DEV_PACKAGE_NAME', 'libnccl-dev'), ('NV_LIBCUSPARSE_DEV_VERSION', '12.0.2.55-1'), ('DISPLAY', ':1'), ('NV_LIBNCCL_PACKAGE', 'libnccl2=2.17.1-1+cuda12.1'), ('NVIDIA_PRODUCT_NAME', 'CUDA'), ('LANG', 'C.UTF-8'), ('NV_CUDA_CUDART_DEV_VERSION', '12.1.55-1'), ('XAUTHORITY', '/home/iclab/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '2'), ('AMENT_PREFIX_PATH', '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('NV_LIBCUBLAS_DEV_PACKAGE', 'libcublas-dev-12-1=12.1.0.26-1'), ('NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE', 'cuda-nsight-compute-12-1=12.1.0-1'), ('NV_LIBNCCL_DEV_PACKAGE', 'libnccl-dev=2.17.1-1+cuda12.1'), ('NV_NVTX_VERSION', '12.1.66-1'), ('NV_LIBNPP_VERSION', '12.0.2.50-1'), ('NV_CUDNN_VERSION', '8.9.0.131'), ('PWD', '/workspace/build/tm_robot_if'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages:/workspace/install/interface/local/lib/python3.10/dist-packages:/workspace/install/groundedsam2/lib/python3.10/site-packages:/workspace/install/SAM-2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('NCCL_VERSION', '2.17.1-1'), ('COLCON', '1'), ('NV_LIBNPP_DEV_VERSION', '12.0.2.50-1'), ('CMAKE_PREFIX_PATH', '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble')]), 'shell': False}
+[1.438308] (tm_robot_if) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[1.503848] (-) TimerEvent: {}
+[1.534270] (tm_robot_if) StdoutLine: {'line': b'-- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)\n'}
+[1.559642] (tm_robot_if) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.561726] (tm_robot_if) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.567518] (tm_robot_if) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.577755] (tm_robot_if) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.586645] (tm_robot_if) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.589938] (groundedsam2) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/groundedsam2', 'build', '--build-base', '/workspace/build/groundedsam2/build', 'install', '--record', '/workspace/build/groundedsam2/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/workspace/src/groundedsam2', 'env': {'LIBRARY_PATH': '/usr/local/cuda/lib64/stubs', 'NV_LIBCUBLAS_VERSION': '12.1.0.26-1', 'NV_NVPROF_DEV_PACKAGE': 'cuda-nvprof-12-1=12.1.55-1', 'NV_CUDA_COMPAT_PACKAGE': 'cuda-compat-12-1', 'NV_CUDA_NSIGHT_COMPUTE_VERSION': '12.1.0-1', 'HOSTNAME': 'iclab-System-Product-Name', 'NVIDIA_CUDA_END_OF_LIFE': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/workspace/install/tm_robot_if/lib:/workspace/install/interface/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64', 'NV_LIBNCCL_PACKAGE_VERSION': '2.17.1-1', 'HOME': '/home/work', 'OLDPWD': '/workspace/Grounded-SAM-2', 'NV_CUDNN_PACKAGE_NAME': 'libcudnn8', 'NV_LIBCUBLAS_DEV_VERSION': '12.1.0.26-1', 'ROS_PYTHON_VERSION': '3', 'NV_LIBNCCL_DEV_PACKAGE_VERSION': '2.17.1-1', 'NV_LIBNPP_PACKAGE': 'libnpp-12-1=12.0.2.50-1', 'NV_CUDNN_PACKAGE': 'libcudnn8=8.9.0.131-1+cuda12.1', 'CUDA_VERSION': '12.1.0', 'COLCON_PREFIX_PATH': '/workspace/install', 'NV_NVPROF_VERSION': '12.1.55-1', 'ROS_DISTRO': 'humble', 'NV_LIBCUBLAS_PACKAGE_NAME': 'libcublas-12-1', 'NVIDIA_REQUIRE_CUDA': 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'NV_LIBCUSPARSE_VERSION': '12.0.2.55-1', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility', 'NV_CUDA_LIB_VERSION': '12.1.0-1', 'NV_LIBNCCL_PACKAGE_NAME': 'libnccl2', 'NV_NVML_DEV_VERSION': '12.1.55-1', 'NV_LIBNPP_DEV_PACKAGE': 'libnpp-dev-12-1=12.0.2.50-1', 'TERM': 'xterm', 'NV_CUDA_CUDART_VERSION': '12.1.55-1', 'NV_CUDNN_PACKAGE_DEV': 'libcudnn8-dev=8.9.0.131-1+cuda12.1', 'ROS_LOCALHOST_ONLY': '0', 'QT_X11_NO_MITSHM': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'NV_LIBCUBLAS_DEV_PACKAGE_NAME': 'libcublas-dev-12-1', 'NV_LIBCUBLAS_PACKAGE': 'libcublas-12-1=12.1.0.26-1', 'NVARCH': 'x86_64', 'NV_LIBNCCL_DEV_PACKAGE_NAME': 'libnccl-dev', 'NV_LIBCUSPARSE_DEV_VERSION': '12.0.2.55-1', 'DISPLAY': ':1', 'NV_LIBNCCL_PACKAGE': 'libnccl2=2.17.1-1+cuda12.1', 'NVIDIA_PRODUCT_NAME': 'CUDA', 'LANG': 'C.UTF-8', 'NV_CUDA_CUDART_DEV_VERSION': '12.1.55-1', 'XAUTHORITY': '/home/iclab/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '2', 'AMENT_PREFIX_PATH': '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble', 'DEBIAN_FRONTEND': 'noninteractive', 'NV_LIBCUBLAS_DEV_PACKAGE': 'libcublas-dev-12-1=12.1.0.26-1', 'NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE': 'cuda-nsight-compute-12-1=12.1.0-1', 'NV_LIBNCCL_DEV_PACKAGE': 'libnccl-dev=2.17.1-1+cuda12.1', 'NV_NVTX_VERSION': '12.1.66-1', 'NV_LIBNPP_VERSION': '12.0.2.50-1', 'NV_CUDNN_VERSION': '8.9.0.131', 'PWD': '/workspace/build/groundedsam2', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/workspace/build/groundedsam2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/groundedsam2/lib/python3.10/site-packages:/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages:/workspace/install/interface/local/lib/python3.10/dist-packages:/workspace/install/groundedsam2/lib/python3.10/site-packages:/workspace/install/SAM-2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NVIDIA_VISIBLE_DEVICES': 'all', 'NCCL_VERSION': '2.17.1-1', 'COLCON': '1', 'NV_LIBNPP_DEV_VERSION': '12.0.2.50-1', 'CMAKE_PREFIX_PATH': '/workspace/install/tm_robot_if:/workspace/install/interface'}, 'shell': False}
+[1.603944] (-) TimerEvent: {}
+[1.635492] (tm_robot_if) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[1.704024] (-) TimerEvent: {}
+[1.715688] (groundedsam2) StdoutLine: {'line': b'running egg_info\n'}
+[1.715833] (groundedsam2) StdoutLine: {'line': b'writing ../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO\n'}
+[1.715885] (groundedsam2) StdoutLine: {'line': b'writing dependency_links to ../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt\n'}
+[1.716211] (groundedsam2) StdoutLine: {'line': b'writing entry points to ../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt\n'}
+[1.716258] (groundedsam2) StdoutLine: {'line': b'writing requirements to ../../build/groundedsam2/groundedsam2.egg-info/requires.txt\n'}
+[1.716288] (groundedsam2) StdoutLine: {'line': b'writing top-level names to ../../build/groundedsam2/groundedsam2.egg-info/top_level.txt\n'}
+[1.716448] (groundedsam2) StdoutLine: {'line': b"reading manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'\n"}
+[1.716485] (groundedsam2) StdoutLine: {'line': b"writing manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'\n"}
+[1.716518] (groundedsam2) StdoutLine: {'line': b'running build\n'}
+[1.716547] (groundedsam2) StdoutLine: {'line': b'running build_py\n'}
+[1.716579] (groundedsam2) StdoutLine: {'line': b'copying groundedsam2/grounded_sam2_service.py -> /workspace/build/groundedsam2/build/lib/groundedsam2\n'}
+[1.716611] (groundedsam2) StdoutLine: {'line': b'running install\n'}
+[1.716892] (groundedsam2) StdoutLine: {'line': b'running install_lib\n'}
+[1.717242] (groundedsam2) StdoutLine: {'line': b'copying /workspace/build/groundedsam2/build/lib/groundedsam2/grounded_sam2_service.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2\n'}
+[1.720588] (groundedsam2) StdoutLine: {'line': b'byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/grounded_sam2_service.py to grounded_sam2_service.cpython-310.pyc\n'}
+[1.720669] (groundedsam2) StdoutLine: {'line': b'running install_data\n'}
+[1.720779] (groundedsam2) StdoutLine: {'line': b'running install_egg_info\n'}
+[1.720811] (groundedsam2) StdoutLine: {'line': b"removing '/workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[1.720844] (groundedsam2) StdoutLine: {'line': b'Copying ../../build/groundedsam2/groundedsam2.egg-info to /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info\n'}
+[1.720923] (groundedsam2) StdoutLine: {'line': b'running install_scripts\n'}
+[1.737347] (groundedsam2) StdoutLine: {'line': b'Installing service script to /workspace/install/groundedsam2/lib/groundedsam2\n'}
+[1.737508] (groundedsam2) StdoutLine: {'line': b'Installing test_client script to /workspace/install/groundedsam2/lib/groundedsam2\n'}
+[1.737573] (groundedsam2) StdoutLine: {'line': b"writing list of installed files to '/workspace/build/groundedsam2/install.log'\n"}
+[1.756657] (groundedsam2) CommandEnded: {'returncode': 0}
+[1.804822] (-) TimerEvent: {}
+[1.805774] (groundedsam2) JobEnded: {'identifier': 'groundedsam2', 'rc': 0}
+[1.872859] (tm_robot_if) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[1.904924] (-) TimerEvent: {}
+[2.005215] (-) TimerEvent: {}
+[2.105573] (-) TimerEvent: {}
+[2.178837] (tm_robot_if) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[2.205673] (-) TimerEvent: {}
+[2.286565] (tm_robot_if) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.300890] (tm_robot_if) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[2.305761] (-) TimerEvent: {}
+[2.316185] (tm_robot_if) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[2.316356] (tm_robot_if) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10\n'}
+[2.316418] (tm_robot_if) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so\n'}
+[2.341613] (tm_robot_if) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[2.350379] (tm_robot_if) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[2.350828] (tm_robot_if) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[2.352323] (tm_robot_if) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.379949] (tm_robot_if) StdoutLine: {'line': b'-- Generating done\n'}
+[2.386568] (tm_robot_if) StdoutLine: {'line': b'-- Build files have been written to: /workspace/build/tm_robot_if\n'}
+[2.403396] (tm_robot_if) StdoutLine: {'line': b'[  3%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[2.405871] (-) TimerEvent: {}
+[2.408781] (tm_robot_if) StdoutLine: {'line': b'[  6%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[2.413923] (tm_robot_if) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_copy_tm_robot_if\n'}
+[2.505957] (-) TimerEvent: {}
+[2.534347] (tm_robot_if) StdoutLine: {'line': b'running egg_info\n'}
+[2.534779] (tm_robot_if) StdoutLine: {'line': b'writing tm_robot_if.egg-info/PKG-INFO\n'}
+[2.534995] (tm_robot_if) StdoutLine: {'line': b'writing dependency_links to tm_robot_if.egg-info/dependency_links.txt\n'}
+[2.535070] (tm_robot_if) StdoutLine: {'line': b'writing top-level names to tm_robot_if.egg-info/top_level.txt\n'}
+[2.535973] (tm_robot_if) StdoutLine: {'line': b"reading manifest file 'tm_robot_if.egg-info/SOURCES.txt'\n"}
+[2.536239] (tm_robot_if) StdoutLine: {'line': b"writing manifest file 'tm_robot_if.egg-info/SOURCES.txt'\n"}
+[2.557813] (tm_robot_if) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_build_tm_robot_if_egg\n'}
+[2.569272] (tm_robot_if) StdoutLine: {'line': b'[  6%] Built target tm_robot_if__cpp\n'}
+[2.576137] (tm_robot_if) StdoutLine: {'line': b'[  9%] \x1b[34m\x1b[1mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[2.577171] (tm_robot_if) StdoutLine: {'line': b'[ 16%] \x1b[34m\x1b[1mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[2.577314] (tm_robot_if) StdoutLine: {'line': b'[ 16%] \x1b[34m\x1b[1mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[2.577595] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_generator_c\x1b[0m\n'}
+[2.587827] (tm_robot_if) StdoutLine: {'line': b'[ 19%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_generator_c.dir/rosidl_generator_c/tm_robot_if/srv/detail/grounded_sam2_interface__functions.c.o\x1b[0m\n'}
+[2.606052] (-) TimerEvent: {}
+[2.676111] (tm_robot_if) StdoutLine: {'line': b'[ 22%] \x1b[32m\x1b[1mLinking C shared library libtm_robot_if__rosidl_generator_c.so\x1b[0m\n'}
+[2.706194] (-) TimerEvent: {}
+[2.708877] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_cpp\x1b[0m\n'}
+[2.713249] (tm_robot_if) StdoutLine: {'line': b'[ 22%] Built target tm_robot_if__rosidl_generator_c\n'}
+[2.717075] (tm_robot_if) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/tm_robot_if/srv/grounded_sam2_interface__type_support.cpp.o\x1b[0m\n'}
+[2.721876] (tm_robot_if) StdoutLine: {'line': b'[ 32%] \x1b[34m\x1b[1mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[2.722047] (tm_robot_if) StdoutLine: {'line': b'[ 32%] \x1b[34m\x1b[1mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[2.722096] (tm_robot_if) StdoutLine: {'line': b'[ 35%] \x1b[34m\x1b[1mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[2.739543] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_fastrtps_cpp\x1b[0m\n'}
+[2.750499] (tm_robot_if) StdoutLine: {'line': b'[ 38%] \x1b[32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/tm_robot_if/srv/detail/dds_fastrtps/grounded_sam2_interface__type_support.cpp.o\x1b[0m\n'}
+[2.776331] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_introspection_cpp\x1b[0m\n'}
+[2.787290] (tm_robot_if) StdoutLine: {'line': b'[ 41%] \x1b[32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.cpp.o\x1b[0m\n'}
+[2.806274] (-) TimerEvent: {}
+[2.869511] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_c\x1b[0m\n'}
+[2.877816] (tm_robot_if) StdoutLine: {'line': b'[ 45%] \x1b[32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_c.dir/rosidl_typesupport_c/tm_robot_if/srv/grounded_sam2_interface__type_support.cpp.o\x1b[0m\n'}
+[2.896683] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_introspection_c\x1b[0m\n'}
+[2.903496] (tm_robot_if) StdoutLine: {'line': b'[ 48%] \x1b[32m\x1b[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_c.so\x1b[0m\n'}
+[2.906383] (-) TimerEvent: {}
+[2.906590] (tm_robot_if) StdoutLine: {'line': b'[ 51%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.c.o\x1b[0m\n'}
+[2.936511] (tm_robot_if) StdoutLine: {'line': b'[ 54%] \x1b[32m\x1b[1mLinking C shared library libtm_robot_if__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[2.936736] (tm_robot_if) StdoutLine: {'line': b'[ 54%] Built target tm_robot_if__rosidl_typesupport_c\n'}
+[2.945254] (SAM-2) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/SAM-2', 'build', '--build-base', '/workspace/build/SAM-2/build', 'install', '--record', '/workspace/build/SAM-2/install.log', '--single-version-externally-managed'], 'cwd': '/workspace/Grounded-SAM-2', 'env': {'LIBRARY_PATH': '/usr/local/cuda/lib64/stubs', 'NV_LIBCUBLAS_VERSION': '12.1.0.26-1', 'NV_NVPROF_DEV_PACKAGE': 'cuda-nvprof-12-1=12.1.55-1', 'NV_CUDA_COMPAT_PACKAGE': 'cuda-compat-12-1', 'NV_CUDA_NSIGHT_COMPUTE_VERSION': '12.1.0-1', 'HOSTNAME': 'iclab-System-Product-Name', 'NVIDIA_CUDA_END_OF_LIFE': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/workspace/install/tm_robot_if/lib:/workspace/install/interface/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64', 'NV_LIBNCCL_PACKAGE_VERSION': '2.17.1-1', 'HOME': '/home/work', 'OLDPWD': '/workspace/Grounded-SAM-2', 'NV_CUDNN_PACKAGE_NAME': 'libcudnn8', 'NV_LIBCUBLAS_DEV_VERSION': '12.1.0.26-1', 'ROS_PYTHON_VERSION': '3', 'NV_LIBNCCL_DEV_PACKAGE_VERSION': '2.17.1-1', 'NV_LIBNPP_PACKAGE': 'libnpp-12-1=12.0.2.50-1', 'NV_CUDNN_PACKAGE': 'libcudnn8=8.9.0.131-1+cuda12.1', 'CUDA_VERSION': '12.1.0', 'COLCON_PREFIX_PATH': '/workspace/install', 'NV_NVPROF_VERSION': '12.1.55-1', 'ROS_DISTRO': 'humble', 'NV_LIBCUBLAS_PACKAGE_NAME': 'libcublas-12-1', 'NVIDIA_REQUIRE_CUDA': 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'NV_LIBCUSPARSE_VERSION': '12.0.2.55-1', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility', 'NV_CUDA_LIB_VERSION': '12.1.0-1', 'NV_LIBNCCL_PACKAGE_NAME': 'libnccl2', 'NV_NVML_DEV_VERSION': '12.1.55-1', 'NV_LIBNPP_DEV_PACKAGE': 'libnpp-dev-12-1=12.0.2.50-1', 'TERM': 'xterm', 'NV_CUDA_CUDART_VERSION': '12.1.55-1', 'NV_CUDNN_PACKAGE_DEV': 'libcudnn8-dev=8.9.0.131-1+cuda12.1', 'ROS_LOCALHOST_ONLY': '0', 'QT_X11_NO_MITSHM': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'NV_LIBCUBLAS_DEV_PACKAGE_NAME': 'libcublas-dev-12-1', 'NV_LIBCUBLAS_PACKAGE': 'libcublas-12-1=12.1.0.26-1', 'NVARCH': 'x86_64', 'NV_LIBNCCL_DEV_PACKAGE_NAME': 'libnccl-dev', 'NV_LIBCUSPARSE_DEV_VERSION': '12.0.2.55-1', 'DISPLAY': ':1', 'NV_LIBNCCL_PACKAGE': 'libnccl2=2.17.1-1+cuda12.1', 'NVIDIA_PRODUCT_NAME': 'CUDA', 'LANG': 'C.UTF-8', 'NV_CUDA_CUDART_DEV_VERSION': '12.1.55-1', 'XAUTHORITY': '/home/iclab/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '2', 'AMENT_PREFIX_PATH': '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble', 'DEBIAN_FRONTEND': 'noninteractive', 'NV_LIBCUBLAS_DEV_PACKAGE': 'libcublas-dev-12-1=12.1.0.26-1', 'NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE': 'cuda-nsight-compute-12-1=12.1.0-1', 'NV_LIBNCCL_DEV_PACKAGE': 'libnccl-dev=2.17.1-1+cuda12.1', 'NV_NVTX_VERSION': '12.1.66-1', 'NV_LIBNPP_VERSION': '12.0.2.50-1', 'NV_CUDNN_VERSION': '8.9.0.131', 'PWD': '/workspace/build/SAM-2', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages:/workspace/install/interface/local/lib/python3.10/dist-packages:/workspace/install/groundedsam2/lib/python3.10/site-packages:/workspace/install/SAM-2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NVIDIA_VISIBLE_DEVICES': 'all', 'NCCL_VERSION': '2.17.1-1', 'COLCON': '1', 'NV_LIBNPP_DEV_VERSION': '12.0.2.50-1', 'CMAKE_PREFIX_PATH': '/workspace/install/tm_robot_if:/workspace/install/interface'}, 'shell': False}
+[2.951924] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_fastrtps_c\x1b[0m\n'}
+[2.953993] (tm_robot_if) StdoutLine: {'line': b'[ 58%] \x1b[32m\x1b[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[2.958971] (tm_robot_if) StdoutLine: {'line': b'[ 58%] Built target tm_robot_if__rosidl_typesupport_introspection_c\n'}
+[2.961020] (tm_robot_if) StdoutLine: {'line': b'[ 61%] \x1b[32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tm_robot_if/srv/detail/grounded_sam2_interface__type_support_c.cpp.o\x1b[0m\n'}
+[2.981884] (tm_robot_if) StdoutLine: {'line': b'[ 61%] Built target tm_robot_if__rosidl_typesupport_cpp\n'}
+[3.006502] (-) TimerEvent: {}
+[3.057458] (tm_robot_if) StdoutLine: {'line': b'[ 64%] \x1b[32m\x1b[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[3.106228] (tm_robot_if) StdoutLine: {'line': b'[ 67%] \x1b[32m\x1b[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[3.106489] (-) TimerEvent: {}
+[3.110217] (tm_robot_if) StdoutLine: {'line': b'[ 67%] Built target tm_robot_if__rosidl_typesupport_introspection_cpp\n'}
+[3.155122] (tm_robot_if) StdoutLine: {'line': b'[ 67%] Built target tm_robot_if__rosidl_typesupport_fastrtps_cpp\n'}
+[3.155831] (tm_robot_if) StdoutLine: {'line': b'[ 70%] \x1b[32m\x1b[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[3.206590] (-) TimerEvent: {}
+[3.212070] (tm_robot_if) StdoutLine: {'line': b'[ 70%] Built target tm_robot_if__rosidl_typesupport_fastrtps_c\n'}
+[3.229833] (tm_robot_if) StdoutLine: {'line': b'[ 70%] Built target tm_robot_if\n'}
+[3.242981] (tm_robot_if) StdoutLine: {'line': b'[ 74%] \x1b[34m\x1b[1mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[3.306687] (-) TimerEvent: {}
+[3.406944] (-) TimerEvent: {}
+[3.473671] (tm_robot_if) StdoutLine: {'line': b'[ 74%] Built target tm_robot_if__py\n'}
+[3.488396] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_generator_py\x1b[0m\n'}
+[3.503634] (tm_robot_if) StdoutLine: {'line': b'[ 77%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_generator_py.dir/rosidl_generator_py/tm_robot_if/srv/_grounded_sam2_interface_s.c.o\x1b[0m\n'}
+[3.509236] (-) TimerEvent: {}
+[3.609539] (-) TimerEvent: {}
+[3.659271] (tm_robot_if) StdoutLine: {'line': b'[ 80%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tm_robot_if/libtm_robot_if__rosidl_generator_py.so\x1b[0m\n'}
+[3.686807] (tm_robot_if) StdoutLine: {'line': b'[ 80%] Built target tm_robot_if__rosidl_generator_py\n'}
+[3.694271] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_introspection_c__pyext\x1b[0m\n'}
+[3.696977] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_c__pyext\x1b[0m\n'}
+[3.697134] (tm_robot_if) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target tm_robot_if__rosidl_typesupport_fastrtps_c__pyext\x1b[0m\n'}
+[3.703512] (tm_robot_if) StdoutLine: {'line': b'[ 83%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[3.708751] (tm_robot_if) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[3.708930] (tm_robot_if) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[3.709616] (-) TimerEvent: {}
+[3.781736] (tm_robot_if) StdoutLine: {'line': b'[ 93%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[3.788548] (tm_robot_if) StdoutLine: {'line': b'[ 96%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[3.799690] (tm_robot_if) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[3.809705] (-) TimerEvent: {}
+[3.817288] (tm_robot_if) StdoutLine: {'line': b'[100%] Built target tm_robot_if__rosidl_typesupport_c__pyext\n'}
+[3.821385] (tm_robot_if) StdoutLine: {'line': b'[100%] Built target tm_robot_if__rosidl_typesupport_introspection_c__pyext\n'}
+[3.829874] (tm_robot_if) StdoutLine: {'line': b'[100%] Built target tm_robot_if__rosidl_typesupport_fastrtps_c__pyext\n'}
+[3.843206] (tm_robot_if) CommandEnded: {'returncode': 0}
+[3.843763] (tm_robot_if) JobProgress: {'identifier': 'tm_robot_if', 'progress': 'install'}
+[3.848835] (tm_robot_if) Command: {'cmd': ['/usr/bin/cmake', '--install', '/workspace/build/tm_robot_if'], 'cwd': '/workspace/build/tm_robot_if', 'env': OrderedDict([('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs'), ('NV_LIBCUBLAS_VERSION', '12.1.0.26-1'), ('NV_NVPROF_DEV_PACKAGE', 'cuda-nvprof-12-1=12.1.55-1'), ('NV_CUDA_COMPAT_PACKAGE', 'cuda-compat-12-1'), ('NV_CUDA_NSIGHT_COMPUTE_VERSION', '12.1.0-1'), ('HOSTNAME', 'iclab-System-Product-Name'), ('NVIDIA_CUDA_END_OF_LIFE', '1'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/workspace/install/tm_robot_if/lib:/workspace/install/interface/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'), ('NV_LIBNCCL_PACKAGE_VERSION', '2.17.1-1'), ('HOME', '/home/work'), ('OLDPWD', '/workspace/Grounded-SAM-2'), ('NV_CUDNN_PACKAGE_NAME', 'libcudnn8'), ('NV_LIBCUBLAS_DEV_VERSION', '12.1.0.26-1'), ('ROS_PYTHON_VERSION', '3'), ('NV_LIBNCCL_DEV_PACKAGE_VERSION', '2.17.1-1'), ('NV_LIBNPP_PACKAGE', 'libnpp-12-1=12.0.2.50-1'), ('NV_CUDNN_PACKAGE', 'libcudnn8=8.9.0.131-1+cuda12.1'), ('CUDA_VERSION', '12.1.0'), ('COLCON_PREFIX_PATH', '/workspace/install'), ('NV_NVPROF_VERSION', '12.1.55-1'), ('ROS_DISTRO', 'humble'), ('NV_LIBCUBLAS_PACKAGE_NAME', 'libcublas-12-1'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('NV_LIBCUSPARSE_VERSION', '12.0.2.55-1'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,utility'), ('NV_CUDA_LIB_VERSION', '12.1.0-1'), ('NV_LIBNCCL_PACKAGE_NAME', 'libnccl2'), ('NV_NVML_DEV_VERSION', '12.1.55-1'), ('NV_LIBNPP_DEV_PACKAGE', 'libnpp-dev-12-1=12.0.2.50-1'), ('TERM', 'xterm'), ('NV_CUDA_CUDART_VERSION', '12.1.55-1'), ('NV_CUDNN_PACKAGE_DEV', 'libcudnn8-dev=8.9.0.131-1+cuda12.1'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('NV_LIBCUBLAS_DEV_PACKAGE_NAME', 'libcublas-dev-12-1'), ('NV_LIBCUBLAS_PACKAGE', 'libcublas-12-1=12.1.0.26-1'), ('NVARCH', 'x86_64'), ('NV_LIBNCCL_DEV_PACKAGE_NAME', 'libnccl-dev'), ('NV_LIBCUSPARSE_DEV_VERSION', '12.0.2.55-1'), ('DISPLAY', ':1'), ('NV_LIBNCCL_PACKAGE', 'libnccl2=2.17.1-1+cuda12.1'), ('NVIDIA_PRODUCT_NAME', 'CUDA'), ('LANG', 'C.UTF-8'), ('NV_CUDA_CUDART_DEV_VERSION', '12.1.55-1'), ('XAUTHORITY', '/home/iclab/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '2'), ('AMENT_PREFIX_PATH', '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('NV_LIBCUBLAS_DEV_PACKAGE', 'libcublas-dev-12-1=12.1.0.26-1'), ('NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE', 'cuda-nsight-compute-12-1=12.1.0-1'), ('NV_LIBNCCL_DEV_PACKAGE', 'libnccl-dev=2.17.1-1+cuda12.1'), ('NV_NVTX_VERSION', '12.1.66-1'), ('NV_LIBNPP_VERSION', '12.0.2.50-1'), ('NV_CUDNN_VERSION', '8.9.0.131'), ('PWD', '/workspace/build/tm_robot_if'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages:/workspace/install/interface/local/lib/python3.10/dist-packages:/workspace/install/groundedsam2/lib/python3.10/site-packages:/workspace/install/SAM-2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('NCCL_VERSION', '2.17.1-1'), ('COLCON', '1'), ('NV_LIBNPP_DEV_VERSION', '12.0.2.50-1'), ('CMAKE_PREFIX_PATH', '/workspace/install/tm_robot_if:/workspace/install/interface:/workspace/install/groundedsam2:/opt/ros/humble')]), 'shell': False}
+[3.853952] (tm_robot_if) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[3.854153] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/ament_index/resource_index/rosidl_interfaces/tm_robot_if\n'}
+[3.854197] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.854223] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.854246] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/grounded_sam2_interface.h\n'}
+[3.854373] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.854497] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.h\n'}
+[3.854529] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__struct.h\n'}
+[3.854553] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__functions.c\n'}
+[3.854586] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__functions.h\n'}
+[3.854617] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg\n'}
+[3.854644] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_generator_c__visibility_control.h\n'}
+[3.854671] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/environment/library_path.sh\n'}
+[3.854698] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/library_path.dsv\n'}
+[3.854733] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_c.so\n'}
+[3.854781] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_c.so" to ""\n'}
+[3.854813] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.854842] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.854879] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.854927] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_c.h\n'}
+[3.854953] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg\n'}
+[3.854974] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[3.855001] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_c.so\n'}
+[3.855047] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[3.855085] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.855131] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.855161] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.855190] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__traits.hpp\n'}
+[3.855228] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.hpp\n'}
+[3.855288] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__builder.hpp\n'}
+[3.855326] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__struct.hpp\n'}
+[3.855359] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/grounded_sam2_interface.hpp\n'}
+[3.855402] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg\n'}
+[3.855474] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_generator_cpp__visibility_control.hpp\n'}
+[3.855520] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.855555] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.855588] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.855670] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/dds_fastrtps\n'}
+[3.855735] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[3.855758] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg\n'}
+[3.855780] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[3.855801] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so\n'}
+[3.855896] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so" to ""\n'}
+[3.855943] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.855981] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.856010] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.856038] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_c.h\n'}
+[3.856076] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.c\n'}
+[3.856111] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg\n'}
+[3.856139] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[3.856175] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_c.so\n'}
+[3.856244] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_c.so" to ""\n'}
+[3.856295] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_c.so\n'}
+[3.856403] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_c.so" to ""\n'}
+[3.856445] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if\n'}
+[3.856489] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv\n'}
+[3.856525] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail\n'}
+[3.856553] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.cpp\n'}
+[3.856590] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_cpp.hpp\n'}
+[3.856632] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_cpp.so\n'}
+[3.856802] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[3.856853] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_cpp.so\n'}
+[3.856958] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_cpp.so" to ""\n'}
+[3.856999] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/environment/pythonpath.sh\n'}
+[3.857024] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/pythonpath.dsv\n'}
+[3.857061] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info\n'}
+[3.857100] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/top_level.txt\n'}
+[3.857138] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/dependency_links.txt\n'}
+[3.857177] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/PKG-INFO\n'}
+[3.857214] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/SOURCES.txt\n'}
+[3.857251] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if\n'}
+[3.857287] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_c.c\n'}
+[3.857326] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/libtm_robot_if__rosidl_generator_py.so\n'}
+[3.857358] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv\n'}
+[3.857387] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/__init__.py\n'}
+[3.857410] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface.py\n'}
+[3.857448] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface_s.c\n'}
+[3.857490] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/__init__.py\n'}
+[3.857524] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.857563] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_introspection_c.c\n'}
+[3.857598] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_fastrtps_c.c\n'}
+[3.857636] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.857675] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.881830] (tm_robot_if) StdoutLine: {'line': b"Listing '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if'...\n"}
+[3.882013] (tm_robot_if) StdoutLine: {'line': b"Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/__init__.py'...\n"}
+[3.882076] (tm_robot_if) StdoutLine: {'line': b"Listing '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv'...\n"}
+[3.882132] (tm_robot_if) StdoutLine: {'line': b"Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/__init__.py'...\n"}
+[3.882188] (tm_robot_if) StdoutLine: {'line': b"Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface.py'...\n"}
+[3.886641] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.886843] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[3.886903] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.886946] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[3.886987] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[3.887034] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[3.887075] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_py.so\n'}
+[3.887117] (tm_robot_if) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_py.so" to ""\n'}
+[3.887156] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface.idl\n'}
+[3.887196] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface.srv\n'}
+[3.887235] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface_Request.msg\n'}
+[3.887364] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface_Response.msg\n'}
+[3.887407] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/ament_index/resource_index/package_run_dependencies/tm_robot_if\n'}
+[3.887448] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/ament_index/resource_index/parent_prefix_path/tm_robot_if\n'}
+[3.887493] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/environment/ament_prefix_path.sh\n'}
+[3.887534] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/ament_prefix_path.dsv\n'}
+[3.887574] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/environment/path.sh\n'}
+[3.887613] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/path.dsv\n'}
+[3.887652] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.bash\n'}
+[3.887693] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.sh\n'}
+[3.887732] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.zsh\n'}
+[3.887771] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.dsv\n'}
+[3.887812] (tm_robot_if) StdoutLine: {'line': b'-- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/package.dsv\n'}
+[3.887855] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/ament_index/resource_index/packages/tm_robot_if\n'}
+[3.887898] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cExport.cmake\n'}
+[3.887940] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cExport-noconfig.cmake\n'}
+[3.887982] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cExport.cmake\n'}
+[3.888028] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cExport-noconfig.cmake\n'}
+[3.888068] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cppExport.cmake\n'}
+[3.888109] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cppExport.cmake\n'}
+[3.888160] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake\n'}
+[3.888206] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cExport.cmake\n'}
+[3.888250] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[3.888296] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cExport.cmake\n'}
+[3.888338] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[3.888380] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[3.888423] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[3.888467] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cppExport.cmake\n'}
+[3.888522] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[3.888568] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_pyExport.cmake\n'}
+[3.888611] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_pyExport-noconfig.cmake\n'}
+[3.888657] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake-extras.cmake\n'}
+[3.888700] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[3.888743] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[3.888786] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[3.888830] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[3.888872] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[3.888914] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[3.888957] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_ifConfig.cmake\n'}
+[3.889000] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_ifConfig-version.cmake\n'}
+[3.889039] (tm_robot_if) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/tm_robot_if/share/tm_robot_if/package.xml\n'}
+[3.889518] (tm_robot_if) CommandEnded: {'returncode': 0}
+[3.900545] (tm_robot_if) JobEnded: {'identifier': 'tm_robot_if', 'rc': 0}
+[3.909821] (-) TimerEvent: {}
+[4.011292] (-) TimerEvent: {}
+[4.112306] (-) TimerEvent: {}
+[4.212610] (-) TimerEvent: {}
+[4.312908] (-) TimerEvent: {}
+[4.363837] (SAM-2) StdoutLine: {'line': b'running egg_info\n'}
+[4.364067] (SAM-2) StdoutLine: {'line': b'writing ../build/SAM-2/SAM_2.egg-info/PKG-INFO\n'}
+[4.364137] (SAM-2) StdoutLine: {'line': b'writing dependency_links to ../build/SAM-2/SAM_2.egg-info/dependency_links.txt\n'}
+[4.364198] (SAM-2) StdoutLine: {'line': b'writing requirements to ../build/SAM-2/SAM_2.egg-info/requires.txt\n'}
+[4.364255] (SAM-2) StdoutLine: {'line': b'writing top-level names to ../build/SAM-2/SAM_2.egg-info/top_level.txt\n'}
+[4.416513] (-) TimerEvent: {}
+[4.421091] (SAM-2) StderrLine: {'line': b'/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:499: UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.\n'}
+[4.421283] (SAM-2) StderrLine: {'line': b"  warnings.warn(msg.format('we could not find ninja.'))\n"}
+[4.421458] (SAM-2) StdoutLine: {'line': b"reading manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'\n"}
+[4.421755] (SAM-2) StdoutLine: {'line': b"reading manifest template 'MANIFEST.in'\n"}
+[4.422431] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE'\n"}
+[4.422526] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_cctorch'\n"}
+[4.422564] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_groundingdino'\n"}
+[4.422597] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_sam2'\n"}
+[4.423419] (SAM-2) StdoutLine: {'line': b"writing manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'\n"}
+[4.423704] (SAM-2) StdoutLine: {'line': b'running build\n'}
+[4.423766] (SAM-2) StdoutLine: {'line': b'running build_py\n'}
+[4.427578] (SAM-2) StdoutLine: {'line': b'running build_ext\n'}
+[4.432727] (SAM-2) StderrLine: {'line': b'/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:428: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.1\n'}
+[4.432900] (SAM-2) StderrLine: {'line': b"  warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')\n"}
+[4.436561] (SAM-2) StdoutLine: {'line': b'running install\n'}
+[4.436706] (SAM-2) StdoutLine: {'line': b'running install_lib\n'}
+[4.436747] (SAM-2) StdoutLine: {'line': b'running install_egg_info\n'}
+[4.436855] (SAM-2) StdoutLine: {'line': b"removing '/workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info' (and everything under it)\n"}
+[4.437036] (SAM-2) StdoutLine: {'line': b'Copying ../build/SAM-2/SAM_2.egg-info to /workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info\n'}
+[4.437406] (SAM-2) StdoutLine: {'line': b'running install_scripts\n'}
+[4.450685] (SAM-2) StdoutLine: {'line': b"writing list of installed files to '/workspace/build/SAM-2/install.log'\n"}
+[4.516618] (-) TimerEvent: {}
+[4.616951] (-) TimerEvent: {}
+[4.717239] (-) TimerEvent: {}
+[4.817474] (-) TimerEvent: {}
+[4.834006] (SAM-2) CommandEnded: {'returncode': 0}
+[4.837541] (SAM-2) JobEnded: {'identifier': 'SAM-2', 'rc': 0}
+[4.837934] (-) EventReactorShutdown: {}

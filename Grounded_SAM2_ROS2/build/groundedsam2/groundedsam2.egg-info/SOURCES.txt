@@ -1,0 +1,15 @@
+package.xml
+setup.cfg
+setup.py
+../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO
+../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt
+../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt
+../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt
+../../build/groundedsam2/groundedsam2.egg-info/requires.txt
+../../build/groundedsam2/groundedsam2.egg-info/top_level.txt
+../../build/groundedsam2/groundedsam2.egg-info/zip-safe
+groundedsam2/__init__.py
+groundedsam2/grounded_sam2_service.py
+groundedsam2/test_groundedsam2_client.py
+resource/groundedsam2
+test/test_grounded_sam2.py

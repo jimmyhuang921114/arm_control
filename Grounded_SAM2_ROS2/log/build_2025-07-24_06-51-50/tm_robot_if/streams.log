@@ -1,0 +1,237 @@
+[1.201s] Invoking command in '/workspace/build/tm_robot_if': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake /workspace/src/interface -DCMAKE_INSTALL_PREFIX=/workspace/install/tm_robot_if
+[1.244s] -- The C compiler identification is GNU 11.4.0
+[1.276s] -- The CXX compiler identification is GNU 11.4.0
+[1.281s] -- Detecting C compiler ABI info
+[1.328s] -- Detecting C compiler ABI info - done
+[1.331s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.331s] -- Detecting C compile features
+[1.332s] -- Detecting C compile features - done
+[1.334s] -- Detecting CXX compiler ABI info
+[1.384s] -- Detecting CXX compiler ABI info - done
+[1.388s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.388s] -- Detecting CXX compile features
+[1.388s] -- Detecting CXX compile features - done
+[1.393s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.555s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.610s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[1.631s] -- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.633s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.638s] -- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.646s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.654s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.687s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[1.847s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[2.095s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.193s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.211s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") 
+[2.212s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[2.228s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[2.228s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[2.228s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[2.228s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[2.244s] -- Found PythonExtra: .so  
+[2.282s] -- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[2.292s] -- Added test 'lint_cmake' to check CMake code style
+[2.292s] -- Added test 'xmllint' to check XML markup files
+[2.294s] -- Configuring done
+[2.310s] -- Generating done
+[2.316s] -- Build files have been written to: /workspace/build/tm_robot_if
+[2.321s] Invoked command in '/workspace/build/tm_robot_if' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake /workspace/src/interface -DCMAKE_INSTALL_PREFIX=/workspace/install/tm_robot_if
+[2.323s] Invoking command in '/workspace/build/tm_robot_if': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --build /workspace/build/tm_robot_if -- -j24 -l24
+[2.349s] [  3%] [34m[1mGenerating C code for ROS interfaces[0m
+[2.357s] [  6%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[2.363s] [  6%] Built target ament_cmake_python_copy_tm_robot_if
+[2.471s] running egg_info
+[2.472s] creating tm_robot_if.egg-info
+[2.472s] writing tm_robot_if.egg-info/PKG-INFO
+[2.472s] writing dependency_links to tm_robot_if.egg-info/dependency_links.txt
+[2.472s] writing top-level names to tm_robot_if.egg-info/top_level.txt
+[2.472s] writing manifest file 'tm_robot_if.egg-info/SOURCES.txt'
+[2.473s] reading manifest file 'tm_robot_if.egg-info/SOURCES.txt'
+[2.473s] writing manifest file 'tm_robot_if.egg-info/SOURCES.txt'
+[2.487s] [  6%] Built target ament_cmake_python_build_tm_robot_if_egg
+[2.536s] [  6%] Built target tm_robot_if__cpp
+[2.542s] [ 12%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[2.542s] [ 12%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[2.544s] [ 16%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[2.548s] [ 19%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_generator_c.dir/rosidl_generator_c/tm_robot_if/srv/detail/grounded_sam2_interface__functions.c.o[0m
+[2.585s] [ 22%] [32m[1mLinking C shared library libtm_robot_if__rosidl_generator_c.so[0m
+[2.606s] [ 22%] Built target tm_robot_if__rosidl_generator_c
+[2.620s] [ 29%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[2.621s] [ 29%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[2.624s] [ 32%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[2.761s] [ 35%] [32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/tm_robot_if/srv/grounded_sam2_interface__type_support.cpp.o[0m
+[2.779s] [ 38%] [32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.cpp.o[0m
+[2.799s] [ 41%] [32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/tm_robot_if/srv/detail/dds_fastrtps/grounded_sam2_interface__type_support.cpp.o[0m
+[2.858s] [ 45%] [32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_c.dir/rosidl_typesupport_c/tm_robot_if/srv/grounded_sam2_interface__type_support.cpp.o[0m
+[2.864s] [ 48%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.c.o[0m
+[2.864s] [ 51%] [32mBuilding CXX object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tm_robot_if/srv/detail/grounded_sam2_interface__type_support_c.cpp.o[0m
+[2.878s] [ 54%] [32m[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_c.so[0m
+[2.894s] [ 58%] [32m[1mLinking C shared library libtm_robot_if__rosidl_typesupport_introspection_c.so[0m
+[2.907s] [ 61%] [32m[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_cpp.so[0m
+[2.907s] [ 61%] Built target tm_robot_if__rosidl_typesupport_c
+[2.919s] [ 61%] Built target tm_robot_if__rosidl_typesupport_introspection_c
+[2.932s] [ 61%] Built target tm_robot_if__rosidl_typesupport_cpp
+[3.013s] [ 64%] [32m[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_introspection_cpp.so[0m
+[3.039s] [ 67%] [32m[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_fastrtps_c.so[0m
+[3.049s] [ 70%] [32m[1mLinking CXX shared library libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so[0m
+[3.058s] [ 70%] Built target tm_robot_if__rosidl_typesupport_introspection_cpp
+[3.087s] [ 70%] Built target tm_robot_if__rosidl_typesupport_fastrtps_c
+[3.094s] [ 70%] Built target tm_robot_if__rosidl_typesupport_fastrtps_cpp
+[3.108s] [ 70%] Built target tm_robot_if
+[3.122s] [ 74%] [34m[1mGenerating Python code for ROS interfaces[0m
+[3.361s] [ 74%] Built target tm_robot_if__py
+[3.373s] [ 77%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_generator_py.dir/rosidl_generator_py/tm_robot_if/srv/_grounded_sam2_interface_s.c.o[0m
+[3.442s] [ 80%] [32m[1mLinking C shared library rosidl_generator_py/tm_robot_if/libtm_robot_if__rosidl_generator_py.so[0m
+[3.470s] [ 80%] Built target tm_robot_if__rosidl_generator_py
+[3.483s] [ 83%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[3.483s] [ 87%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[3.484s] [ 90%] [32mBuilding C object CMakeFiles/tm_robot_if__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_c.c.o[0m
+[3.535s] [ 96%] [32m[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so[0m
+[3.535s] [ 96%] [32m[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so[0m
+[3.536s] [100%] [32m[1mLinking C shared library rosidl_generator_py/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so[0m
+[3.560s] [100%] Built target tm_robot_if__rosidl_typesupport_fastrtps_c__pyext
+[3.561s] [100%] Built target tm_robot_if__rosidl_typesupport_introspection_c__pyext
+[3.561s] [100%] Built target tm_robot_if__rosidl_typesupport_c__pyext
+[3.567s] Invoked command in '/workspace/build/tm_robot_if' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --build /workspace/build/tm_robot_if -- -j24 -l24
+[3.574s] Invoking command in '/workspace/build/tm_robot_if': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --install /workspace/build/tm_robot_if
+[3.579s] -- Install configuration: ""
+[3.580s] -- Installing: /workspace/install/tm_robot_if/share/ament_index/resource_index/rosidl_interfaces/tm_robot_if
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/grounded_sam2_interface.h
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.h
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__struct.h
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__functions.c
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__functions.h
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg
+[3.580s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_generator_c__visibility_control.h
+[3.580s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/library_path.sh
+[3.580s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/library_path.dsv
+[3.580s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_c.so
+[3.580s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_c.so" to ""
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_c.h
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[3.581s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_c.so
+[3.581s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_c.so" to ""
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__traits.hpp
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.hpp
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__builder.hpp
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__struct.hpp
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/grounded_sam2_interface.hpp
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_generator_cpp__visibility_control.hpp
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/dds_fastrtps
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_cpp.hpp
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg
+[3.581s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[3.581s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so
+[3.581s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_fastrtps_cpp.so" to ""
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.581s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.582s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_c.h
+[3.582s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.c
+[3.582s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg
+[3.582s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[3.582s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_c.so
+[3.582s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_c.so" to ""
+[3.582s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_c.so
+[3.582s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_c.so" to ""
+[3.582s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if
+[3.582s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv
+[3.582s] -- Up-to-date: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail
+[3.582s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__type_support.cpp
+[3.582s] -- Installing: /workspace/install/tm_robot_if/include/tm_robot_if/tm_robot_if/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_cpp.hpp
+[3.582s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_cpp.so
+[3.582s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_introspection_cpp.so" to ""
+[3.582s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_cpp.so
+[3.582s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_typesupport_cpp.so" to ""
+[3.582s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/pythonpath.sh
+[3.582s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/pythonpath.dsv
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/top_level.txt
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/dependency_links.txt
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/PKG-INFO
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if-0.0.0-py3.10.egg-info/SOURCES.txt
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_c.c
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/libtm_robot_if__rosidl_generator_py.so
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/__init__.py
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface.py
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface_s.c
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/__init__.py
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_introspection_c.c
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/_tm_robot_if_s.ep.rosidl_typesupport_fastrtps_c.c
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[3.582s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[3.604s] Listing '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if'...
+[3.604s] Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/__init__.py'...
+[3.604s] Listing '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv'...
+[3.604s] Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/__init__.py'...
+[3.604s] Compiling '/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/srv/_grounded_sam2_interface.py'...
+[3.606s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[3.606s] -- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""
+[3.606s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[3.606s] -- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""
+[3.606s] -- Installing: /workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[3.606s] -- Set runtime path of "/workspace/install/tm_robot_if/local/lib/python3.10/dist-packages/tm_robot_if/tm_robot_if_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""
+[3.606s] -- Installing: /workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_py.so
+[3.606s] -- Set runtime path of "/workspace/install/tm_robot_if/lib/libtm_robot_if__rosidl_generator_py.so" to ""
+[3.606s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface.idl
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface.srv
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface_Request.msg
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/srv/GroundedSAM2Interface_Response.msg
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/ament_index/resource_index/package_run_dependencies/tm_robot_if
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/ament_index/resource_index/parent_prefix_path/tm_robot_if
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/ament_prefix_path.sh
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/ament_prefix_path.dsv
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/path.sh
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/environment/path.dsv
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.bash
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.sh
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.zsh
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/local_setup.dsv
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/package.dsv
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/ament_index/resource_index/packages/tm_robot_if
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cExport.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cExport-noconfig.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cExport.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_cppExport.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cppExport.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cExport.cmake
+[3.607s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cExport.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cExport-noconfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cppExport.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cppExport.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_if__rosidl_typesupport_cppExport-noconfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_pyExport.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/export_tm_robot_if__rosidl_generator_pyExport-noconfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_dependencies-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_include_directories-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_libraries-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/ament_cmake_export_targets-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_ifConfig.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/cmake/tm_robot_ifConfig-version.cmake
+[3.608s] -- Installing: /workspace/install/tm_robot_if/share/tm_robot_if/package.xml
+[3.610s] Invoked command in '/workspace/build/tm_robot_if' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --install /workspace/build/tm_robot_if

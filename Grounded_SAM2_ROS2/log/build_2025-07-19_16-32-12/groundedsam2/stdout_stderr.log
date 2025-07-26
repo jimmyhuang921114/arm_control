@@ -1,0 +1,31 @@
+running egg_info
+writing ../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO
+writing dependency_links to ../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt
+writing entry points to ../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt
+writing requirements to ../../build/groundedsam2/groundedsam2.egg-info/requires.txt
+writing top-level names to ../../build/groundedsam2/groundedsam2.egg-info/top_level.txt
+reading manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+writing manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+creating /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2
+copying /workspace/build/groundedsam2/build/lib/groundedsam2/grounded_sam2_service.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2
+copying /workspace/build/groundedsam2/build/lib/groundedsam2/__init__.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2
+copying /workspace/build/groundedsam2/build/lib/groundedsam2/test_groundedsam2_client.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2
+byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/grounded_sam2_service.py to grounded_sam2_service.cpython-310.pyc
+byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/__init__.py to __init__.cpython-310.pyc
+byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/test_groundedsam2_client.py to test_groundedsam2_client.cpython-310.pyc
+running install_data
+creating /workspace/install/groundedsam2/share/ament_index
+creating /workspace/install/groundedsam2/share/ament_index/resource_index
+creating /workspace/install/groundedsam2/share/ament_index/resource_index/packages
+copying resource/groundedsam2 -> /workspace/install/groundedsam2/share/ament_index/resource_index/packages
+copying package.xml -> /workspace/install/groundedsam2/share/groundedsam2
+running install_egg_info
+Copying ../../build/groundedsam2/groundedsam2.egg-info to /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info
+running install_scripts
+Installing service script to /workspace/install/groundedsam2/lib/groundedsam2
+Installing test_client script to /workspace/install/groundedsam2/lib/groundedsam2
+writing list of installed files to '/workspace/build/groundedsam2/install.log'

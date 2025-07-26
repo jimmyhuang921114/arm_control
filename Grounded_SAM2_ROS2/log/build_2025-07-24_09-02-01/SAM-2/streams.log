@@ -1,0 +1,28 @@
+[2.114s] Invoking command in '/workspace/Grounded-SAM-2': PYTHONPATH=/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/SAM-2 build --build-base /workspace/build/SAM-2/build install --record /workspace/build/SAM-2/install.log --single-version-externally-managed
+[2.945s] running egg_info
+[2.945s] writing ../build/SAM-2/SAM_2.egg-info/PKG-INFO
+[2.945s] writing dependency_links to ../build/SAM-2/SAM_2.egg-info/dependency_links.txt
+[2.945s] writing requirements to ../build/SAM-2/SAM_2.egg-info/requires.txt
+[2.945s] writing top-level names to ../build/SAM-2/SAM_2.egg-info/top_level.txt
+[2.973s] /usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:499: UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.
+[2.973s]   warnings.warn(msg.format('we could not find ninja.'))
+[2.973s] reading manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+[2.973s] reading manifest template 'MANIFEST.in'
+[2.973s] adding license file 'LICENSE'
+[2.973s] adding license file 'LICENSE_cctorch'
+[2.973s] adding license file 'LICENSE_groundingdino'
+[2.973s] adding license file 'LICENSE_sam2'
+[2.974s] writing manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+[2.974s] running build
+[2.974s] running build_py
+[2.976s] running build_ext
+[2.979s] /usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:428: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.1
+[2.979s]   warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')
+[2.980s] running install
+[2.980s] running install_lib
+[2.983s] running install_egg_info
+[2.983s] removing '/workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info' (and everything under it)
+[2.983s] Copying ../build/SAM-2/SAM_2.egg-info to /workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info
+[2.983s] running install_scripts
+[2.987s] writing list of installed files to '/workspace/build/SAM-2/install.log'
+[3.153s] Invoked command in '/workspace/Grounded-SAM-2' returned '0': PYTHONPATH=/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/SAM-2 build --build-base /workspace/build/SAM-2/build install --record /workspace/build/SAM-2/install.log --single-version-externally-managed

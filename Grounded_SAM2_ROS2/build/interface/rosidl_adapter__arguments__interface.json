@@ -1,0 +1,6 @@
+{
+  "package_name": "interface",
+  "non_idl_tuples": [
+    "/workspace/src/interface:srv/GroundedSAM2Interface.srv"
+  ]
+}

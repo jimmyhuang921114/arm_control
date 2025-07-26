@@ -1,0 +1,40 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from interface/srv/GroundedSAM2Interface.srv
+// generated code does not contain a copyright notice
+
+#include "sensor_msgs/msg/Image.idl"
+
+module interface {
+  module srv {
+    @verbatim (language="comment", text=
+      "Request")
+    struct GroundedSAM2Interface_Request {
+      @verbatim (language="comment", text=
+        "提示詞")
+      string prompt;
+
+      @verbatim (language="comment", text=
+        "圖片數據")
+      sensor_msgs::msg::Image image;
+
+      @verbatim (language="comment", text=
+        "信心閥值")
+      float confidence_threshold;
+
+      @verbatim (language="comment", text=
+        "大小限制閥值")
+      float size_threshold;
+    };
+    @verbatim (language="comment", text=
+      "Response")
+    struct GroundedSAM2Interface_Response {
+      @verbatim (language="comment", text=
+        "邊界框 (格式：[xmin, ymin, xmax, ymax])")
+      sequence<float> bbox;
+
+      @verbatim (language="comment", text=
+        "分割結果 (RLE編碼格式)")
+      sequence<string> seg;
+    };
+  };
+};

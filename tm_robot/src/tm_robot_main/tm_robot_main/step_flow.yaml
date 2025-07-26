@@ -1,0 +1,32 @@
+workflow:
+  - order_receive
+  - medicine_info
+  - bag in position
+  - grab_medicine
+  - second_check
+
+grab_medicine:
+  # -goto_layer
+  # -grab_layer 
+  # - box_pose(number of box(left to right))
+  - take_box_picture
+  - ocr_service
+  - picture pose
+  - detect_med
+  - goto_med
+  - godown_med
+
+
+second_check:
+  - second_picture
+  - spin
+  - second_picture
+  - spin
+  - second_picture
+  - spin
+  - second_picture
+
+grab_test:
+  - detect_med
+  - goto_med
+

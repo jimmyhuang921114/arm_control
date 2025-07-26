@@ -1,0 +1,4 @@
+[console_scripts]
+service = groundedsam2.grounded_sam2_service:main
+test_client = groundedsam2.test_groundedsam2_client:main
+

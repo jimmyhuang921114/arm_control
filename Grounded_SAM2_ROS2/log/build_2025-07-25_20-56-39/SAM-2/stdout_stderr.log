@@ -1,0 +1,26 @@
+running egg_info
+writing ../build/SAM-2/SAM_2.egg-info/PKG-INFO
+writing dependency_links to ../build/SAM-2/SAM_2.egg-info/dependency_links.txt
+writing requirements to ../build/SAM-2/SAM_2.egg-info/requires.txt
+writing top-level names to ../build/SAM-2/SAM_2.egg-info/top_level.txt
+/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:499: UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.
+  warnings.warn(msg.format('we could not find ninja.'))
+reading manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE'
+adding license file 'LICENSE_cctorch'
+adding license file 'LICENSE_groundingdino'
+adding license file 'LICENSE_sam2'
+writing manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+running build
+running build_py
+running build_ext
+/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:428: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.1
+  warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')
+running install
+running install_lib
+running install_egg_info
+removing '/workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info' (and everything under it)
+Copying ../build/SAM-2/SAM_2.egg-info to /workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/workspace/build/SAM-2/install.log'

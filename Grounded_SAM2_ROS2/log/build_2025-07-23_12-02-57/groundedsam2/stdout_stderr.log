@@ -1,0 +1,23 @@
+running egg_info
+writing ../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO
+writing dependency_links to ../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt
+writing entry points to ../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt
+writing requirements to ../../build/groundedsam2/groundedsam2.egg-info/requires.txt
+writing top-level names to ../../build/groundedsam2/groundedsam2.egg-info/top_level.txt
+reading manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+writing manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+running build
+running build_py
+copying groundedsam2/test_groundedsam2_client.py -> /workspace/build/groundedsam2/build/lib/groundedsam2
+copying groundedsam2/__init__.py -> /workspace/build/groundedsam2/build/lib/groundedsam2
+copying groundedsam2/grounded_sam2_service.py -> /workspace/build/groundedsam2/build/lib/groundedsam2
+running install
+running install_lib
+running install_data
+running install_egg_info
+removing '/workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/groundedsam2/groundedsam2.egg-info to /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info
+running install_scripts
+Installing service script to /workspace/install/groundedsam2/lib/groundedsam2
+Installing test_client script to /workspace/install/groundedsam2/lib/groundedsam2
+writing list of installed files to '/workspace/build/groundedsam2/install.log'

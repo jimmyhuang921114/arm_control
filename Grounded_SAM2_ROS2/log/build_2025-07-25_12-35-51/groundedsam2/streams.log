@@ -1,0 +1,25 @@
+[1.557s] Invoking command in '/workspace/src/groundedsam2': PYTHONPATH=/workspace/build/groundedsam2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/groundedsam2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/groundedsam2 build --build-base /workspace/build/groundedsam2/build install --record /workspace/build/groundedsam2/install.log --single-version-externally-managed install_data
+[1.700s] running egg_info
+[1.702s] writing ../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO
+[1.704s] writing dependency_links to ../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt
+[1.704s] writing entry points to ../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt
+[1.705s] writing requirements to ../../build/groundedsam2/groundedsam2.egg-info/requires.txt
+[1.705s] writing top-level names to ../../build/groundedsam2/groundedsam2.egg-info/top_level.txt
+[1.705s] reading manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+[1.706s] writing manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'
+[1.707s] running build
+[1.707s] running build_py
+[1.708s] copying groundedsam2/grounded_sam2_service.py -> /workspace/build/groundedsam2/build/lib/groundedsam2
+[1.708s] running install
+[1.709s] running install_lib
+[1.710s] copying /workspace/build/groundedsam2/build/lib/groundedsam2/grounded_sam2_service.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2
+[1.711s] byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/grounded_sam2_service.py to grounded_sam2_service.cpython-310.pyc
+[1.713s] running install_data
+[1.715s] running install_egg_info
+[1.715s] removing '/workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info' (and everything under it)
+[1.716s] Copying ../../build/groundedsam2/groundedsam2.egg-info to /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info
+[1.716s] running install_scripts
+[1.730s] Installing service script to /workspace/install/groundedsam2/lib/groundedsam2
+[1.731s] Installing test_client script to /workspace/install/groundedsam2/lib/groundedsam2
+[1.732s] writing list of installed files to '/workspace/build/groundedsam2/install.log'
+[1.753s] Invoked command in '/workspace/src/groundedsam2' returned '0': PYTHONPATH=/workspace/build/groundedsam2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/groundedsam2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/groundedsam2 build --build-base /workspace/build/groundedsam2/build install --record /workspace/build/groundedsam2/install.log --single-version-externally-managed install_data

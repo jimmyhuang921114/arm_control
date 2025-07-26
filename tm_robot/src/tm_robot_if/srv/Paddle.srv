@@ -1,0 +1,5 @@
+#Request
+sensor_msgs/Image image
+---
+#Response
+string[] ocr_detect_string

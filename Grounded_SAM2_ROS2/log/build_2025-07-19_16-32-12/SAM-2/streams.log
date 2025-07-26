@@ -1,0 +1,144 @@
+[1.962s] Invoking command in '/workspace/Grounded-SAM-2': PYTHONPATH=/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/SAM-2 build --build-base /workspace/build/SAM-2/build install --record /workspace/build/SAM-2/install.log --single-version-externally-managed
+[2.736s] running egg_info
+[2.736s] writing ../build/SAM-2/SAM_2.egg-info/PKG-INFO
+[2.736s] writing dependency_links to ../build/SAM-2/SAM_2.egg-info/dependency_links.txt
+[2.736s] writing requirements to ../build/SAM-2/SAM_2.egg-info/requires.txt
+[2.736s] writing top-level names to ../build/SAM-2/SAM_2.egg-info/top_level.txt
+[2.762s] /usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:499: UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.
+[2.762s]   warnings.warn(msg.format('we could not find ninja.'))
+[2.762s] reading manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+[2.762s] reading manifest template 'MANIFEST.in'
+[2.763s] adding license file 'LICENSE'
+[2.763s] adding license file 'LICENSE_cctorch'
+[2.763s] adding license file 'LICENSE_groundingdino'
+[2.763s] adding license file 'LICENSE_sam2'
+[2.763s] writing manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'
+[2.763s] running build
+[2.763s] running build_py
+[2.765s] running build_ext
+[2.769s] /usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:428: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.1
+[2.769s]   warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')
+[2.769s] running install
+[2.770s] running install_lib
+[2.770s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.770s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/build_sam.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.770s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/_C.so -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.771s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/misc.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/amg.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/transforms.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils
+[2.772s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/memory_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.772s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/prompt_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/transformer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/mask_decoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/position_encoding.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam2_base.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.772s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam2_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/memory_attention.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.773s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/image_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/hieradet.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_image_predictor.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.773s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs
+[2.773s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1_training
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1_training/sam2.1_hiera_b+_MOSE_finetune.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1_training
+[2.773s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2
+[2.773s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2
+[2.774s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1
+[2.774s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/csrc
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/csrc/connected_components.cu -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/csrc
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_video_predictor.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/automatic_mask_generator.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.774s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2
+[2.774s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.774s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_dataset.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/sam2_datasets.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_raw_dataset.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_sampler.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_segment_loader.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/transforms.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset
+[2.775s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/data_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/train_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/checkpoint_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/logger.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/distributed.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils
+[2.775s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/optimizer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.776s] creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/model
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/model/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/model
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/model/sam2.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/model
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/trainer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/train.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/loss_fns.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.776s] copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training
+[2.776s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/build_sam.py to build_sam.cpython-310.pyc
+[2.777s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/misc.py to misc.cpython-310.pyc
+[2.779s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/amg.py to amg.cpython-310.pyc
+[2.780s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/transforms.py to transforms.cpython-310.pyc
+[2.780s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/__init__.py to __init__.cpython-310.pyc
+[2.781s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/memory_encoder.py to memory_encoder.cpython-310.pyc
+[2.781s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/prompt_encoder.py to prompt_encoder.cpython-310.pyc
+[2.781s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/transformer.py to transformer.cpython-310.pyc
+[2.782s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/mask_decoder.py to mask_decoder.cpython-310.pyc
+[2.783s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/__init__.py to __init__.cpython-310.pyc
+[2.783s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/position_encoding.py to position_encoding.cpython-310.pyc
+[2.784s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam2_base.py to sam2_base.cpython-310.pyc
+[2.786s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam2_utils.py to sam2_utils.cpython-310.pyc
+[2.786s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/memory_attention.py to memory_attention.cpython-310.pyc
+[2.787s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/image_encoder.py to image_encoder.cpython-310.pyc
+[2.787s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/utils.py to utils.cpython-310.pyc
+[2.788s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/hieradet.py to hieradet.cpython-310.pyc
+[2.788s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/__init__.py to __init__.cpython-310.pyc
+[2.788s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/__init__.py to __init__.cpython-310.pyc
+[2.788s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/sam2_image_predictor.py to sam2_image_predictor.cpython-310.pyc
+[2.789s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/sam2_video_predictor.py to sam2_video_predictor.cpython-310.pyc
+[2.792s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/__init__.py to __init__.cpython-310.pyc
+[2.792s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/automatic_mask_generator.py to automatic_mask_generator.cpython-310.pyc
+[2.793s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_dataset.py to vos_dataset.cpython-310.pyc
+[2.793s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/utils.py to utils.cpython-310.pyc
+[2.794s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/sam2_datasets.py to sam2_datasets.cpython-310.pyc
+[2.794s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_raw_dataset.py to vos_raw_dataset.cpython-310.pyc
+[2.795s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_sampler.py to vos_sampler.cpython-310.pyc
+[2.795s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_segment_loader.py to vos_segment_loader.cpython-310.pyc
+[2.796s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/transforms.py to transforms.cpython-310.pyc
+[2.797s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/__init__.py to __init__.cpython-310.pyc
+[2.798s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/data_utils.py to data_utils.cpython-310.pyc
+[2.798s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/train_utils.py to train_utils.cpython-310.pyc
+[2.799s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/checkpoint_utils.py to checkpoint_utils.cpython-310.pyc
+[2.799s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/logger.py to logger.cpython-310.pyc
+[2.800s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/__init__.py to __init__.cpython-310.pyc
+[2.800s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/distributed.py to distributed.cpython-310.pyc
+[2.801s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/optimizer.py to optimizer.cpython-310.pyc
+[2.802s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/model/__init__.py to __init__.cpython-310.pyc
+[2.802s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/model/sam2.py to sam2.cpython-310.pyc
+[2.803s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/trainer.py to trainer.cpython-310.pyc
+[2.806s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/train.py to train.cpython-310.pyc
+[2.806s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/loss_fns.py to loss_fns.cpython-310.pyc
+[2.807s] byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/__init__.py to __init__.cpython-310.pyc
+[2.807s] running install_egg_info
+[2.808s] Copying ../build/SAM-2/SAM_2.egg-info to /workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info
+[2.808s] running install_scripts
+[2.811s] writing list of installed files to '/workspace/build/SAM-2/install.log'
+[2.965s] Invoked command in '/workspace/Grounded-SAM-2' returned '0': PYTHONPATH=/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/SAM-2 build --build-base /workspace/build/SAM-2/build install --record /workspace/build/SAM-2/install.log --single-version-externally-managed

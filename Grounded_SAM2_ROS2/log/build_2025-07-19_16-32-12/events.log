@@ -1,0 +1,385 @@
+[0.000000] (-) TimerEvent: {}
+[0.000329] (SAM-2) JobQueued: {'identifier': 'SAM-2', 'dependencies': OrderedDict()}
+[0.000379] (groundedsam2) JobQueued: {'identifier': 'groundedsam2', 'dependencies': OrderedDict()}
+[0.000397] (interface) JobQueued: {'identifier': 'interface', 'dependencies': OrderedDict()}
+[0.000411] (SAM-2) JobStarted: {'identifier': 'SAM-2'}
+[0.002698] (groundedsam2) JobStarted: {'identifier': 'groundedsam2'}
+[0.004740] (interface) JobStarted: {'identifier': 'interface'}
+[0.100010] (-) TimerEvent: {}
+[0.200368] (-) TimerEvent: {}
+[0.300614] (-) TimerEvent: {}
+[0.400802] (-) TimerEvent: {}
+[0.501071] (-) TimerEvent: {}
+[0.601264] (-) TimerEvent: {}
+[0.701510] (-) TimerEvent: {}
+[0.801756] (-) TimerEvent: {}
+[0.901979] (-) TimerEvent: {}
+[1.002169] (-) TimerEvent: {}
+[1.058972] (interface) JobProgress: {'identifier': 'interface', 'progress': 'cmake'}
+[1.059615] (interface) JobProgress: {'identifier': 'interface', 'progress': 'build'}
+[1.059640] (interface) Command: {'cmd': ['/usr/bin/cmake', '--build', '/workspace/build/interface', '--', '-j28', '-l28'], 'cwd': '/workspace/build/interface', 'env': OrderedDict([('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs'), ('NV_LIBCUBLAS_VERSION', '12.1.0.26-1'), ('NV_NVPROF_DEV_PACKAGE', 'cuda-nvprof-12-1=12.1.55-1'), ('NV_CUDA_COMPAT_PACKAGE', 'cuda-compat-12-1'), ('NV_CUDA_NSIGHT_COMPUTE_VERSION', '12.1.0-1'), ('HOSTNAME', 'weng-3090'), ('NVIDIA_CUDA_END_OF_LIFE', '1'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'), ('NV_LIBNCCL_PACKAGE_VERSION', '2.17.1-1'), ('HOME', '/home/work'), ('OLDPWD', '/workspace/Grounded-SAM-2'), ('NV_CUDNN_PACKAGE_NAME', 'libcudnn8'), ('NV_LIBCUBLAS_DEV_VERSION', '12.1.0.26-1'), ('ROS_PYTHON_VERSION', '3'), ('NV_LIBNCCL_DEV_PACKAGE_VERSION', '2.17.1-1'), ('NV_LIBNPP_PACKAGE', 'libnpp-12-1=12.0.2.50-1'), ('NV_CUDNN_PACKAGE', 'libcudnn8=8.9.0.131-1+cuda12.1'), ('CUDA_VERSION', '12.1.0'), ('NV_NVPROF_VERSION', '12.1.55-1'), ('ROS_DISTRO', 'humble'), ('NV_LIBCUBLAS_PACKAGE_NAME', 'libcublas-12-1'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('NV_LIBCUSPARSE_VERSION', '12.0.2.55-1'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,utility'), ('NV_CUDA_LIB_VERSION', '12.1.0-1'), ('NV_LIBNCCL_PACKAGE_NAME', 'libnccl2'), ('NV_NVML_DEV_VERSION', '12.1.55-1'), ('NV_LIBNPP_DEV_PACKAGE', 'libnpp-dev-12-1=12.0.2.50-1'), ('TERM', 'xterm'), ('NV_CUDA_CUDART_VERSION', '12.1.55-1'), ('NV_CUDNN_PACKAGE_DEV', 'libcudnn8-dev=8.9.0.131-1+cuda12.1'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('NV_LIBCUBLAS_DEV_PACKAGE_NAME', 'libcublas-dev-12-1'), ('NV_LIBCUBLAS_PACKAGE', 'libcublas-12-1=12.1.0.26-1'), ('NVARCH', 'x86_64'), ('NV_LIBNCCL_DEV_PACKAGE_NAME', 'libnccl-dev'), ('NV_LIBCUSPARSE_DEV_VERSION', '12.0.2.55-1'), ('DISPLAY', ':1'), ('NV_LIBNCCL_PACKAGE', 'libnccl2=2.17.1-1+cuda12.1'), ('NVIDIA_PRODUCT_NAME', 'CUDA'), ('LANG', 'C.UTF-8'), ('NV_CUDA_CUDART_DEV_VERSION', '12.1.55-1'), ('XAUTHORITY', '/home/weng/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('NV_LIBCUBLAS_DEV_PACKAGE', 'libcublas-dev-12-1=12.1.0.26-1'), ('NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE', 'cuda-nsight-compute-12-1=12.1.0-1'), ('NV_LIBNCCL_DEV_PACKAGE', 'libnccl-dev=2.17.1-1+cuda12.1'), ('NV_NVTX_VERSION', '12.1.66-1'), ('NV_LIBNPP_VERSION', '12.0.2.50-1'), ('NV_CUDNN_VERSION', '8.9.0.131'), ('PWD', '/workspace/build/interface'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('NCCL_VERSION', '2.17.1-1'), ('COLCON', '1'), ('NV_LIBNPP_DEV_VERSION', '12.0.2.50-1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[1.092640] (interface) StdoutLine: {'line': b'[  3%] Built target interface__cpp\n'}
+[1.094492] (interface) StdoutLine: {'line': b'[ 12%] Built target interface__rosidl_generator_c\n'}
+[1.099205] (interface) StdoutLine: {'line': b'[ 12%] Built target ament_cmake_python_copy_interface\n'}
+[1.102243] (-) TimerEvent: {}
+[1.105801] (interface) StdoutLine: {'line': b'[ 22%] Built target interface__rosidl_typesupport_c\n'}
+[1.106011] (interface) StdoutLine: {'line': b'[ 32%] Built target interface__rosidl_typesupport_introspection_c\n'}
+[1.106236] (interface) StdoutLine: {'line': b'[ 48%] Built target interface__rosidl_typesupport_cpp\n'}
+[1.106779] (interface) StdoutLine: {'line': b'[ 51%] Built target interface__rosidl_typesupport_fastrtps_c\n'}
+[1.106837] (interface) StdoutLine: {'line': b'[ 61%] Built target interface__rosidl_typesupport_fastrtps_cpp\n'}
+[1.107461] (interface) StdoutLine: {'line': b'[ 70%] Built target interface__rosidl_typesupport_introspection_cpp\n'}
+[1.117989] (interface) StdoutLine: {'line': b'[ 70%] Built target interface\n'}
+[1.129205] (interface) StdoutLine: {'line': b'[ 74%] Built target interface__py\n'}
+[1.140697] (interface) StdoutLine: {'line': b'[ 80%] Built target interface__rosidl_generator_py\n'}
+[1.153210] (interface) StdoutLine: {'line': b'[ 87%] Built target interface__rosidl_typesupport_fastrtps_c__pyext\n'}
+[1.153691] (interface) StdoutLine: {'line': b'[ 93%] Built target interface__rosidl_typesupport_introspection_c__pyext\n'}
+[1.154622] (interface) StdoutLine: {'line': b'[100%] Built target interface__rosidl_typesupport_c__pyext\n'}
+[1.199170] (interface) StdoutLine: {'line': b'running egg_info\n'}
+[1.199522] (interface) StdoutLine: {'line': b'writing interface.egg-info/PKG-INFO\n'}
+[1.199623] (interface) StdoutLine: {'line': b'writing dependency_links to interface.egg-info/dependency_links.txt\n'}
+[1.199721] (interface) StdoutLine: {'line': b'writing top-level names to interface.egg-info/top_level.txt\n'}
+[1.200538] (interface) StdoutLine: {'line': b"reading manifest file 'interface.egg-info/SOURCES.txt'\n"}
+[1.200782] (interface) StdoutLine: {'line': b"writing manifest file 'interface.egg-info/SOURCES.txt'\n"}
+[1.202306] (-) TimerEvent: {}
+[1.213141] (groundedsam2) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/groundedsam2', 'build', '--build-base', '/workspace/build/groundedsam2/build', 'install', '--record', '/workspace/build/groundedsam2/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/workspace/src/groundedsam2', 'env': {'LIBRARY_PATH': '/usr/local/cuda/lib64/stubs', 'NV_LIBCUBLAS_VERSION': '12.1.0.26-1', 'NV_NVPROF_DEV_PACKAGE': 'cuda-nvprof-12-1=12.1.55-1', 'NV_CUDA_COMPAT_PACKAGE': 'cuda-compat-12-1', 'NV_CUDA_NSIGHT_COMPUTE_VERSION': '12.1.0-1', 'HOSTNAME': 'weng-3090', 'NVIDIA_CUDA_END_OF_LIFE': '1', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64', 'NV_LIBNCCL_PACKAGE_VERSION': '2.17.1-1', 'HOME': '/home/work', 'OLDPWD': '/workspace/Grounded-SAM-2', 'NV_CUDNN_PACKAGE_NAME': 'libcudnn8', 'NV_LIBCUBLAS_DEV_VERSION': '12.1.0.26-1', 'ROS_PYTHON_VERSION': '3', 'NV_LIBNCCL_DEV_PACKAGE_VERSION': '2.17.1-1', 'NV_LIBNPP_PACKAGE': 'libnpp-12-1=12.0.2.50-1', 'NV_CUDNN_PACKAGE': 'libcudnn8=8.9.0.131-1+cuda12.1', 'CUDA_VERSION': '12.1.0', 'NV_NVPROF_VERSION': '12.1.55-1', 'ROS_DISTRO': 'humble', 'NV_LIBCUBLAS_PACKAGE_NAME': 'libcublas-12-1', 'NVIDIA_REQUIRE_CUDA': 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'NV_LIBCUSPARSE_VERSION': '12.0.2.55-1', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility', 'NV_CUDA_LIB_VERSION': '12.1.0-1', 'NV_LIBNCCL_PACKAGE_NAME': 'libnccl2', 'NV_NVML_DEV_VERSION': '12.1.55-1', 'NV_LIBNPP_DEV_PACKAGE': 'libnpp-dev-12-1=12.0.2.50-1', 'TERM': 'xterm', 'NV_CUDA_CUDART_VERSION': '12.1.55-1', 'NV_CUDNN_PACKAGE_DEV': 'libcudnn8-dev=8.9.0.131-1+cuda12.1', 'ROS_LOCALHOST_ONLY': '0', 'QT_X11_NO_MITSHM': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'NV_LIBCUBLAS_DEV_PACKAGE_NAME': 'libcublas-dev-12-1', 'NV_LIBCUBLAS_PACKAGE': 'libcublas-12-1=12.1.0.26-1', 'NVARCH': 'x86_64', 'NV_LIBNCCL_DEV_PACKAGE_NAME': 'libnccl-dev', 'NV_LIBCUSPARSE_DEV_VERSION': '12.0.2.55-1', 'DISPLAY': ':1', 'NV_LIBNCCL_PACKAGE': 'libnccl2=2.17.1-1+cuda12.1', 'NVIDIA_PRODUCT_NAME': 'CUDA', 'LANG': 'C.UTF-8', 'NV_CUDA_CUDART_DEV_VERSION': '12.1.55-1', 'XAUTHORITY': '/home/weng/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'DEBIAN_FRONTEND': 'noninteractive', 'NV_LIBCUBLAS_DEV_PACKAGE': 'libcublas-dev-12-1=12.1.0.26-1', 'NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE': 'cuda-nsight-compute-12-1=12.1.0-1', 'NV_LIBNCCL_DEV_PACKAGE': 'libnccl-dev=2.17.1-1+cuda12.1', 'NV_NVTX_VERSION': '12.1.66-1', 'NV_LIBNPP_VERSION': '12.0.2.50-1', 'NV_CUDNN_VERSION': '8.9.0.131', 'PWD': '/workspace/build/groundedsam2', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/workspace/build/groundedsam2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/groundedsam2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NVIDIA_VISIBLE_DEVICES': 'all', 'NCCL_VERSION': '2.17.1-1', 'COLCON': '1', 'NV_LIBNPP_DEV_VERSION': '12.0.2.50-1'}, 'shell': False}
+[1.214844] (interface) StdoutLine: {'line': b'[100%] Built target ament_cmake_python_build_interface_egg\n'}
+[1.221089] (interface) CommandEnded: {'returncode': 0}
+[1.221587] (interface) JobProgress: {'identifier': 'interface', 'progress': 'install'}
+[1.225811] (interface) Command: {'cmd': ['/usr/bin/cmake', '--install', '/workspace/build/interface'], 'cwd': '/workspace/build/interface', 'env': OrderedDict([('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs'), ('NV_LIBCUBLAS_VERSION', '12.1.0.26-1'), ('NV_NVPROF_DEV_PACKAGE', 'cuda-nvprof-12-1=12.1.55-1'), ('NV_CUDA_COMPAT_PACKAGE', 'cuda-compat-12-1'), ('NV_CUDA_NSIGHT_COMPUTE_VERSION', '12.1.0-1'), ('HOSTNAME', 'weng-3090'), ('NVIDIA_CUDA_END_OF_LIFE', '1'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'), ('NV_LIBNCCL_PACKAGE_VERSION', '2.17.1-1'), ('HOME', '/home/work'), ('OLDPWD', '/workspace/Grounded-SAM-2'), ('NV_CUDNN_PACKAGE_NAME', 'libcudnn8'), ('NV_LIBCUBLAS_DEV_VERSION', '12.1.0.26-1'), ('ROS_PYTHON_VERSION', '3'), ('NV_LIBNCCL_DEV_PACKAGE_VERSION', '2.17.1-1'), ('NV_LIBNPP_PACKAGE', 'libnpp-12-1=12.0.2.50-1'), ('NV_CUDNN_PACKAGE', 'libcudnn8=8.9.0.131-1+cuda12.1'), ('CUDA_VERSION', '12.1.0'), ('NV_NVPROF_VERSION', '12.1.55-1'), ('ROS_DISTRO', 'humble'), ('NV_LIBCUBLAS_PACKAGE_NAME', 'libcublas-12-1'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('NV_LIBCUSPARSE_VERSION', '12.0.2.55-1'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,utility'), ('NV_CUDA_LIB_VERSION', '12.1.0-1'), ('NV_LIBNCCL_PACKAGE_NAME', 'libnccl2'), ('NV_NVML_DEV_VERSION', '12.1.55-1'), ('NV_LIBNPP_DEV_PACKAGE', 'libnpp-dev-12-1=12.0.2.50-1'), ('TERM', 'xterm'), ('NV_CUDA_CUDART_VERSION', '12.1.55-1'), ('NV_CUDNN_PACKAGE_DEV', 'libcudnn8-dev=8.9.0.131-1+cuda12.1'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('NV_LIBCUBLAS_DEV_PACKAGE_NAME', 'libcublas-dev-12-1'), ('NV_LIBCUBLAS_PACKAGE', 'libcublas-12-1=12.1.0.26-1'), ('NVARCH', 'x86_64'), ('NV_LIBNCCL_DEV_PACKAGE_NAME', 'libnccl-dev'), ('NV_LIBCUSPARSE_DEV_VERSION', '12.0.2.55-1'), ('DISPLAY', ':1'), ('NV_LIBNCCL_PACKAGE', 'libnccl2=2.17.1-1+cuda12.1'), ('NVIDIA_PRODUCT_NAME', 'CUDA'), ('LANG', 'C.UTF-8'), ('NV_CUDA_CUDART_DEV_VERSION', '12.1.55-1'), ('XAUTHORITY', '/home/weng/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('DEBIAN_FRONTEND', 'noninteractive'), ('NV_LIBCUBLAS_DEV_PACKAGE', 'libcublas-dev-12-1=12.1.0.26-1'), ('NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE', 'cuda-nsight-compute-12-1=12.1.0-1'), ('NV_LIBNCCL_DEV_PACKAGE', 'libnccl-dev=2.17.1-1+cuda12.1'), ('NV_NVTX_VERSION', '12.1.66-1'), ('NV_LIBNPP_VERSION', '12.0.2.50-1'), ('NV_CUDNN_VERSION', '8.9.0.131'), ('PWD', '/workspace/build/interface'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('NCCL_VERSION', '2.17.1-1'), ('COLCON', '1'), ('NV_LIBNPP_DEV_VERSION', '12.0.2.50-1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[1.229225] (interface) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[1.229319] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/ament_index/resource_index/rosidl_interfaces/interface\n'}
+[1.229398] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface\n'}
+[1.229447] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.229510] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/grounded_sam2_interface.h\n'}
+[1.229557] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.229615] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__struct.h\n'}
+[1.229672] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__functions.h\n'}
+[1.229720] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__type_support.h\n'}
+[1.229777] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__functions.c\n'}
+[1.229821] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg\n'}
+[1.229867] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg/rosidl_generator_c__visibility_control.h\n'}
+[1.229914] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/library_path.sh\n'}
+[1.229962] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/library_path.dsv\n'}
+[1.230009] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_generator_c.so\n'}
+[1.230078] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_generator_c.so" to ""\n'}
+[1.230134] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface\n'}
+[1.230196] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.230244] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.230291] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_c.h\n'}
+[1.230358] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/msg\n'}
+[1.230405] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[1.230470] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_fastrtps_c.so\n'}
+[1.230519] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[1.230566] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface\n'}
+[1.230612] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.230659] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.230727] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__builder.hpp\n'}
+[1.230787] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__traits.hpp\n'}
+[1.230841] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__type_support.hpp\n'}
+[1.230884] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__struct.hpp\n'}
+[1.230943] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/grounded_sam2_interface.hpp\n'}
+[1.230986] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/msg\n'}
+[1.231032] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg/rosidl_generator_cpp__visibility_control.hpp\n'}
+[1.231107] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface\n'}
+[1.231155] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.231201] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.231248] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[1.231295] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/dds_fastrtps\n'}
+[1.231353] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/msg\n'}
+[1.231406] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[1.231467] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_fastrtps_cpp.so\n'}
+[1.231518] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_fastrtps_cpp.so" to ""\n'}
+[1.231565] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface\n'}
+[1.231612] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.231659] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.231706] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_c.h\n'}
+[1.231752] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__type_support.c\n'}
+[1.231819] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/msg\n'}
+[1.231883] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[1.231931] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_introspection_c.so\n'}
+[1.231993] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_introspection_c.so" to ""\n'}
+[1.232041] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_c.so\n'}
+[1.232101] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_c.so" to ""\n'}
+[1.232147] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface\n'}
+[1.232190] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv\n'}
+[1.232234] (interface) StdoutLine: {'line': b'-- Up-to-date: /workspace/install/interface/include/interface/interface/srv/detail\n'}
+[1.232277] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__rosidl_typesupport_introspection_cpp.hpp\n'}
+[1.232320] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/include/interface/interface/srv/detail/grounded_sam2_interface__type_support.cpp\n'}
+[1.232363] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_introspection_cpp.so\n'}
+[1.232409] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[1.232455] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_typesupport_cpp.so\n'}
+[1.232497] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_typesupport_cpp.so" to ""\n'}
+[1.232540] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/pythonpath.sh\n'}
+[1.232583] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/pythonpath.dsv\n'}
+[1.232625] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface-0.0.0-py3.10.egg-info\n'}
+[1.232668] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface-0.0.0-py3.10.egg-info/dependency_links.txt\n'}
+[1.232711] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface-0.0.0-py3.10.egg-info/SOURCES.txt\n'}
+[1.232754] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface-0.0.0-py3.10.egg-info/PKG-INFO\n'}
+[1.232796] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface-0.0.0-py3.10.egg-info/top_level.txt\n'}
+[1.232839] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface\n'}
+[1.232887] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv\n'}
+[1.232930] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv/_grounded_sam2_interface_s.c\n'}
+[1.232973] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv/_grounded_sam2_interface.py\n'}
+[1.233017] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv/__init__.py\n'}
+[1.233064] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.233113] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.233157] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/_interface_s.ep.rosidl_typesupport_c.c\n'}
+[1.233200] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.233243] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/_interface_s.ep.rosidl_typesupport_fastrtps_c.c\n'}
+[1.233287] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/__init__.py\n'}
+[1.233330] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/_interface_s.ep.rosidl_typesupport_introspection_c.c\n'}
+[1.233372] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/libinterface__rosidl_generator_py.so\n'}
+[1.251229] (interface) StdoutLine: {'line': b"Listing '/workspace/install/interface/local/lib/python3.10/dist-packages/interface'...\n"}
+[1.251328] (interface) StdoutLine: {'line': b"Compiling '/workspace/install/interface/local/lib/python3.10/dist-packages/interface/__init__.py'...\n"}
+[1.251379] (interface) StdoutLine: {'line': b"Listing '/workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv'...\n"}
+[1.251423] (interface) StdoutLine: {'line': b"Compiling '/workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv/__init__.py'...\n"}
+[1.251467] (interface) StdoutLine: {'line': b"Compiling '/workspace/install/interface/local/lib/python3.10/dist-packages/interface/srv/_grounded_sam2_interface.py'...\n"}
+[1.253728] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.253835] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[1.253900] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.253999] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[1.254048] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[1.254148] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/local/lib/python3.10/dist-packages/interface/interface_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[1.254233] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/lib/libinterface__rosidl_generator_py.so\n'}
+[1.254313] (interface) StdoutLine: {'line': b'-- Set runtime path of "/workspace/install/interface/lib/libinterface__rosidl_generator_py.so" to ""\n'}
+[1.254387] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/srv/GroundedSAM2Interface.idl\n'}
+[1.254472] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/srv/GroundedSAM2Interface.srv\n'}
+[1.254522] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/srv/GroundedSAM2Interface_Request.msg\n'}
+[1.254571] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/srv/GroundedSAM2Interface_Response.msg\n'}
+[1.254618] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/ament_index/resource_index/package_run_dependencies/interface\n'}
+[1.254682] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/ament_index/resource_index/parent_prefix_path/interface\n'}
+[1.254761] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/ament_prefix_path.sh\n'}
+[1.254811] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/ament_prefix_path.dsv\n'}
+[1.254884] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/path.sh\n'}
+[1.254932] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/environment/path.dsv\n'}
+[1.254978] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/local_setup.bash\n'}
+[1.255025] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/local_setup.sh\n'}
+[1.255101] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/local_setup.zsh\n'}
+[1.255152] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/local_setup.dsv\n'}
+[1.255198] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/package.dsv\n'}
+[1.255275] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/ament_index/resource_index/packages/interface\n'}
+[1.255322] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_generator_cExport.cmake\n'}
+[1.255369] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_generator_cExport-noconfig.cmake\n'}
+[1.255415] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_typesupport_fastrtps_cExport.cmake\n'}
+[1.255461] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_typesupport_fastrtps_cExport-noconfig.cmake\n'}
+[1.255507] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_generator_cppExport.cmake\n'}
+[1.255552] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_typesupport_fastrtps_cppExport.cmake\n'}
+[1.255598] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake\n'}
+[1.255644] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_introspection_cExport.cmake\n'}
+[1.255689] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[1.255751] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_cExport.cmake\n'}
+[1.255843] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[1.255890] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[1.255937] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[1.255982] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_cppExport.cmake\n'}
+[1.256041] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interface__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[1.256094] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_generator_pyExport.cmake\n'}
+[1.256139] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/export_interface__rosidl_generator_pyExport-noconfig.cmake\n'}
+[1.256182] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/rosidl_cmake-extras.cmake\n'}
+[1.256225] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[1.256268] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[1.256311] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[1.256354] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[1.256397] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[1.256445] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[1.256487] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interfaceConfig.cmake\n'}
+[1.256530] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/cmake/interfaceConfig-version.cmake\n'}
+[1.256573] (interface) StdoutLine: {'line': b'-- Installing: /workspace/install/interface/share/interface/package.xml\n'}
+[1.257001] (interface) CommandEnded: {'returncode': 0}
+[1.267323] (interface) JobEnded: {'identifier': 'interface', 'rc': 0}
+[1.302394] (-) TimerEvent: {}
+[1.330139] (groundedsam2) StdoutLine: {'line': b'running egg_info\n'}
+[1.330599] (groundedsam2) StdoutLine: {'line': b'writing ../../build/groundedsam2/groundedsam2.egg-info/PKG-INFO\n'}
+[1.330746] (groundedsam2) StdoutLine: {'line': b'writing dependency_links to ../../build/groundedsam2/groundedsam2.egg-info/dependency_links.txt\n'}
+[1.330937] (groundedsam2) StdoutLine: {'line': b'writing entry points to ../../build/groundedsam2/groundedsam2.egg-info/entry_points.txt\n'}
+[1.331105] (groundedsam2) StdoutLine: {'line': b'writing requirements to ../../build/groundedsam2/groundedsam2.egg-info/requires.txt\n'}
+[1.331245] (groundedsam2) StdoutLine: {'line': b'writing top-level names to ../../build/groundedsam2/groundedsam2.egg-info/top_level.txt\n'}
+[1.332450] (groundedsam2) StdoutLine: {'line': b"reading manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'\n"}
+[1.332921] (groundedsam2) StdoutLine: {'line': b"writing manifest file '../../build/groundedsam2/groundedsam2.egg-info/SOURCES.txt'\n"}
+[1.333096] (groundedsam2) StdoutLine: {'line': b'running build\n'}
+[1.333147] (groundedsam2) StdoutLine: {'line': b'running build_py\n'}
+[1.333300] (groundedsam2) StdoutLine: {'line': b'running install\n'}
+[1.333488] (groundedsam2) StdoutLine: {'line': b'running install_lib\n'}
+[1.333892] (groundedsam2) StdoutLine: {'line': b'creating /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2\n'}
+[1.333963] (groundedsam2) StdoutLine: {'line': b'copying /workspace/build/groundedsam2/build/lib/groundedsam2/grounded_sam2_service.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2\n'}
+[1.334093] (groundedsam2) StdoutLine: {'line': b'copying /workspace/build/groundedsam2/build/lib/groundedsam2/__init__.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2\n'}
+[1.334146] (groundedsam2) StdoutLine: {'line': b'copying /workspace/build/groundedsam2/build/lib/groundedsam2/test_groundedsam2_client.py -> /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2\n'}
+[1.334415] (groundedsam2) StdoutLine: {'line': b'byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/grounded_sam2_service.py to grounded_sam2_service.cpython-310.pyc\n'}
+[1.335181] (groundedsam2) StdoutLine: {'line': b'byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/__init__.py to __init__.cpython-310.pyc\n'}
+[1.335264] (groundedsam2) StdoutLine: {'line': b'byte-compiling /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2/test_groundedsam2_client.py to test_groundedsam2_client.cpython-310.pyc\n'}
+[1.335823] (groundedsam2) StdoutLine: {'line': b'running install_data\n'}
+[1.335879] (groundedsam2) StdoutLine: {'line': b'creating /workspace/install/groundedsam2/share/ament_index\n'}
+[1.335930] (groundedsam2) StdoutLine: {'line': b'creating /workspace/install/groundedsam2/share/ament_index/resource_index\n'}
+[1.335980] (groundedsam2) StdoutLine: {'line': b'creating /workspace/install/groundedsam2/share/ament_index/resource_index/packages\n'}
+[1.336265] (groundedsam2) StdoutLine: {'line': b'copying resource/groundedsam2 -> /workspace/install/groundedsam2/share/ament_index/resource_index/packages\n'}
+[1.336318] (groundedsam2) StdoutLine: {'line': b'copying package.xml -> /workspace/install/groundedsam2/share/groundedsam2\n'}
+[1.336366] (groundedsam2) StdoutLine: {'line': b'running install_egg_info\n'}
+[1.337226] (groundedsam2) StdoutLine: {'line': b'Copying ../../build/groundedsam2/groundedsam2.egg-info to /workspace/install/groundedsam2/lib/python3.10/site-packages/groundedsam2-0.0.0-py3.10.egg-info\n'}
+[1.337500] (groundedsam2) StdoutLine: {'line': b'running install_scripts\n'}
+[1.350871] (groundedsam2) StdoutLine: {'line': b'Installing service script to /workspace/install/groundedsam2/lib/groundedsam2\n'}
+[1.351219] (groundedsam2) StdoutLine: {'line': b'Installing test_client script to /workspace/install/groundedsam2/lib/groundedsam2\n'}
+[1.351496] (groundedsam2) StdoutLine: {'line': b"writing list of installed files to '/workspace/build/groundedsam2/install.log'\n"}
+[1.363559] (groundedsam2) CommandEnded: {'returncode': 0}
+[1.367044] (groundedsam2) JobEnded: {'identifier': 'groundedsam2', 'rc': 0}
+[1.402544] (-) TimerEvent: {}
+[1.502809] (-) TimerEvent: {}
+[1.603105] (-) TimerEvent: {}
+[1.703404] (-) TimerEvent: {}
+[1.803699] (-) TimerEvent: {}
+[1.903998] (-) TimerEvent: {}
+[1.961653] (SAM-2) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/SAM-2', 'build', '--build-base', '/workspace/build/SAM-2/build', 'install', '--record', '/workspace/build/SAM-2/install.log', '--single-version-externally-managed'], 'cwd': '/workspace/Grounded-SAM-2', 'env': {'LIBRARY_PATH': '/usr/local/cuda/lib64/stubs', 'NV_LIBCUBLAS_VERSION': '12.1.0.26-1', 'NV_NVPROF_DEV_PACKAGE': 'cuda-nvprof-12-1=12.1.55-1', 'NV_CUDA_COMPAT_PACKAGE': 'cuda-compat-12-1', 'NV_CUDA_NSIGHT_COMPUTE_VERSION': '12.1.0-1', 'HOSTNAME': 'weng-3090', 'NVIDIA_CUDA_END_OF_LIFE': '1', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64', 'NV_LIBNCCL_PACKAGE_VERSION': '2.17.1-1', 'HOME': '/home/work', 'OLDPWD': '/workspace/Grounded-SAM-2', 'NV_CUDNN_PACKAGE_NAME': 'libcudnn8', 'NV_LIBCUBLAS_DEV_VERSION': '12.1.0.26-1', 'ROS_PYTHON_VERSION': '3', 'NV_LIBNCCL_DEV_PACKAGE_VERSION': '2.17.1-1', 'NV_LIBNPP_PACKAGE': 'libnpp-12-1=12.0.2.50-1', 'NV_CUDNN_PACKAGE': 'libcudnn8=8.9.0.131-1+cuda12.1', 'CUDA_VERSION': '12.1.0', 'NV_NVPROF_VERSION': '12.1.55-1', 'ROS_DISTRO': 'humble', 'NV_LIBCUBLAS_PACKAGE_NAME': 'libcublas-12-1', 'NVIDIA_REQUIRE_CUDA': 'cuda>=12.1 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'NV_LIBCUSPARSE_VERSION': '12.0.2.55-1', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility', 'NV_CUDA_LIB_VERSION': '12.1.0-1', 'NV_LIBNCCL_PACKAGE_NAME': 'libnccl2', 'NV_NVML_DEV_VERSION': '12.1.55-1', 'NV_LIBNPP_DEV_PACKAGE': 'libnpp-dev-12-1=12.0.2.50-1', 'TERM': 'xterm', 'NV_CUDA_CUDART_VERSION': '12.1.55-1', 'NV_CUDNN_PACKAGE_DEV': 'libcudnn8-dev=8.9.0.131-1+cuda12.1', 'ROS_LOCALHOST_ONLY': '0', 'QT_X11_NO_MITSHM': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'NV_LIBCUBLAS_DEV_PACKAGE_NAME': 'libcublas-dev-12-1', 'NV_LIBCUBLAS_PACKAGE': 'libcublas-12-1=12.1.0.26-1', 'NVARCH': 'x86_64', 'NV_LIBNCCL_DEV_PACKAGE_NAME': 'libnccl-dev', 'NV_LIBCUSPARSE_DEV_VERSION': '12.0.2.55-1', 'DISPLAY': ':1', 'NV_LIBNCCL_PACKAGE': 'libnccl2=2.17.1-1+cuda12.1', 'NVIDIA_PRODUCT_NAME': 'CUDA', 'LANG': 'C.UTF-8', 'NV_CUDA_CUDART_DEV_VERSION': '12.1.55-1', 'XAUTHORITY': '/home/weng/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'DEBIAN_FRONTEND': 'noninteractive', 'NV_LIBCUBLAS_DEV_PACKAGE': 'libcublas-dev-12-1=12.1.0.26-1', 'NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE': 'cuda-nsight-compute-12-1=12.1.0-1', 'NV_LIBNCCL_DEV_PACKAGE': 'libnccl-dev=2.17.1-1+cuda12.1', 'NV_NVTX_VERSION': '12.1.66-1', 'NV_LIBNPP_VERSION': '12.0.2.50-1', 'NV_CUDNN_VERSION': '8.9.0.131', 'PWD': '/workspace/build/SAM-2', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/workspace/build/SAM-2/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/install/SAM-2/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NVIDIA_VISIBLE_DEVICES': 'all', 'NCCL_VERSION': '2.17.1-1', 'COLCON': '1', 'NV_LIBNPP_DEV_VERSION': '12.0.2.50-1'}, 'shell': False}
+[2.004113] (-) TimerEvent: {}
+[2.104309] (-) TimerEvent: {}
+[2.204530] (-) TimerEvent: {}
+[2.304735] (-) TimerEvent: {}
+[2.404949] (-) TimerEvent: {}
+[2.505154] (-) TimerEvent: {}
+[2.605396] (-) TimerEvent: {}
+[2.705619] (-) TimerEvent: {}
+[2.735916] (SAM-2) StdoutLine: {'line': b'running egg_info\n'}
+[2.736218] (SAM-2) StdoutLine: {'line': b'writing ../build/SAM-2/SAM_2.egg-info/PKG-INFO\n'}
+[2.736290] (SAM-2) StdoutLine: {'line': b'writing dependency_links to ../build/SAM-2/SAM_2.egg-info/dependency_links.txt\n'}
+[2.736368] (SAM-2) StdoutLine: {'line': b'writing requirements to ../build/SAM-2/SAM_2.egg-info/requires.txt\n'}
+[2.736391] (SAM-2) StdoutLine: {'line': b'writing top-level names to ../build/SAM-2/SAM_2.egg-info/top_level.txt\n'}
+[2.762654] (SAM-2) StderrLine: {'line': b'/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:499: UserWarning: Attempted to use ninja as the BuildExtension backend but we could not find ninja.. Falling back to using the slow distutils backend.\n'}
+[2.762779] (SAM-2) StderrLine: {'line': b"  warnings.warn(msg.format('we could not find ninja.'))\n"}
+[2.762803] (SAM-2) StdoutLine: {'line': b"reading manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'\n"}
+[2.762880] (SAM-2) StdoutLine: {'line': b"reading manifest template 'MANIFEST.in'\n"}
+[2.763295] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE'\n"}
+[2.763318] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_cctorch'\n"}
+[2.763340] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_groundingdino'\n"}
+[2.763359] (SAM-2) StdoutLine: {'line': b"adding license file 'LICENSE_sam2'\n"}
+[2.763728] (SAM-2) StdoutLine: {'line': b"writing manifest file '../build/SAM-2/SAM_2.egg-info/SOURCES.txt'\n"}
+[2.763761] (SAM-2) StdoutLine: {'line': b'running build\n'}
+[2.763782] (SAM-2) StdoutLine: {'line': b'running build_py\n'}
+[2.765366] (SAM-2) StdoutLine: {'line': b'running build_ext\n'}
+[2.769575] (SAM-2) StderrLine: {'line': b'/usr/local/lib/python3.10/dist-packages/torch/utils/cpp_extension.py:428: UserWarning: There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.1\n'}
+[2.769608] (SAM-2) StderrLine: {'line': b"  warnings.warn(f'There are no {compiler_name} version bounds defined for CUDA version {cuda_str_version}')\n"}
+[2.769849] (SAM-2) StdoutLine: {'line': b'running install\n'}
+[2.770079] (SAM-2) StdoutLine: {'line': b'running install_lib\n'}
+[2.770641] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.770711] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/build_sam.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.770795] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/_C.so -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.771899] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils\n'}
+[2.771950] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/misc.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils\n'}
+[2.772028] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/amg.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils\n'}
+[2.772104] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/transforms.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils\n'}
+[2.772170] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/utils/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils\n'}
+[2.772253] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772296] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/memory_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772381] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam\n'}
+[2.772426] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/prompt_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam\n'}
+[2.772494] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/transformer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam\n'}
+[2.772568] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/mask_decoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam\n'}
+[2.772633] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam\n'}
+[2.772694] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/position_encoding.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772762] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam2_base.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772852] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/sam2_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772919] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/memory_attention.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.772999] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones\n'}
+[2.773042] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/image_encoder.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones\n'}
+[2.773111] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones\n'}
+[2.773172] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/hieradet.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones\n'}
+[2.773237] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/backbones/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones\n'}
+[2.773296] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/modeling/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling\n'}
+[2.773356] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_image_predictor.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.773428] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.773488] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.773564] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs\n'}
+[2.773622] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1_training\n'}
+[2.773662] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1_training/sam2.1_hiera_b+_MOSE_finetune.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1_training\n'}
+[2.773748] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2\n'}
+[2.773793] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2\n'}
+[2.773855] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2\n'}
+[2.773916] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2\n'}
+[2.773976] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2/sam2_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2\n'}
+[2.774052] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1\n'}
+[2.774096] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1\n'}
+[2.774157] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1\n'}
+[2.774217] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_b+.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1\n'}
+[2.774277] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/configs/sam2.1/sam2.1_hiera_s.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/configs/sam2.1\n'}
+[2.774352] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/csrc\n'}
+[2.774394] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/csrc/connected_components.cu -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/csrc\n'}
+[2.774460] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_video_predictor.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.774560] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.774620] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/automatic_mask_generator.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.774690] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_t.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.774751] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/sam2/sam2_hiera_l.yaml -> /workspace/install/SAM-2/lib/python3.10/site-packages/sam2\n'}
+[2.774832] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.774889] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.774930] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_dataset.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.774996] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775056] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/sam2_datasets.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775122] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_raw_dataset.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775187] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_sampler.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775246] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/vos_segment_loader.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775310] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/transforms.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775381] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/dataset/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset\n'}
+[2.775456] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775496] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/data_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775560] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/train_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775624] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/checkpoint_utils.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775687] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/logger.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775748] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775810] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/utils/distributed.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils\n'}
+[2.775881] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/optimizer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.775965] (SAM-2) StdoutLine: {'line': b'creating /workspace/install/SAM-2/lib/python3.10/site-packages/training/model\n'}
+[2.776007] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/model/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/model\n'}
+[2.776069] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/model/sam2.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training/model\n'}
+[2.776147] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/trainer.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.776233] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/train.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.776299] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/loss_fns.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.776362] (SAM-2) StdoutLine: {'line': b'copying /workspace/build/SAM-2/build/lib.linux-x86_64-3.10/training/__init__.py -> /workspace/install/SAM-2/lib/python3.10/site-packages/training\n'}
+[2.776718] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/build_sam.py to build_sam.cpython-310.pyc\n'}
+[2.777334] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/misc.py to misc.cpython-310.pyc\n'}
+[2.778972] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/amg.py to amg.cpython-310.pyc\n'}
+[2.780490] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/transforms.py to transforms.cpython-310.pyc\n'}
+[2.780876] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/utils/__init__.py to __init__.cpython-310.pyc\n'}
+[2.780936] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/memory_encoder.py to memory_encoder.cpython-310.pyc\n'}
+[2.781396] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/prompt_encoder.py to prompt_encoder.cpython-310.pyc\n'}
+[2.781858] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/transformer.py to transformer.cpython-310.pyc\n'}
+[2.782640] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/mask_decoder.py to mask_decoder.cpython-310.pyc\n'}
+[2.783307] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam/__init__.py to __init__.cpython-310.pyc\n'}
+[2.783367] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/position_encoding.py to position_encoding.cpython-310.pyc\n'}
+[2.784175] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam2_base.py to sam2_base.cpython-310.pyc\n'}
+[2.785938] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/sam2_utils.py to sam2_utils.cpython-310.pyc\n'}
+[2.786855] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/memory_attention.py to memory_attention.cpython-310.pyc\n'}
+[2.787302] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/image_encoder.py to image_encoder.cpython-310.pyc\n'}
+[2.787655] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/utils.py to utils.cpython-310.pyc\n'}
+[2.787903] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/hieradet.py to hieradet.cpython-310.pyc\n'}
+[2.788691] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/backbones/__init__.py to __init__.cpython-310.pyc\n'}
+[2.788752] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/modeling/__init__.py to __init__.cpython-310.pyc\n'}
+[2.788796] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/sam2_image_predictor.py to sam2_image_predictor.cpython-310.pyc\n'}
+[2.789738] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/sam2_video_predictor.py to sam2_video_predictor.cpython-310.pyc\n'}
+[2.792420] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/__init__.py to __init__.cpython-310.pyc\n'}
+[2.792510] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/sam2/automatic_mask_generator.py to automatic_mask_generator.cpython-310.pyc\n'}
+[2.793440] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_dataset.py to vos_dataset.cpython-310.pyc\n'}
+[2.793885] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/utils.py to utils.cpython-310.pyc\n'}
+[2.794202] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/sam2_datasets.py to sam2_datasets.cpython-310.pyc\n'}
+[2.794667] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_raw_dataset.py to vos_raw_dataset.cpython-310.pyc\n'}
+[2.795433] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_sampler.py to vos_sampler.cpython-310.pyc\n'}
+[2.795766] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/vos_segment_loader.py to vos_segment_loader.cpython-310.pyc\n'}
+[2.796573] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/transforms.py to transforms.cpython-310.pyc\n'}
+[2.797852] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/dataset/__init__.py to __init__.cpython-310.pyc\n'}
+[2.797915] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/data_utils.py to data_utils.cpython-310.pyc\n'}
+[2.798350] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/train_utils.py to train_utils.cpython-310.pyc\n'}
+[2.799121] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/checkpoint_utils.py to checkpoint_utils.cpython-310.pyc\n'}
+[2.799809] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/logger.py to logger.cpython-310.pyc\n'}
+[2.800341] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/__init__.py to __init__.cpython-310.pyc\n'}
+[2.800396] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/utils/distributed.py to distributed.cpython-310.pyc\n'}
+[2.801538] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/optimizer.py to optimizer.cpython-310.pyc\n'}
+[2.802631] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/model/__init__.py to __init__.cpython-310.pyc\n'}
+[2.802703] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/model/sam2.py to sam2.cpython-310.pyc\n'}
+[2.803683] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/trainer.py to trainer.cpython-310.pyc\n'}
+[2.805663] (-) TimerEvent: {}
+[2.806131] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/train.py to train.cpython-310.pyc\n'}
+[2.806840] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/loss_fns.py to loss_fns.cpython-310.pyc\n'}
+[2.807497] (SAM-2) StdoutLine: {'line': b'byte-compiling /workspace/install/SAM-2/lib/python3.10/site-packages/training/__init__.py to __init__.cpython-310.pyc\n'}
+[2.807554] (SAM-2) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.807941] (SAM-2) StdoutLine: {'line': b'Copying ../build/SAM-2/SAM_2.egg-info to /workspace/install/SAM-2/lib/python3.10/site-packages/SAM_2-1.0-py3.10.egg-info\n'}
+[2.808154] (SAM-2) StdoutLine: {'line': b'running install_scripts\n'}
+[2.811737] (SAM-2) StdoutLine: {'line': b"writing list of installed files to '/workspace/build/SAM-2/install.log'\n"}
+[2.905807] (-) TimerEvent: {}
+[2.965635] (SAM-2) CommandEnded: {'returncode': 0}
+[2.968307] (SAM-2) JobEnded: {'identifier': 'SAM-2', 'rc': 0}
+[2.968600] (-) EventReactorShutdown: {}

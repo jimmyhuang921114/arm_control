@@ -1,0 +1,20 @@
+[0.000000] (-) TimerEvent: {}
+[0.000408] (SAM-2) JobQueued: {'identifier': 'SAM-2', 'dependencies': OrderedDict()}
+[0.000446] (groundedsam2) JobQueued: {'identifier': 'groundedsam2', 'dependencies': OrderedDict()}
+[0.000472] (tm_robot_if) JobQueued: {'identifier': 'tm_robot_if', 'dependencies': OrderedDict()}
+[0.000499] (SAM-2) JobStarted: {'identifier': 'SAM-2'}
+[0.002818] (groundedsam2) JobStarted: {'identifier': 'groundedsam2'}
+[0.005100] (tm_robot_if) JobStarted: {'identifier': 'tm_robot_if'}
+[0.099645] (-) TimerEvent: {}
+[0.199904] (-) TimerEvent: {}
+[0.300229] (-) TimerEvent: {}
+[0.400497] (-) TimerEvent: {}
+[0.500974] (-) TimerEvent: {}
+[0.601233] (-) TimerEvent: {}
+[0.701508] (-) TimerEvent: {}
+[0.801833] (-) TimerEvent: {}
+[0.854962] (SAM-2) JobEnded: {'identifier': 'SAM-2', 'rc': 0}
+[0.901928] (-) TimerEvent: {}
+[0.979360] (groundedsam2) JobEnded: {'identifier': 'groundedsam2', 'rc': 'SIGINT'}
+[0.979674] (tm_robot_if) JobEnded: {'identifier': 'tm_robot_if', 'rc': 'SIGINT'}
+[0.989707] (-) EventReactorShutdown: {}

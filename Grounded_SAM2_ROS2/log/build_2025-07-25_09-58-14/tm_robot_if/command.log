@@ -1,0 +1,4 @@
+Invoking command in '/workspace/build/tm_robot_if': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --build /workspace/build/tm_robot_if -- -j24 -l24
+Invoked command in '/workspace/build/tm_robot_if' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --build /workspace/build/tm_robot_if -- -j24 -l24
+Invoking command in '/workspace/build/tm_robot_if': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --install /workspace/build/tm_robot_if
+Invoked command in '/workspace/build/tm_robot_if' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/workspace/install/groundedsam2:/opt/ros/humble /usr/bin/cmake --install /workspace/build/tm_robot_if
