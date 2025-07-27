@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped,Pose
+from geometry_msgs.msg import PoseStamped, Pose
 from geometry_msgs.msg import Pose as PoseMsg
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -11,25 +11,18 @@ from tm_msgs.srv import SetPositions
 from tf2_ros import TransformBroadcaster, Buffer, TransformListener
 from geometry_msgs.msg import TransformStamped
 
-
-
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
-
 
 class Camera2Base(Node):
     def __init__(self):
         super().__init__("camera2ee")
         client_cb_group = ReentrantCallbackGroup()
         timer_cb_group = client_cb_group
-        
-        self.thing_pose_srv = self.create_service(PoseSrv, 'thing_pose', self.pose_recevice,callback_group=client_cb_group)
-        # self.tm_pose_client = self.create_client(SetPositions, '/set_positions',callback_group=client_cb_group)
+
+        self.thing_pose_srv = self.create_service(PoseSrv, 'thing_pose', self.pose_recevice, callback_group=client_cb_group)
         self.base_pose_pub = self.create_publisher(Pose, '/cube_position', 10)
 
-        # self.pose_sub = self.create_subscription(PoseStamped, '/goal_pose', self.pose_callback, 10)
-
-    
         self.br = TransformBroadcaster(self)
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -63,11 +56,10 @@ class Camera2Base(Node):
         except Exception as e:
             self.get_logger().error(f"TF lookup failed: {e}")
             return None
-    
+
     def pose_recevice(self, request, response):
         cam_pose = request.pose
 
-        # === camera_pose → 4x4 matrix ===
         T_cam = np.eye(4)
         T_cam[:3, :3] = R.from_quat([
             cam_pose.orientation.x,
@@ -87,29 +79,34 @@ class Camera2Base(Node):
             response.success = False
             return response
 
-        # === camera → base 轉換 ===
         T_base = T_ee_to_base @ self.T_camera_to_ee @ T_cam
         pos = T_base[:3, 3]
         quat = R.from_matrix(T_base[:3, :3]).as_quat()
+        rpy = R.from_matrix(T_base[:3, :3]).as_euler('xyz', degrees=True)
 
-        # === 封裝成 PoseStamped 並發布 ===
         base_pose = Pose()
         base_pose.position.x = pos[0]
-        base_pose.position.y = pos[1]-0.02
-        base_pose.position.z = pos[2]+0.05
+        base_pose.position.y = pos[1] - 0.02
+        base_pose.position.z = pos[2] + 0.05
         base_pose.orientation.x = quat[0]
         base_pose.orientation.y = quat[1]
         base_pose.orientation.z = quat[2]
         base_pose.orientation.w = quat[3]
+
         self.get_logger().info(f"PoseStamped:\n{base_pose}")
+        self.get_logger().info(
+            f"[Converted Pose in base frame]\n"
+            f"  Position -> x: {pos[0]:.4f}, y: {pos[1]-0.02:.4f}, z: {pos[2]+0.05:.4f}\n"
+            f"  RPY      -> roll: {rpy[0]:.2f}°, pitch: {rpy[1]:.2f}°, yaw: {rpy[2]:.2f}°"
+        )
 
         self.base_pose_pub.publish(base_pose)
         self.get_logger().info("Published converted pose to /converted_pose")
 
-        # === TF for visualization (可選) ===
         tf_msg = TransformStamped()
-        # tf_msg.header = base_pose.header
-        # tf_msg.child_frame_id = 'converted_pose'
+        tf_msg.header.stamp = self.get_clock().now().to_msg()
+        tf_msg.header.frame_id = 'base'
+        tf_msg.child_frame_id = 'converted_pose'
         tf_msg.transform.translation.x = pos[0]
         tf_msg.transform.translation.y = pos[1]
         tf_msg.transform.translation.z = pos[2]
@@ -120,11 +117,6 @@ class Camera2Base(Node):
         return response
 
 def main(args=None):
-    # rclpy.init()
-    # node = Camera2Base()
-    # rclpy.spin(node)
-    # node.destroy_node()
-    # rclpy.shutdown()
     rclpy.init()
     node = Camera2Base()
     executor = MultiThreadedExecutor()
@@ -136,8 +128,6 @@ def main(args=None):
         node.get_logger().info('Keyboard interrupt, shutting down.\n')
     node.destroy_node()
     rclpy.shutdown()
-
-
 
 if __name__ == '__main__':
     main()

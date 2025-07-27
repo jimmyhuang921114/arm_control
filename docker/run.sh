@@ -27,6 +27,9 @@ echo -e "${YELLOW}Running Docker container from image '$IMAGE_NAME'...${NC}"
 xhost +local:root
 
 docker run -it --rm \
+    --privileged \
+    --net=host \
+    --ipc=host \
     -v /dev:/dev \
     -v "$MOUNT_DIR":/workspace \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -34,11 +37,12 @@ docker run -it --rm \
     -e DISPLAY=$DISPLAY \
     -e QT_X11_NO_MITSHM=1 \
     -e XAUTHORITY=/root/.Xauthority \
-    --net=host \
-    --ipc=host \
-    --privileged \
     $GPU_FLAG \
-    "$IMAGE_NAME"
+    --user work \
+    --workdir /workspace \
+    "$IMAGE_NAME" \
+    bash --login
+
 
 
 # Check if the container ran successfully

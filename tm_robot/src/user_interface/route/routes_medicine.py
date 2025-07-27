@@ -25,5 +25,5 @@ def get_by_name(name: str, db: Session = Depends(get_db)):
 # delete the medicine by name
 @router.delete("/medicine/{name}")
 def delete_by_id(name: str, db: Session = Depends(get_db)):
-    success = crud_medicine.delete_medicine_by_id(db, name)
+    success = crud_medicine.delete_medicine_by_name(db, name)
     return {"success": success}

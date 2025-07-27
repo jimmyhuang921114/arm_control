@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
-<package format="3">
+<package format="2">
   <name>second_camera</name>
-  <version>0.0.1</version>
-  <description>FlyCapture2 camera streaming and capture</description>
-
-  <maintainer email="jimmyjimmyhuang1114@gmail.com">work</maintainer>
-  <license>MIT</license>
+  <version>0.1.0</version>
+  <description>Second camera capture node using FlyCapture2</description>
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>OpenCV</depend>
+  <depend>tm_robot_if</depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
   </export>
 </package>

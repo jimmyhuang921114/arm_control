@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from sensor_msgs.msg import Image
 from std_msgs.msg import Header,Bool
-from tm_robot_if.srv import GroundedSAM2Interface,PoseSrv,CaptureImage,SecondCamera,DetectImage,Paddle
+from tm_robot_if.srv import GroundedSAM2Interface,PoseSrv,CaptureImage
 # from tm_robot_if.srv import GroundedSAM2Interface, Paddle, MedicineOrder, SecondCheck,CapturePicture,SliderControl
 from cv_bridge import CvBridge
 import os
@@ -30,14 +30,14 @@ class MainControl(Node):
         self.slider_state = self.create_subscription(Bool, '/slider/state', self.slider_state_callback, 10)
 
         #curobo control 
-        self.curobo_control = self.create_publisher(Pose, '/curobo/control', 10)
+        # self.curobo_control = self.create_publisher(Pose, '/curobo/control', 10)
 
         # 建立服務 client
         self.detect_client = self.create_client(GroundedSAM2Interface, 'grounded_sam2')
         self.grab_client = self.create_client(CaptureImage,'grab_detect')
-        self.ocr_client = self.create_client(Paddle, 'ocr')
-        self.llm_client = self.create_client(DetectImage, 'llm')
-        self.second_camera_client = self.create_client(SecondCamera, 'camera2')
+        # self.ocr_client = self.create_client(Paddle, 'ocr')
+        # self.llm_client = self.create_client(DetectImage, 'llm')
+        # self.second_camera_client = self.create_client(SecondCamera, 'camera2')
         # self.slider_client = self.create_client(SliderControl,'slider')
         # self.order_client = self.create_client(, 'order')
         # self.order_report_client = self.create_client(, 'order_report')
@@ -48,6 +48,8 @@ class MainControl(Node):
             # "ocr": self.ocr_client,
             # "llm": self.llm_client,
             # "camera2": self.second_camera_client,
+            "grab_detect": self.grab_client
+            # "curobo_control"
             # "slider": self.slider_client,
             # "order": self.order_client,
             # "order_report": self.order_report_client
@@ -195,14 +197,14 @@ class MainControl(Node):
                 self.get_logger().warn("回傳的 binary_image 是空的")
                 return
 
-            # 將遮罩轉成 0/255，方便顯示PoseSrv
+            
             mask_raw = self.bridge.imgmsg_to_cv2(res.binary_image, desired_encoding='mono8')
             self.mask_img = (mask_raw > 0).astype(np.uint8) * 255
             mask_raw = self.bridge.imgmsg_to_cv2(res.binary_image, desired_encoding='mono8')
-            print("原始遮罩 unique 值:", np.unique(mask_raw))  # << 這行很關鍵！
+            print("原始遮罩 unique 值:", np.unique(mask_raw))  
 
             self.mask_img = (mask_raw > 0).astype(np.uint8) * 255
-            print("二值化遮罩 unique 值:", np.unique(self.mask_img))  # << 你應該會看到 [0 255]
+            print("二值化遮罩 unique 值:", np.unique(self.mask_img))  
 
             nonzero = np.count_nonzero(self.mask_img)
             self.get_logger().info(f"遮罩非零像素數量: {nonzero}")
@@ -211,6 +213,7 @@ class MainControl(Node):
                 self.get_logger().warn("遮罩為全黑，無有效區域")
             else:
                 self.get_logger().info("遮罩有效，可用於後續步驟")
+            cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_raw.png", mask_raw)
             cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_output.png", self.mask_img)
 
             if self.color_image_np is not None:

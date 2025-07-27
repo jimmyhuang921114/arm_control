@@ -173,8 +173,8 @@ class GroundedSAM2Service(Node):
                     vis_image[:, :, ch]
                 )
 
-        cv2.imshow("Grounded-SAM2 Result", vis_image)
-        cv2.waitKey(1)
+        # cv2.imshow("Grounded-SAM2 Result", vis_image)
+        # cv2.waitKey(1)
 
         box = best["box"]
         binary_mask = (best["mask"] > 0).astype(np.uint8) * 255
