@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>藥局訂單管理系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .medicine-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .medicine-item input {
+            flex: 1;
+        }
+        .order-list {
+            margin-top: 20px;
+        }
+        .order-item {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .status.completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .patient-search {
+            position: relative;
+        }
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+        .medicine-list {
+            margin-top: 10px;
+        }
+        .medicine-tag {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>藥局訂單管理系統</h1>
+            <div class="nav-buttons">
+                <a href="/Medicine.html" class="btn btn-info">藥物管理</a>
+                <a href="/Prescription.html" class="btn btn-info">處方管理</a>
+                <a href="/doctor.html" class="btn btn-info">醫師介面</a>
+            </div>
+        </div>
+
+        <!-- 創建新訂單 -->
+        <div class="section">
+            <h3>創建新訂單</h3>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>病人搜尋</label>
+                    <div class="patient-search">
+                        <input type="text" id="patientSearch" class="form-control" 
+                               placeholder="輸入病歷號或姓名搜尋病人...">
+                        <div id="searchResults" class="search-results" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>選中病人</label>
+                    <div id="selectedPatient" style="padding: 10px; background-color: #e9ecef; border-radius: 4px;">
+                        未選擇病人
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>醫師姓名</label>
+                    <input type="text" id="doctorName" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>科別</label>
+                    <input type="text" id="department" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>藥物清單</label>
+                    <div id="medicineList">
+                        <div class="medicine-item">
+                            <select class="form-control medicine-select">
+                                <option value="">選擇藥物...</option>
+                            </select>
+                            <input type="number" class="form-control" placeholder="數量" min="1" value="1">
+                            <button type="button" onclick="removeMedicine(this)" class="btn btn-danger">移除</button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addMedicine()" class="btn btn-success">新增藥物</button>
+                </div>
+
+                <div class="form-group">
+                    <label>備註</label>
+                    <textarea id="notes" class="form-control" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">創建訂單</button>
+            </form>
+        </div>
+
+        <!-- 訂單列表 -->
+        <div class="section">
+            <h3>訂單列表</h3>
+            <button onclick="refreshOrders()" class="btn btn-info">刷新列表</button>
+            <div id="orderList" class="order-list">
+                <!-- 訂單項目將在這裡動態生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPatient = null;
+        let medicines = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMedicines();
+            refreshOrders();
+        });
+
+        // 載入藥物清單
+        async function loadMedicines() {
+            try {
+                const response = await fetch('/api/medicines');
+                medicines = await response.json();
+                updateMedicineSelects();
+            } catch (error) {
+                console.error('載入藥物失敗:', error);
+            }
+        }
+
+        // 更新藥物選擇器
+        function updateMedicineSelects() {
+            const selects = document.querySelectorAll('.medicine-select');
+            selects.forEach(select => {
+                select.innerHTML = '<option value="">選擇藥物...</option>';
+                medicines.forEach(medicine => {
+                    const option = document.createElement('option');
+                    option.value = medicine.name;
+                    option.textContent = `${medicine.name} - ${medicine.description}`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // 病人搜尋
+        document.getElementById('patientSearch').addEventListener('input', async function(e) {
+            const keyword = e.target.value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (keyword.length < 2) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/patients/search?keyword=${encodeURIComponent(keyword)}`);
+                const patients = await response.json();
+                
+                resultsDiv.innerHTML = '';
+                if (patients.length > 0) {
+                    patients.forEach(patient => {
+                        const item = document.createElement('div');
+                        item.className = 'search-result-item';
+                        item.innerHTML = `
+                            <strong>${patient.name}</strong> (${patient.patient_id})<br>
+                            <small>${patient.medical_record || '無病歷摘要'}</small>
+                        `;
+                        item.onclick = () => selectPatient(patient);
+                        resultsDiv.appendChild(item);
+                    });
+                    resultsDiv.style.display = 'block';
+                } else {
+                    resultsDiv.innerHTML = '<div class="search-result-item">找不到病人</div>';
+                    resultsDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('搜尋病人失敗:', error);
+            }
+        });
+
+        // 選擇病人
+        function selectPatient(patient) {
+            selectedPatient = patient;
+            document.getElementById('selectedPatient').innerHTML = `
+                <strong>${patient.name}</strong> (${patient.patient_id})<br>
+                <small>${patient.medical_record || '無病歷摘要'}</small>
+            `;
+            document.getElementById('patientSearch').value = '';
+            document.getElementById('searchResults').style.display = 'none';
+        }
+
+        // 新增藥物
+        function addMedicine() {
+            const medicineList = document.getElementById('medicineList');
+            const newItem = document.createElement('div');
+            newItem.className = 'medicine-item';
+            newItem.innerHTML = `
+                <select class="form-control medicine-select">
+                    <option value="">選擇藥物...</option>
+                </select>
+                <input type="number" class="form-control" placeholder="數量" min="1" value="1">
+                <button type="button" onclick="removeMedicine(this)" class="btn btn-danger">移除</button>
+            `;
+            medicineList.insertBefore(newItem, medicineList.lastElementChild);
+            updateMedicineSelects();
+        }
+
+        // 移除藥物
+        function removeMedicine(button) {
+            const medicineItems = document.querySelectorAll('.medicine-item');
+            if (medicineItems.length > 1) {
+                button.closest('.medicine-item').remove();
+            }
+        }
+
+        // 提交訂單
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!selectedPatient) {
+                alert('請選擇病人');
+                return;
+            }
+
+            const medicineItems = document.querySelectorAll('.medicine-item');
+            const orderMedicines = [];
+
+            for (let item of medicineItems) {
+                const select = item.querySelector('.medicine-select');
+                const quantity = item.querySelector('input[type="number"]');
+                
+                if (select.value && quantity.value) {
+                    orderMedicines.push({
+                        medicine_name: select.value,
+                        quantity: parseInt(quantity.value)
+                    });
+                }
+            }
+
+            if (orderMedicines.length === 0) {
+                alert('請至少選擇一種藥物');
+                return;
+            }
+
+            const orderData = {
+                patient_id: selectedPatient.patient_id,
+                medicines: orderMedicines,
+                doctor_name: document.getElementById('doctorName').value,
+                department: document.getElementById('department').value,
+                notes: document.getElementById('notes').value
+            };
+
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`訂單創建成功！訂單號：${result.order_id}`);
+                    // 重置表單
+                    document.getElementById('orderForm').reset();
+                    selectedPatient = null;
+                    document.getElementById('selectedPatient').innerHTML = '未選擇病人';
+                    refreshOrders();
+                } else {
+                    alert('訂單創建失敗：' + result.message);
+                }
+            } catch (error) {
+                console.error('創建訂單失敗:', error);
+                alert('創建訂單失敗');
+            }
+        });
+
+        // 刷新訂單列表
+        async function refreshOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+                
+                const orderList = document.getElementById('orderList');
+                orderList.innerHTML = '';
+
+                if (orders.length === 0) {
+                    orderList.innerHTML = '<p>暫無訂單</p>';
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'order-item';
+                    
+                    const medicineList = order.medicines.map(med => 
+                        `<span class="medicine-tag">${med.name} x${med.quantity}</span>`
+                    ).join('');
+
+                    orderDiv.innerHTML = `
+                        <div class="order-header">
+                            <h4>訂單 ${order.order_id}</h4>
+                            <span class="status ${order.status}">${order.status === 'pending' ? '處理中' : '已完成'}</span>
+                        </div>
+                        <p><strong>病人：</strong>${order.patient_name} (${order.patient_id})</p>
+                        <div class="medicine-list">
+                            <strong>藥物：</strong><br>
+                            ${medicineList}
+                        </div>
+                        <p><small>創建時間：${new Date(order.created_at).toLocaleString()}</small></p>
+                    `;
+                    
+                    orderList.appendChild(orderDiv);
+                });
+            } catch (error) {
+                console.error('載入訂單失敗:', error);
+            }
+        }
+
+        // 點擊外部關閉搜尋結果
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.patient-search')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
