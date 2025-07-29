@@ -35,6 +35,7 @@ class MainControl(Node):
         # 建立服務 client
         self.detect_client = self.create_client(GroundedSAM2Interface, 'grounded_sam2')
         self.grab_client = self.create_client(CaptureImage,'grab_detect')
+        self.enhanced_grab_client = self.create_client(CaptureImage,'enhanced_grab_detect')
         # self.ocr_client = self.create_client(Paddle, 'ocr')
         # self.llm_client = self.create_client(DetectImage, 'llm')
         # self.second_camera_client = self.create_client(SecondCamera, 'camera2')
@@ -45,6 +46,7 @@ class MainControl(Node):
         # 建立 GroundedSAM2 服務 client
         self.service_clients = {
             "grounded_sam2": self.detect_client,
+            "enhanced_grab": self.enhanced_grab_client,
             # "ocr": self.ocr_client,
             # "llm": self.llm_client,
             # "camera2": self.second_camera_client,
@@ -302,6 +304,30 @@ class MainControl(Node):
                 self.get_logger().error(f"抓取服務失敗: {str(e)}")
 
         future.add_done_callback(grab_callback)
+    
+    def call_enhanced_grab(self):
+        """呼叫增強型抓取檢測"""
+        if self.mask_img is None:
+            self.get_logger().error("增強抓取失敗：尚未獲得有效遮罩")
+            return
+
+        req = CaptureImage.Request()
+        req.mask = self.bridge.cv2_to_imgmsg(self.mask_img.astype(np.uint8), encoding='mono8')
+
+        self.get_logger().info("呼叫增強抓取檢測（智能物件分類）...")
+        future = self.enhanced_grab_client.call_async(req)
+
+        def enhanced_grab_callback(future):
+            try:
+                res = future.result()
+                if res.success:
+                    self.get_logger().info("增強抓取檢測成功完成")
+                else:
+                    self.get_logger().warn("增強抓取檢測回傳失敗")
+            except Exception as e:
+                self.get_logger().error(f"增強抓取檢測失敗: {str(e)}")
+
+        future.add_done_callback(enhanced_grab_callback)
 
 
 

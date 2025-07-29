@@ -1,0 +1,212 @@
+# 細小物件抓取系統配置文件
+# 專門針對藥物等細小物件的參數設置
+
+# 相機參數
+camera:
+  intrinsic:
+    fx: 904.8729050868374
+    fy: 903.3201754368574
+    cx: 634.3937317400505
+    cy: 369.0644726085734
+  
+  distortion: [0.05773164354848198, 0.5821827164855585, 
+               0.004314151191910511, -0.001112447533308546, 
+               -2.461367058886307]
+
+# 物件檢測參數
+detection:
+  # 不同類型物件的尺寸範圍 (像素)
+  object_types:
+    pills:
+      min_area: 80
+      max_area: 2000
+      min_depth_points: 15
+      typical_height: 0.003  # 3mm
+      
+    capsules:
+      min_area: 120
+      max_area: 3000
+      min_depth_points: 20
+      typical_height: 0.008  # 8mm
+      
+    tablets:
+      min_area: 100
+      max_area: 2500
+      min_depth_points: 18
+      typical_height: 0.005  # 5mm
+      
+    small_bottles:
+      min_area: 500
+      max_area: 8000
+      min_depth_points: 50
+      typical_height: 0.025  # 25mm
+
+  # 通用檢測參數
+  general:
+    min_object_area: 80
+    max_object_area: 8000
+    min_depth_points: 15
+    depth_noise_threshold: 0.002  # 2mm
+    edge_erosion_kernel: 3
+    closing_kernel: 3
+
+# 抓取策略參數
+grasp_strategies:
+  # 吸取參數
+  suction:
+    offset_distance: 0.005  # 5mm 吸嘴距離物件表面
+    approach_speed: 0.01    # 10mm/s 接近速度
+    suction_force: 0.8      # 80% 吸力
+    hold_time: 2.0          # 2秒保持時間
+    
+  # 夾取參數 (備用方案)
+  gripper:
+    finger_offset: 0.002    # 2mm 手指偏移
+    grip_force: 0.3         # 30% 夾持力
+    approach_clearance: 0.01 # 10mm 接近間隙
+
+# 候選點生成參數
+candidate_generation:
+  # 質心方法
+  centroid:
+    enabled: true
+    confidence_base: 0.7
+    weight: 1.0
+    
+  # 最高點方法
+  highest_point:
+    enabled: true
+    confidence_base: 0.8
+    weight: 1.2
+    local_radius: 0.005  # 5mm 局部分析半徑
+    
+  # 穩定區域方法
+  stable_region:
+    enabled: true
+    confidence_base: 0.6
+    weight: 0.9
+    clustering_eps: 10      # DBSCAN聚類參數
+    min_cluster_size: 3
+    erosion_iterations: 1
+    
+  # 橢圓軸方法
+  ellipse_axis:
+    enabled: true
+    confidence_base: 0.65
+    weight: 0.8
+    axis_offset_ratio: 0.3  # 沿軸偏移比例
+
+# 評分權重
+scoring:
+  distance_to_centroid: 0.3    # 距離質心的權重
+  height_preference: 0.2       # 高度偏好權重
+  surface_normal: 0.25         # 表面法向量權重
+  stability: 0.15              # 穩定性權重
+  accessibility: 0.1           # 可達性權重
+  
+  # 最小接受分數
+  min_acceptance_score: 0.5
+  
+  # 類型獎勵
+  type_bonus:
+    highest_point: 1.2
+    centroid: 1.0
+    stable_region: 0.9
+    ellipse_axis: 0.8
+
+# 姿態計算參數
+pose_calculation:
+  # 默認接近方向 (相機坐標系)
+  default_approach: [0, 0, -1]
+  
+  # 旋轉約束
+  max_tilt_angle: 15.0  # 度，最大傾斜角
+  
+  # 法向量計算
+  normal_calculation:
+    neighbor_radius: 0.005  # 5mm
+    min_neighbors: 3
+    max_tilt_from_vertical: 30.0  # 度
+    
+  # 姿態平滑
+  pose_smoothing:
+    enabled: true
+    history_length: 5
+    smoothing_factor: 0.3
+
+# 安全參數
+safety:
+  # 工作空間限制 (相機坐標系，米)
+  workspace_limits:
+    x_min: -0.15
+    x_max: 0.15
+    y_min: -0.10
+    y_max: 0.10
+    z_min: 0.02
+    z_max: 0.50
+    
+  # 碰撞檢測
+  collision_avoidance:
+    min_clearance: 0.01      # 10mm 最小間隙
+    check_radius: 0.02       # 20mm 檢查半徑
+    
+  # 執行約束
+  execution_constraints:
+    max_attempts: 3          # 最大嘗試次數
+    timeout: 30.0            # 30秒超時
+    recovery_enabled: true
+
+# 物件特定參數
+object_specific:
+  # 藥丸
+  pill:
+    preferred_strategies: ['highest_point', 'centroid']
+    suction_offset: 0.003
+    approach_angle_tolerance: 20.0
+    
+  # 膠囊
+  capsule:
+    preferred_strategies: ['stable_region', 'highest_point']
+    suction_offset: 0.004
+    approach_angle_tolerance: 25.0
+    length_to_width_ratio_threshold: 2.0
+    
+  # 藥片
+  tablet:
+    preferred_strategies: ['centroid', 'ellipse_axis']
+    suction_offset: 0.004
+    approach_angle_tolerance: 15.0
+    flatness_threshold: 0.8
+
+# 調試和可視化
+debug:
+  enable_visualization: true
+  save_debug_images: false
+  debug_image_path: "/tmp/grasp_debug/"
+  
+  # 控制台輸出級別
+  log_level: "INFO"  # DEBUG, INFO, WARN, ERROR
+  
+  # 性能監控
+  performance_monitoring:
+    enabled: true
+    log_timing: true
+    log_memory_usage: false
+
+# 品質控制
+quality_control:
+  # 最小品質要求
+  min_mask_quality: 0.7
+  min_depth_coverage: 0.6
+  
+  # 驗證步驟
+  validation:
+    check_workspace_bounds: true
+    check_reachability: true
+    check_collision: true
+    
+  # 失敗處理
+  failure_handling:
+    max_retries: 2
+    fallback_to_centroid: true
+    report_failures: true
