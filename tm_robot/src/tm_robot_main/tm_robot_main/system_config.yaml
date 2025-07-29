@@ -1,0 +1,277 @@
+# 藥局系統總協調器配置文件
+# 管理整個系統的安全、性能和工作流程
+
+# 系統安全配置
+security:
+  # 認證設置
+  enable_authentication: true
+  session_timeout: 3600          # 會話超時時間（秒）
+  max_failed_attempts: 3         # 最大失敗嘗試次數
+  audit_logging: true            # 啟用審計日誌
+  
+  # 數據加密
+  enable_encryption: true
+  encryption_algorithm: "AES-256"
+  
+  # 訪問控制
+  access_control:
+    require_user_authentication: true
+    admin_required_operations: ["reset", "shutdown", "emergency_override"]
+    operator_allowed_operations: ["pause", "resume", "view_status"]
+  
+  # 保密性設置
+  confidentiality:
+    mask_patient_data: true      # 遮蔽患者資料
+    anonymize_logs: true         # 匿名化日誌
+    secure_communication: true   # 安全通信
+
+# 工作流程配置
+workflow:
+  # 任務管理
+  max_concurrent_tasks: 5        # 最大並發任務數
+  task_timeout: 300              # 任務超時時間（秒）
+  retry_attempts: 3              # 重試次數
+  auto_recovery: true            # 自動恢復
+  
+  # 優先級處理
+  priority_scheduling: true      # 啟用優先級調度
+  emergency_priority: 5          # 緊急任務優先級
+  urgent_priority: 4             # 緊急任務優先級
+  normal_priority: 2             # 普通任務優先級
+  
+  # 工作階段
+  stages:
+    order_processing:
+      timeout: 30               # 訂單處理超時
+      validation_required: true # 需要驗證
+    
+    vision_detection:
+      timeout: 60               # 視覺檢測超時
+      retry_on_failure: true    # 失敗時重試
+      confidence_threshold: 0.3 # 置信度閾值
+    
+    grasp_execution:
+      timeout: 120              # 抓取執行超時
+      safety_check: true        # 安全檢查
+      collision_avoidance: true # 碰撞避免
+    
+    confirmation:
+      timeout: 45               # 確認超時
+      llm_verification: true    # LLM驗證
+      manual_override: true     # 手動覆蓋
+    
+    packaging:
+      timeout: 90               # 包裝超時
+      quality_check: true       # 品質檢查
+
+# 性能配置
+performance:
+  # 目標性能指標
+  target_processing_time: 60.0   # 目標處理時間（秒）
+  max_queue_size: 20             # 最大隊列大小
+  monitoring_interval: 10.0      # 監控間隔（秒）
+  
+  # 系統資源限制
+  resource_limits:
+    max_memory_usage: 2048       # 最大記憶體使用（MB）
+    max_cpu_usage: 80           # 最大CPU使用率（%）
+    max_disk_usage: 85          # 最大磁盤使用率（%）
+  
+  # 性能優化
+  optimization:
+    enable_caching: true        # 啟用快取
+    cache_size: 100             # 快取大小
+    parallel_processing: true   # 並行處理
+    load_balancing: true        # 負載平衡
+
+# 資料庫配置
+database:
+  # 主要資料庫
+  path: "/workspace/pharmacy_system.db"
+  backup_interval: 3600          # 備份間隔（秒）
+  retention_days: 30             # 數據保留天數
+  
+  # 備份設置
+  backup:
+    enable_auto_backup: true
+    backup_location: "/workspace/backups/"
+    max_backup_files: 10
+    compression: true
+  
+  # 性能調優
+  performance_tuning:
+    enable_wal_mode: true        # 啟用WAL模式
+    cache_size: 2000            # 快取頁數
+    synchronous: "NORMAL"       # 同步模式
+    
+  # 數據完整性
+  integrity:
+    enable_foreign_keys: true
+    enable_checksums: true
+    auto_vacuum: "INCREMENTAL"
+
+# 通信配置
+communication:
+  # ROS通信設置
+  ros:
+    namespace: "/pharmacy"
+    queue_size: 10
+    reliable_mode: true
+    
+  # 主題配置
+  topics:
+    new_order: "/pharmacy/new_order"
+    system_status: "/pharmacy/system_status"
+    system_command: "/pharmacy/command"
+    system_metrics: "/pharmacy/metrics"
+    emergency_stop: "/emergency_stop"
+    
+  # 服務配置
+  services:
+    system_control: "pharmacy/system_control"
+    vision_detection: "vision/detect_medicine"
+    enhanced_grasp: "enhanced_grab_detect"
+    robot_control: "thing_pose"
+
+# 錯誤處理配置
+error_handling:
+  # 錯誤響應策略
+  strategies:
+    vision_failure: "retry"        # 視覺失敗: retry, skip, abort
+    grasp_failure: "retry"         # 抓取失敗: retry, skip, abort
+    confirmation_failure: "manual" # 確認失敗: manual, accept, abort
+    system_error: "log_and_continue" # 系統錯誤: log_and_continue, abort
+  
+  # 重試配置
+  retry:
+    max_attempts: 3
+    retry_delay: 5.0             # 重試延遲（秒）
+    exponential_backoff: true   # 指數退避
+  
+  # 錯誤通知
+  notifications:
+    enable_error_alerts: true
+    alert_threshold: 3           # 連續錯誤閾值
+    notification_channels: ["log", "email", "sms"]
+
+# 監控和日誌配置
+monitoring:
+  # 系統監控
+  system_monitoring:
+    enable: true
+    check_interval: 30.0        # 檢查間隔（秒）
+    health_check_timeout: 10.0  # 健康檢查超時
+  
+  # 性能監控
+  performance_monitoring:
+    enable: true
+    metrics_collection: true
+    real_time_monitoring: true
+    
+  # 指標配置
+  metrics:
+    collection_interval: 60.0   # 收集間隔（秒）
+    retention_period: 2592000   # 保留期（30天）
+    
+    # 關鍵指標
+    key_metrics:
+      - "task_completion_rate"
+      - "average_processing_time"
+      - "error_rate"
+      - "system_uptime"
+      - "queue_length"
+
+# 日誌配置
+logging:
+  # 日誌級別
+  level: "INFO"                 # DEBUG, INFO, WARN, ERROR
+  
+  # 日誌文件
+  files:
+    system_log: "/tmp/pharmacy_system.log"
+    error_log: "/tmp/pharmacy_errors.log"
+    audit_log: "/tmp/pharmacy_audit.log"
+    performance_log: "/tmp/pharmacy_performance.log"
+  
+  # 日誌輪轉
+  rotation:
+    max_file_size: "10MB"
+    max_files: 5
+    compression: true
+  
+  # 日誌格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# 安全事件響應
+incident_response:
+  # 自動響應
+  auto_response:
+    enable: true
+    response_time: 5.0          # 響應時間（秒）
+    
+  # 事件類型響應
+  event_responses:
+    unauthorized_access: "lock_and_alert"
+    multiple_failures: "escalate"
+    emergency_stop: "immediate_halt"
+    data_breach: "isolate_and_report"
+  
+  # 通知設置
+  notifications:
+    immediate_alerts: ["emergency_stop", "unauthorized_access"]
+    escalation_threshold: 3
+    contact_list: ["admin@pharmacy.com", "security@pharmacy.com"]
+
+# 備份和恢復
+backup_recovery:
+  # 備份策略
+  backup_strategy:
+    full_backup_interval: 86400  # 每日完整備份
+    incremental_interval: 3600   # 每小時增量備份
+    retention_policy: "30_days"  # 保留政策
+  
+  # 恢復設置
+  recovery:
+    auto_recovery: true
+    recovery_timeout: 300        # 恢復超時（秒）
+    data_verification: true      # 數據驗證
+
+# 維護配置
+maintenance:
+  # 定期維護
+  scheduled_maintenance:
+    enable: true
+    maintenance_window: "02:00-04:00"  # 維護時間窗口
+    frequency: "weekly"          # 維護頻率
+  
+  # 維護任務
+  tasks:
+    database_optimization: true
+    log_cleanup: true
+    cache_clearing: true
+    performance_analysis: true
+  
+  # 維護通知
+  notifications:
+    advance_notice: 3600        # 提前通知時間（秒）
+    maintenance_alerts: true
+
+# 集成配置
+integration:
+  # 外部系統集成
+  external_systems:
+    hospital_info_system:
+      enable: false
+      endpoint: "https://his.hospital.com/api"
+      authentication: "oauth2"
+    
+    pharmacy_management:
+      enable: false
+      endpoint: "https://pms.pharmacy.com/api"
+      sync_interval: 300
+  
+  # API配置
+  api:
+    rate_limiting: true
+    max_requests_per_minute: 100
+    authentication_required: true

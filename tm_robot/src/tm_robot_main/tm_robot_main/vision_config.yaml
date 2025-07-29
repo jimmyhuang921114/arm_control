@@ -1,0 +1,206 @@
+# 整合視覺識別系統配置文件
+# 主要使用GroundedSAM2，LLM僅用於二次確認
+
+# GroundedSAM2檢測參數
+detection:
+  # 基本檢測閾值
+  confidence_threshold: 0.3    # 檢測置信度閾值
+  size_threshold: 0.1          # 物件大小閾值
+  selection_mode: "closest"    # 選擇模式: closest, largest, all
+  max_detections: 5            # 最大檢測數量
+  
+  # 藥物特定檢測參數
+  medicine_detection:
+    # 常見藥物類型的prompt
+    prompts:
+      pill: "pill medicine tablet"
+      capsule: "capsule medicine"
+      tablet: "tablet medicine pill"
+      bottle: "medicine bottle vial"
+      generic: "medicine drug pharmaceutical"
+    
+    # 不同藥物類型的檢測參數
+    pill:
+      confidence_threshold: 0.4
+      size_threshold: 0.05
+    capsule:
+      confidence_threshold: 0.35
+      size_threshold: 0.08
+    tablet:
+      confidence_threshold: 0.4
+      size_threshold: 0.06
+    bottle:
+      confidence_threshold: 0.3
+      size_threshold: 0.15
+
+# LLM二次確認配置
+confirmation:
+  # 啟用LLM確認
+  enable_llm_confirmation: true
+  
+  # 觸發LLM確認的條件
+  confirmation_threshold: 0.7   # 低於此置信度時啟動LLM確認
+  always_confirm: false         # 是否總是進行LLM確認
+  
+  # LLM服務配置
+  llm_service:
+    service_name: "/llm/drug_identification"
+    timeout: 15.0
+    max_retry_attempts: 2
+  
+  # 確認策略
+  confirmation_strategy: "threshold"  # threshold, selective, always
+  
+  # 特定情況的確認規則
+  confirmation_rules:
+    low_confidence: 0.5     # 極低置信度閾值
+    ambiguous_detection: 0.6 # 模糊檢測閾值
+    critical_medicines: ["insulin", "epinephrine"]  # 重要藥物總是確認
+
+# 藥物資料庫配置
+medicine_database:
+  # 資料庫路徑
+  database_path: "/workspace/extra_package/llm_drug_identification_system/drug_database/"
+  
+  # 預設藥物配置
+  default_medicine: "no000001.yaml"
+  
+  # 藥物映射表（訂單名稱到資料庫ID的映射）
+  medicine_mapping:
+    "paracetamol": "no000001"
+    "aspirin": "no000002"
+    "ibuprofen": "no000003"
+  
+  # 資料庫更新配置
+  auto_update: false
+  cache_duration: 3600  # 快取時間（秒）
+
+# 工作流程配置
+workflow:
+  # 自動處理模式
+  auto_proceed: true           # 自動進行下一步
+  wait_timeout: 30.0          # 等待超時時間
+  retry_on_failure: true      # 失敗時重試
+  max_retry_attempts: 3       # 最大重試次數
+  
+  # 批次處理設定
+  batch_processing: true      # 批次處理多個藥物
+  batch_size: 5              # 批次大小
+  batch_timeout: 120.0       # 批次超時時間
+  
+  # 品質控制
+  quality_control:
+    min_detection_score: 0.3
+    require_confirmation_for_low_score: true
+    double_check_critical_medicines: true
+
+# 圖像處理配置
+image_processing:
+  # 圖像預處理
+  preprocessing:
+    enable_denoise: true
+    enable_enhance: true
+    brightness_adjustment: 1.0
+    contrast_adjustment: 1.0
+  
+  # ROI設定
+  roi:
+    enable_roi: false
+    roi_coordinates: [100, 100, 500, 400]  # [x, y, width, height]
+  
+  # 圖像儲存
+  save_images: false
+  save_path: "/tmp/vision_system/"
+  save_formats: ["original", "processed", "detected"]
+
+# 整合設定
+integration:
+  # 與其他系統的整合
+  grasp_system:
+    service_name: "enhanced_grab_detect"
+    timeout: 20.0
+    auto_trigger: true
+  
+  main_control:
+    topic_prefix: "/tm_robot/"
+    status_reporting: true
+    command_interface: true
+  
+  database_system:
+    enable_logging: true
+    log_detections: true
+    log_confirmations: true
+
+# 安全與錯誤處理
+safety:
+  # 操作安全
+  max_processing_time: 60.0   # 最大處理時間
+  memory_limit: 1000          # 記憶體限制 (MB)
+  
+  # 錯誤處理
+  error_handling:
+    on_detection_failure: "retry"     # retry, skip, abort
+    on_confirmation_failure: "accept" # accept, retry, abort
+    on_grasp_failure: "retry"         # retry, skip, abort
+  
+  # 緊急停止
+  emergency_stop:
+    enable: true
+    trigger_topic: "/emergency_stop"
+
+# 性能監控
+monitoring:
+  # 性能指標
+  enable_performance_monitoring: true
+  log_processing_times: true
+  log_success_rates: true
+  
+  # 統計收集
+  statistics:
+    detection_accuracy: true
+    confirmation_accuracy: true
+    processing_speed: true
+    error_rates: true
+  
+  # 報告生成
+  reporting:
+    daily_report: true
+    weekly_summary: true
+    real_time_dashboard: false
+
+# 調試配置
+debug:
+  # 調試模式
+  enable_debug: false
+  debug_level: "INFO"  # DEBUG, INFO, WARN, ERROR
+  
+  # 可視化
+  visualization:
+    show_detections: true
+    show_bounding_boxes: true
+    show_confidence_scores: true
+    save_debug_images: false
+  
+  # 詳細日誌
+  verbose_logging: false
+  log_all_detections: false
+  log_processing_steps: false
+
+# 擴展功能
+extensions:
+  # 多語言支援
+  multi_language:
+    enable: false
+    default_language: "zh-TW"
+    supported_languages: ["zh-TW", "en-US"]
+  
+  # 自訂藥物類型
+  custom_medicine_types:
+    enable: true
+    custom_types: []
+  
+  # 外部API整合
+  external_apis:
+    enable: false
+    drug_database_api: ""
+    verification_api: ""
