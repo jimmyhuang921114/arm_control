@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
+  <title>藥物庫存</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.js"></script>
+
+
+  <link rel="stylesheet" href="../css/medicine.css" />
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>系統選單</h2>
+    <button onclick="location.href='doctor.html'">開立處方籤</button>
+    <button onclick="location.href='Prescription.html'">病患處方籤</button>
+    <button onclick="location.href='Medicine.html'">藥物庫存</button>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h1>藥物庫存</h1>
+    </div>
+
+    <div class="table-container">
+      <div id="medicineTable"></div>
+    </div>
+  </div>
+
+  <script src="../js/medicine.js"></script>
+</body>
+</html>

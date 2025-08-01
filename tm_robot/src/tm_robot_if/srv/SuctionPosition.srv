@@ -1,0 +1,6 @@
+# === Request ===
+int8 some_id
+string command
+---
+# === Response ===
+bool success

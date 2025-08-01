@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #fdfdfd;
+}
+h1 {
+  color: #2c3e50;
+}
+.section {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+}
+input, button {
+  margin: 6px 0;
+  padding: 6px;
+  width: 300px;
+}
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #2980b9;
+}
+pre {
+  background: #f0f0f0;
+  padding: 10px;
+  white-space: pre-wrap;
+}

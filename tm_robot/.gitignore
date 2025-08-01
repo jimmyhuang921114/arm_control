@@ -1,0 +1,29 @@
+# ROS 2 colcon build outputs
+build/
+install/
+log/
+
+# ROS 2 generated interfaces
+**/msg/_*.py
+**/srv/_*.py
+**/action/_*.py
+
+# Python cache
+*.pyc
+__pycache__/
+
+# ROS 2 launch logs
+*.launch.py~
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.user
+*~
+.#*
+
+# CMake & Qt creator
+CMakeLists.txt.user
+qtcreator-*
+*.pt

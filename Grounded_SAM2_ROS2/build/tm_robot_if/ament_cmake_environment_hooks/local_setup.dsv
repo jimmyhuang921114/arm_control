@@ -1,0 +1,4 @@
+source;share/tm_robot_if/environment/ament_prefix_path.sh
+source;share/tm_robot_if/environment/library_path.sh
+source;share/tm_robot_if/environment/path.sh
+source;share/tm_robot_if/environment/pythonpath.sh

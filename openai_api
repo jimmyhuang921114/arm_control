@@ -1,0 +1,8 @@
+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
+
+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
+
+
+echo 'export OPENAI_API_KEY=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' >> ~/.bashrc
+source ~/.bashrc
+

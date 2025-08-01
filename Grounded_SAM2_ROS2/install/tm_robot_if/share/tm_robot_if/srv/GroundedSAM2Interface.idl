@@ -1,0 +1,34 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from tm_robot_if/srv/GroundedSAM2Interface.srv
+// generated code does not contain a copyright notice
+
+#include "sensor_msgs/msg/Image.idl"
+
+module tm_robot_if {
+  module srv {
+    struct GroundedSAM2Interface_Request {
+      sensor_msgs::msg::Image image;
+
+      sensor_msgs::msg::Image depth;
+
+      string prompt;
+
+      float confidence_threshold;
+
+      float size_threshold;
+
+      string selection_mode;
+    };
+    struct GroundedSAM2Interface_Response {
+      sensor_msgs::msg::Image binary_image;
+
+      sequence<float> bbox;
+
+      sequence<string> seg;
+
+      sequence<string> label;
+
+      sequence<float> score;
+    };
+  };
+};

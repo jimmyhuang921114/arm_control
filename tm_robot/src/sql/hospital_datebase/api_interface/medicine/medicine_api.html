@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>💊 藥物 API 測試介面</title>
+  <link rel="stylesheet" href="../css/api_medicine.css">
+</head>
+<body>
+  <h1>💊 藥物 API 測試介面</h1>
+
+  <div class="section">
+    <h2>新增藥物</h2>
+    <input type="text" id="name" placeholder="藥物名稱"><br>
+    <input type="text" id="usage" placeholder="用法"><br>
+    <input type="number" id="stock" placeholder="庫存數量"><br>
+    <button onclick="addMedicine()">新增</button>
+  </div>
+
+  <div class="section">
+    <h2>查詢所有藥物</h2>
+    <button onclick="listMedicines()">查詢</button>
+    <pre id="medicineList"></pre>
+  </div>
+
+  <div class="section">
+    <h2>依名稱查詢</h2>
+    <input type="text" id="searchName" placeholder="輸入藥物名稱">
+    <button onclick="searchMedicine()">查詢</button>
+    <pre id="searchResult"></pre>
+  </div>
+
+  <div class="section">
+    <h2>刪除藥物（依 ID）</h2>
+    <input type="number" id="deleteId" placeholder="輸入藥物 ID">
+    <button onclick="deleteMedicine()">刪除</button>
+    <pre id="deleteResult"></pre>
+  </div>
+
+  <script src="../js/api_medicine.js"></script>
+</body>
+</html>
