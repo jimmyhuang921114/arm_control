@@ -5,18 +5,21 @@ import numpy as np
 from sensor_msgs.msg import Image
 from std_msgs.msg import Header,Bool
 from tm_robot_if.srv import GroundedSAM2Interface,PoseSrv,CaptureImage,SecondCheck,DrugIdentify,SecondCamera,Paddle
-# from tm_robot_if.srv import GroundedSAM2Interface, Paddle, MedicineOrder, SecondCheck,CapturePicture,SliderControl
+from tm_rail_interface.srv import RailControl
 from cv_bridge import CvBridge
 import os
 import yaml
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose,Point,Quaternion
 import time
+from scipy.spatial.transform import Rotation as R
 
 
 MED_INFO_PATH= "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/medicine.yaml"
 WORKFLOW_PATH= "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/workflow.yaml"
 COMBINE_PIC_PATH = "/workspace/tm_robot/data/second_cam"
 MEDICINE_INFO_PATH = "/workspace/tm_robot/src/visuial/visuial/medicine_info2.yaml"
+
+
 
 class MainControl(Node):
     def __init__(self):
@@ -28,9 +31,7 @@ class MainControl(Node):
         self.curobo_state = self.create_subscription(Bool, '/curobo/state', self.curobo_state_callback, 10)
         self.io_state = self.create_subscription(Bool, '/io/state', self.io_state_callback, 10)
         self.slider_state = self.create_subscription(Bool, '/slider/state', self.slider_state_callback, 10)
-        
-
-
+        self.curobo_pose = self.create_publisher(Pose, '/cube_position', 10)
 
         #curobo control 
         # self.curobo_control = self.create_publisher(Pose, '/curobo/control', 10)
@@ -41,22 +42,20 @@ class MainControl(Node):
         self.ocr_client = self.create_client(Paddle, 'paddleocr_check')
         self.llm_client = self.create_client(DrugIdentify, 'drug_identify')
         self.second_camera_client = self.create_client(SecondCamera, 'camera2')
-        # self.slider_client = self.create_client(SliderControl,'slider')
+        self.slider_client = self.create_client(RailControl,'rail_control')
         # self.order_client = self.create_client(, 'order')
         # self.order_report_client = self.create_client(, 'order_report')
 
-        # 建立 GroundedSAM2 服務 client 
         self.service_clients = {
-            "grounded_sam2": self.detect_client,
+            # "grounded_sam2": self.detect_client,
             # "ocr": self.ocr_client,
             # "llm": self.llm_client,
             # "take_pic_check": self.second_camera_client,
             # "camera2": self.second_camera_client,
-            "grab_detect": self.grab_client
+            # "grab_detect": self.grab_client
             # "curobo_control"
-            # "slider": self.slider_client,
-            # "order": self.order_client,
-            # "order_report": self.order_report_client
+            # "rail_control": self.slider_client,
+            # "order": self.order_client
 
         }
 
@@ -73,6 +72,8 @@ class MainControl(Node):
         self.curobo_state_flag = False
         self.has_run = False
         self.slider_mode = {"initial":0,"take_package":1,"finish package":2}
+        self.slider_counter = 0
+        self.slider_finished = True
         self.bbox=None
         # 載入 YAML 檔案
         # if os.path.exists(YAML_PATH):
@@ -97,12 +98,17 @@ class MainControl(Node):
         # if self.has_run == True:
         #     return 
         # self.has_run = True
-        self.call_groundsam2()
+        # self.call_groundsam2()
         # self.call_ocr()
         # self.call_llm()
-        # self.call_camera2()
-        self.timer.cancel()
-        self.destroy_timer(self.timer)
+        self.call_camera2()
+        # if self.slider_finished:
+        #     self.slider_finished = False
+        #     self.call_slider(self.slider_counter)
+        #     self.slider_counter += 1
+        #     if self.slider_counter > 2:
+        # self.timer.cancel()
+        # self.destroy_timer(self.timer)
 
                 
     def workflow(self):
@@ -163,49 +169,7 @@ class MainControl(Node):
         save_path = os.path.join(COMBINE_PIC_PATH, "combined.jpg")
         cv2.imwrite(save_path, combined)
         self.get_logger().info("image combine done")
-
-        # for path in full_paths:
-        #     try:
-        #         os.remove(path)
-        #         self.get_logger().info(f"已刪除原始圖片: {path}")
-        #     except Exception as e:
-        #         self.get_logger().warn(f"刪除失敗: {path}，錯誤: {str(e)}")
-
-    # def call_groundsam2(self):
-    #     if self.color_image_np is None or self.depth_image_np is None:
-    #         self.get_logger().warn("color 或 depth 尚未準備好，略過 GroundedSAM2 呼叫")
-    #         return
-    #     time.sleep(2)
-    #     req = GroundedSAM2Interface.Request()
-    #     ros_color_image = self.bridge.cv2_to_imgmsg(self.color_image_np, encoding='bgr8')
-    #     ros_depth_image = self.bridge.cv2_to_imgmsg(self.depth_image_np, encoding='passthrough')
-
-    #     now = self.get_clock().now().to_msg()
-    #     ros_color_image.header = Header(stamp=now, frame_id='camera')
-    #     ros_depth_image.header = Header(stamp=now, frame_id='camera')
-
-    #     req.image = ros_color_image
-    #     req.depth = ros_depth_image
-    #     req.prompt = 'medicine'
-    #     req.confidence_threshold = 0.2
-    #     req.size_threshold = 0.1
-    #     req.selection_mode = "closest"
-
-    #     self.get_logger().info("呼叫 grounded_sam2（同步）...")
-    #     future = self.detect_client.call_async(req)
-    #     rclpy.spin_until_future_complete(self, future)
-
-    #     if future.done():
-    #         try:
-    #             res = future.result()
-    #             self.get_logger().info(f"辨識結果: label={res.label}, score={res.score}, bbox={res.bbox}")
-    #             if res.binary_image.data:
-    #                 self.mask_img = self.bridge.imgmsg_to_cv2(res.binary_image, desired_encoding='mono8')
-    #                 cv2.imshow("Selected Binary Mask", self.mask_img)
-    #                 cv2.waitKey(1)
-    #         except Exception as e:
-    #             self.get_logger().error(f"GroundedSAM2 呼叫失敗: {str(e)}")
-
+    
     def call_groundsam2(self):
         if self.color_image_np is None or self.depth_image_np is None:
             self.get_logger().warn("color 或 depth 尚未準備好，略過 GroundedSAM2 呼叫")
@@ -258,7 +222,6 @@ class MainControl(Node):
             else:
                 self.get_logger().info("遮罩有效，可用於後續步驟")
             cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_raw.png", mask_raw)
-            cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_output.png", self.mask_img)
 
             if self.color_image_np is not None:
                 overlay = self.color_image_np.copy()
@@ -284,24 +247,8 @@ class MainControl(Node):
         except Exception as e:
             self.get_logger().error(f"GroundedSAM2 處理 callback 發生錯誤: {str(e)}")
     
-    # def call_grab(self):
-    #     req =PoseSrv()
 
 
-    # def call_ocr(self):
-    #     if self.color_image_np is None:
-    #         self.get_logger().warn("尚未收到 color image，無法執行 OCR")
-    #         return
-
-    #     req = Paddle.Request()
-    #     ros_image = self.bridge.cv2_to_imgmsg(self.color_image_np, encoding='bgr8')
-    #     req.image = ros_image
-    #     future = self.ocr_client.call_async(req)
-    #     rclpy.spin_until_future_complete(self, future)
-    #     if future.done():
-    #         res = future.result()
-    #         self.get_logger().info(f"OCR 結果: {res.text}")
-    
     def call_ocr(self):
         if self.color_image_np is None:
             self.get_logger().warn("尚未收到 color image，無法執行 OCR")
@@ -319,7 +266,7 @@ class MainControl(Node):
             res = future.result()
             self.get_logger().info(f"OCR 結果: {res.text}")
         except Exception as e:
-            self.get_logger().error(f"OCR callback 發生錯誤: {str(e)}")
+            self.get_logger(). error(f"OCR callback 發生錯誤: {str(e)}")
 
 
 
@@ -357,8 +304,20 @@ class MainControl(Node):
 
                                  
 
-
     def call_camera2(self):
+        # second_camera_point = [-2.97,-502.80,632.32,178.79,0.75,-0.89]
+        # camera_point = [-215.405,804.799,138.406,0.168,-87.438]
+        # x, y, z = second_camera_point[:3]
+        # x, y, z = [v / 1000.0 for v in second_camera_point[:3]]
+        # roll, pitch, yaw = second_camera_point[3:]
+        # rotation = R.from_euler('zyx', [roll, pitch, yaw], degrees=True)
+        # quat = rotation.as_quat()
+
+        # pose_msg = Pose()
+        # pose_msg.position = Point(x=x, y=y, z=z)
+        # pose_msg.orientation = Quaternion(x=quat[0], y=quat[1], z=quat[2], w=quat[3])
+        # self.curobo_pose.publish(pose_msg)
+        # self.get_logger().info("Published cube_position pose:\n{}".format(pose_msg))
         req = SecondCamera.Request()
         req.filename = "dummy.jpg"
         future = self.second_camera_client.call_async(req)
@@ -375,14 +334,21 @@ class MainControl(Node):
 
         future.add_done_callback(handle_camera_response)
 
-    def call_slider(self):
-        req = SliderControl.Request()
-        req.target = "left"
+    def call_slider(self,code):
+        req = RailControl.Request()
+        req.opt_code = code
+        req.rail_name = "arm_rail1"
         future = self.slider_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        if future.done():
-            res = future.result()
-            self.get_logger().info(f"Slider 控制狀態: {res.status}")
+        future.add_done_callback(self.slider_callback)
+        # rclpy.spin_until_future_complete(self, future)
+
+    def slider_callback(self, future):
+        self.slider_finished = True
+        res = future.result()
+        if res.result >= 0:
+            self.get_logger().info(f"Slider 控制狀態: SUCCESS")
+        else:
+            self.get_logger().error(f"Slider Error")
 
     def call_grab(self):
         if self.mask_img is None:
@@ -409,15 +375,46 @@ class MainControl(Node):
 
 
 
+    def point_pub(self,pose):
+        x,y,z = pose[:3]
+        roll,pitch,yaw = pose[3:]
+        quat = R.from_euler('xyz',[roll,pitch,yaw],degrees=True).as_quat()
+        pose_msg = Pose()
+        pose_msg.position = Point(x=x,y=y,z=z)
+        pose_msg.position = Quaternion(x=quat[0],y=quat[1],z=quat[2],w=quat[3])
+        self.curobo_pose.publish(pose_msg)
+
+
+
+
+
 def main(args=None):
     rclpy.init(args=args)
     node = MainControl()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
+    node.create_rate(100)
+    while rclpy.ok():
+        try:
+            rclpy.spin_once(node, timeout_sec=0.1)
+    
+        # rclpy.spin(node)
+        except KeyboardInterrupt:
+            break
     node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
-    main()
+    main()        req = SecondCamera.Request()
+        req.filename = "dummy.jpg"
+        future = self.second_camera_client.call_async(req)
+
+        def handle_camera_response(fut):
+            try:
+                res = fut.result()
+                if res.success:
+                    self.get_logger().info("SecondCamera finish combine picture")
+                else:
+                    self.get_logger().warn("SecondCamera 啟動失敗")
+            except Exception as e:
+                self.get_logger().error(f"SecondCamera callback 錯誤: {str(e)}")
+
+        future.add_done_callback(handle_camera_response)

@@ -16,7 +16,7 @@ from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallb
 
 class Camera2Base(Node):
     def __init__(self):
-        super().__init__("camera2ee")
+        super().__init__("camera2base")
         client_cb_group = ReentrantCallbackGroup()
         timer_cb_group = client_cb_group
 

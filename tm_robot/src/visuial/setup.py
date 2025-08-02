@@ -33,6 +33,7 @@ setup(
             'medicine_check_test = visuial.medicine_check_test:main',
             'pic_combine = visuial.pic_combine:main',
             'socket_receive = visuial.socket_receive:main',
+            'double_check = visuial.double_check:main',
         ],
     },
 )
