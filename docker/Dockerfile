@@ -66,18 +66,7 @@ WORKDIR /opt/Deformable-DETR
 RUN pip install -r requirements.txt
 
 WORKDIR /workspace
-# Build ms_deform_attn CUDA extensipytorch:on
-# WORKDIR /opt/Deformable-DETR/models/ops
-# RUN python setup.py build install
-# RUN python setup.py build
 
-# # ========== GroundingSAM ==========
-# WORKDIR /opt
-# RUN git clone https://github.com/IDEA-Research/Grounded-Segment-Anything.git
-# WORKDIR /opt/Grounded-Segment-Anything
-# RUN pip install -r requirements.txt
-# RUN pip install -e segment_anything
-# RUN pip install -e GroundingDINO
 
 
 # ========== ROS 2 Humble ==========
@@ -116,29 +105,12 @@ WORKDIR /workspace
 RUN git clone https://github.com/IDEA-Research/Grounded-SAM-2 /tmp/GroundSam2
 RUN echo "CUDA_HOME=/usr/local/cuda-12.1/" >> ~/.bashrc
 WORKDIR /tmp/GroundSam2
-# RUN pip install -e .
-# RUN pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 \
-#     --index-url https://download.pytorch.org/whl/cu121
 
 RUN git clone https://github.com/IDEA-Research/GroundingDINO.git /tmp/grounding_dino
 WORKDIR /tmp/grounding_dino
-# RUN sed -i '/^def install_torch()/,/^install_torch()/d' setup.py
-# RUN pip install -e . --no-build-isolation
 
-# WORKDIR /tmp/GroundSam2/grounding_dino
-
-# # === 安裝 GroundingDINO 前 patch 掉強制安裝 torch 的程式碼 ===
-# RUN sed -i '/^def install_torch()/,/^install_torch()/d' setup.py
-# RUN pip install --no-build-isolation -e .
-
-
-# RUN git clone https://github.com/TKUwengkunduo/Grounded_SAM2_ROS2.git /workspace/Grounded_SAM2_ROS2
-# RUN bash /workspace/Ground    ed_SAM2_ROS2/build_env.sh 
 RUN pip install supervision pycocotools transformers addict yapf timm
 
-# =========LLM==========
-# WORKDIR /workspace
-# RUN git clone 
 
 
 
@@ -153,47 +125,6 @@ RUN dpkg -i *.deb || apt-get install -fy && \
     usermod -aG flirimaging work && \
     echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="flirimaging", MODE="0660"' > /etc/udev/rules.d/99-flir-usb.rules && \
     udevadm control --reload-rules || true
-
-
-# === 安裝 Azure Kinect SDK v1.4.2（完整）===
-# WORKDIR /tmp/kinect
-
-# # 安裝必要工具
-# RUN apt-get update && \
-#     apt-get install -y wget curl gnupg software-properties-common apt-transport-https && \
-#     apt-get install 
-
-# # 新增 Microsoft APT 來源（供 dev/tools 使用）
-# RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-#     add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main"
-
-# # === 解壓 libk4a1.4_1.4.2 主套件 ===
-# RUN wget https://packages.microsoft.com/ubuntu/18.04/prod/pool/main/libk/libk4a1.4/libk4a1.4_1.4.2_amd64.deb && \
-#     dpkg -x libk4a1.4_1.4.2_amd64.deb ./libk4a_extract && \
-#     cp -r ./libk4a_extract/usr/* /usr/ && \
-#     ldconfig
-
-# # === 手動安裝 libsoundio===
-# RUN wget http://mirrors.ustc.edu.cn/ubuntu/pool/universe/libs/libsoundio/libsoundio1_1.1.0-1_amd64.deb && \
-#     dpkg -i libsoundio1_1.1.0-1_amd64.deb
-
-# # === 安裝 dev headers + k4a-tools ===
-# RUN wget https://packages.microsoft.com/ubuntu/18.04/prod/pool/main/libk/libk4a1.4/libk4a1.4-dev_1.4.2_amd64.deb && \
-#     wget https://packages.microsoft.com/ubuntu/18.04/prod/pool/main/k/k4a-tools/k4a-tools_1.4.2_amd64.deb && \
-#     dpkg -i libk4a1.4-dev_1.4.2_amd64.deb k4a-tools_1.4.2_amd64.deb || apt-get install -f -y
-
-# # === 加入 Azure Kinect 的 UDEV 規則（僅 Depth 模組）===
-# RUN echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="045e", ATTR{idProduct}=="097c", MODE:="0666"' > /etc/udev/rules.d/99-k4a.rules
-
-# # === 手動複製 k4a-tools 二進位===
-# RUN wget https://packages.microsoft.com/ubuntu/18.04/prod/pool/main/k/k4a-tools/k4a-tools_1.4.2_amd64.deb && \
-#     dpkg -x k4a-tools_1.4.2_amd64.deb ./k4a_tools_extract && \
-#     cp ./k4a_tools_extract/usr/bin/k4a* /usr/local/bin/ && \
-#     chmod +x /usr/local/bin/k4a*
-
-
-# # === 清理暫存（可選）===
-# RUN rm -rf /tmp/kinect
 
 # ===Chat API
 WORKDIR /tmp
