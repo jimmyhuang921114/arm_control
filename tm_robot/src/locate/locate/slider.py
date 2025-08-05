@@ -11,8 +11,16 @@ class LandMarkNode(Node):
         super().__init__('rail_landmark')
         self.publisher_position = self.create_publisher(Pose, '/rail_position', 10)
         self.position_msg=Pose()
-        self.connect()
+        while True:
+            self.connect()
     
+    def pose_to_matrix(self, position, euler_deg, order='xyz'):
+        rot = R.from_euler(order, euler_deg, degrees=True).as_matrix()
+        trans = np.eye(4)
+        trans[:3, :3] = rot
+        trans[:3, 3] = position
+        return trans
+
     def connect(self):
         HOST = '192.168.10.1'
         PORT = 5001
@@ -40,14 +48,14 @@ class LandMarkNode(Node):
                 print(f"landmark@base:\n {self.T_landmark}")
                 ## landmark@base to rail_origin@base
                 self.T_mark_to_rail=np.eye(4)
-                self.T_mark_to_rail[:3, :3] = R.from_euler('z', [0], degrees=True).as_matrix()
-                self.T_mark_to_rail[:3, 3] = [-0.9265, -0.1145, -1.103]
+                self.T_mark_to_rail[:3, :3] = R.from_euler('y', [180], degrees=True).as_matrix()
                 self.T_rail = self.T_landmark @ self.T_mark_to_rail
+                self.T_rail[:3, 3] += [-0.9265, -0.1145, -1.103]
                 print(f"rail@base:\n {self.T_rail}")
                 print(f"pose: {self.T_rail[:3, 3]}")
                 print(f"euler: {R.from_matrix(self.T_rail[:3, :3]).as_euler('xyz', degrees=True)}")
                 ## publish
-                quat = R.from_matrix(self.T_rail[:3, 3]).as_quat()
+                quat = R.from_matrix(self.T_rail[:3, :3]).as_quat()
                 self.position_msg.position.x = self.T_rail[0, 3]
                 self.position_msg.position.y = self.T_rail[1, 3]
                 self.position_msg.position.z = self.T_rail[2, 3]

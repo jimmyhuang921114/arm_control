@@ -25,6 +25,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/DrugIdentify.srv"
   "srv/CaptureImage.srv"
   "srv/SecondCamera.srv"
+  "srv/TMFlowMode.srv"
+  "srv/OrderID.srv"
   DEPENDENCIES builtin_interfaces geometry_msgs sensor_msgs
 )
 

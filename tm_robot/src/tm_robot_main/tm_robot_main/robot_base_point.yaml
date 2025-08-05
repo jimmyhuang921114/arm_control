@@ -1,0 +1,22 @@
+arm_base_pose:
+  first_shelf_pull: [-0.381, -0.364, 0.641, 159.74, -1.94, -90.4]
+  second_shelf_pull: [-0.33,0.374,0.449,156.41,1.5,-89.19]
+
+
+box_distance:
+  - distance: 
+
+photo_angle:
+  first_photo:
+  second_photo:
+
+safe_point:
+  - name: "safe_point"
+  - pose: [-0.33, 0.374, 0.449, 156.411, 1.496, -89.193]
+
+rail_photo:
+  rail_photo: [-0.025, -0.494, 0.62, 178.91, 0.56, 0.32]
+
+
+test_grab_landmark:
+  top_landmark: [-0.049, 00.321, 0.831, 130.47, -5.7, -81.43]

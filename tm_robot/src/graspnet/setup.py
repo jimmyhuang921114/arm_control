@@ -27,6 +27,7 @@ setup(
             'aruco_check = graspnet.aruco_check:main',
             'moveit_grab_test = graspnet.moveit_grab_test:main',
             'camera2base = graspnet.camera2base:main',
+            'test_shelf = graspnet.test_shelf:main',
         ],
     },
 )

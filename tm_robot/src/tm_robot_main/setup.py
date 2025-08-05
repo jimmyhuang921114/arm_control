@@ -31,6 +31,8 @@ setup(
             'main_control = tm_robot_main.main_control:main',
             'slider_simple = tm_robot_main.slider_simple:main',
             'order_report = tm_robot_main.order_report:main',
+            'tm_flow_node = tm_robot_main.tm_flow_mode:main',
+            'order_process = tm_robot_main.order_process:main',
         ],
     },
 )

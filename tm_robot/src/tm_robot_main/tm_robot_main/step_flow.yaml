@@ -20,19 +20,24 @@ grab_test:
 
 
 
-
 slider_test:
   - initial
   - take_package
- 
-menu:
-  - detect_med
-  - grab_medicine
-  - ocr_service
-  - llm_check
-  - slider_move
-  - second_camera_check
-  - order_recevie
-  - slider init
-  - slider come
-  - slider 
+  - finish_package
+
+
+
+
+
+
+# menu:
+#   - detect_med
+#   - grab_medicine
+#   - ocr_service
+#   - llm_check
+#   - slider_move
+#   - second_camera_check
+#   - order_recevie
+#   - slider init
+#   - slider come
+#   - slider finish

@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'shelf = locate.shelf:main',
             'slider = locate.slider:main',
+            'fix_shelf = locate.fix_shelf:main',
         ],
     },
 )
