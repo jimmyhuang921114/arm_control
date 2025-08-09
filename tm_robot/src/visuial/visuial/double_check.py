@@ -77,7 +77,7 @@ class CameraPublisher(Node):
         while rclpy.ok():
             ret, frame = self.cap.read()
             if ret:
-                flipped = cv2.flip(frame, 0)
+                flipped = cv2.flip(frame, -1)
                 with self.lock:
                     self.latest_frame = flipped.copy()
             time.sleep(0.01)
@@ -90,7 +90,9 @@ class CameraPublisher(Node):
 
     def capture_callback(self, request, response):
         # 啟動非同步 socket thread，主線程不阻塞
-        threading.Thread(target=self.socket_handler, daemon=True).start()
+        socket_thread = threading.Thread(target=self.socket_handler, daemon=True)
+        socket_thread.start()
+        socket_thread.join()
         response.success = True
         return response
 
@@ -108,13 +110,13 @@ class CameraPublisher(Node):
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         try:
-            server.bind(('0.0.0.0', 6000))
+            server.bind(('0.0.0.0', 6001))
         except OSError as e:
-            self.get_logger().error(f"Port 6000 已被佔用: {e}")
+            self.get_logger().error(f"Port 6001 已被佔用: {e}")
             return
 
         server.listen(1)
-        self.get_logger().info("Socket server listening on port 6000")
+        self.get_logger().info("Socket server listening on port 6001")
         client, addr = server.accept()
         self.get_logger().info(f"Socket client connected from {addr}")
         client.settimeout(None)

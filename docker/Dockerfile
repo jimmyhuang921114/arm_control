@@ -18,6 +18,7 @@ ENV PYTHONUNBUFFERED=1
 ENV CPLUS_INCLUDE_PATH=/usr/include/k4a
 ENV LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 ENV CUDA_HOME=/usr/local/cuda-12.1
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # ========== System Dependencies ==========
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -47,7 +48,9 @@ RUN pip install --no-cache-dir \
     matplotlib \
     paddleocr \
     PySide6 \
-    open3d
+    open3d \
+    pyserial \
+    crcmod
 
 
 
@@ -60,12 +63,12 @@ RUN pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url h
 
 
 # ========== Deformable DETR ==========
-WORKDIR /opt
-RUN git clone https://github.com/fundamentalvision/Deformable-DETR.git
-WORKDIR /opt/Deformable-DETR
-RUN pip install -r requirements.txt
+# WORKDIR /opt
+# RUN git clone https://github.com/fundamentalvision/Deformable-DETR.git
+# WORKDIR /opt/Deformable-DETR
+# RUN pip install -r requirements.txt
 
-WORKDIR /workspace
+# WORKDIR /workspace
 
 
 
@@ -95,44 +98,48 @@ RUN pip install --no-cache-dir \
 
 
 # ## 安裝 torch 套件（指定 PyTorch 的索引）
-RUN pip install --no-cache-dir \
-    torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 \
-    --index-url https://download.pytorch.org/whl/cu121
+# RUN pip install --no-cache-dir \
+#     torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 \
+#     --index-url https://download.pytorch.org/whl/cu121
 # RUN python -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
 
 # =========GroundSam2==========
-WORKDIR /workspace
-RUN git clone https://github.com/IDEA-Research/Grounded-SAM-2 /tmp/GroundSam2
-RUN echo "CUDA_HOME=/usr/local/cuda-12.1/" >> ~/.bashrc
-WORKDIR /tmp/GroundSam2
+# WORKDIR /workspace
+# RUN git clone https://github.com/IDEA-Research/Grounded-SAM-2 /tmp/GroundSam2
+# RUN echo "CUDA_HOME=/usr/local/cuda-12.1/" >> ~/.bashrc
+# WORKDIR /tmp/GroundSam2
 
-RUN git clone https://github.com/IDEA-Research/GroundingDINO.git /tmp/grounding_dino
-WORKDIR /tmp/grounding_dino
+# RUN git clone https://github.com/IDEA-Research/GroundingDINO.git /tmp/grounding_dino
+# WORKDIR /tmp/grounding_dino
 
-RUN pip install supervision pycocotools transformers addict yapf timm
+# RUN pip install supervision pycocotools transformers addict yapf timm
 
 
 
 
 # ========== FlyCapture2 SDK ==========
-RUN mkdir -p /opt/flycapture && \
-    curl -L "https://flir.netx.net/file/asset/52868/original/attachment" -o /tmp/flycapture2.tar.gz && \
-    tar -xzf /tmp/flycapture2.tar.gz -C /opt/flycapture --strip-components=1
+# RUN mkdir -p /opt/flycapture && \
+#     curl -L "https://flir.netx.net/file/asset/52868/original/attachment" -o /tmp/flycapture2.tar.gz && \
+#     tar -xzf /tmp/flycapture2.tar.gz -C /opt/flycapture --strip-components=1
 
-WORKDIR /opt/flycapture
-RUN dpkg -i *.deb || apt-get install -fy && \
-    groupadd -f flirimaging && \
-    usermod -aG flirimaging work && \
-    echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="flirimaging", MODE="0660"' > /etc/udev/rules.d/99-flir-usb.rules && \
-    udevadm control --reload-rules || true
+# WORKDIR /opt/flycapture
+# RUN dpkg -i *.deb || apt-get install -fy && \
+#     groupadd -f flirimaging && \
+#     usermod -aG flirimaging work && \
+#     echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="flirimaging", MODE="0660"' > /etc/udev/rules.d/99-flir-usb.rules && \
+#     udevadm control --reload-rules || true
 
-# ===Chat API
-WORKDIR /tmp
+# # ===Chat API
+# WORKDIR /tmp
 
 # 1. Clone + 安裝 openai_api_wrapper
 RUN git clone https://github.com/TKUwengkunduo/openai_api_wrapper.git /tmp/openai_api_wrapper
 WORKDIR /tmp/openai_api_wrapper
 RUN pip install -e .
+
+
+# ========== ROS Packages ==========
+RUN apt install -y ros-humble-rmw-cyclonedds-cpp
 
 
 # ========== User & Workspace ==========

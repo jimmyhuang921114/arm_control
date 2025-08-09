@@ -5,6 +5,7 @@ FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH=/usr/local/bin:$PATH
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # ================= Basic System Setup ======================
 # Update the system and install essential tools
@@ -90,6 +91,8 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /home/work/.bashrc
 # Install colcon
 RUN apt-get update && apt-get install -y python3-colcon-common-extensions
 
+# Install DDS
+RUN apt install -y ros-humble-rmw-cyclonedds-cpp
 
 # ================= Install Image Tool ======================
 RUN pip install numpy==1.26.4

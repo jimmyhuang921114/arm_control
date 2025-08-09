@@ -10,13 +10,8 @@ class OrderProcess(Node):
         super().__init__("order_process")
         self.srv = self.create_service(OrderID, "order_id", self.order_callback)
         self.get_logger().info("OrderProcess 啟動")
-
-        # 自動取得 package 的 share 路徑
-        package_path = get_package_share_directory("tm_robot_main")
-        self.order_path = os.path.join(package_path, "med_order", "med_order.yaml")
-        self.info_path = os.path.join(package_path, "med_order", "med_info.yaml")
-        self.output_path = os.path.join(package_path, "med_order", "sorted_order.yaml")
-
+        self.order_path = "/workspace/tm_robot/src/tm_robot_main/med_order/med_order.yaml"
+        
     def read_order_list(self):
         with open(self.order_path, "r", encoding="utf-8") as f:
             order_data = yaml.safe_load(f)
@@ -25,7 +20,6 @@ class OrderProcess(Node):
     def read_medicine_info(self, order_list):
         with open(self.info_path, "r", encoding="utf-8") as f:
             med_info = yaml.safe_load(f)
-
         shelf_counter = {}
         for name in order_list:
             info = med_info.get(name, {}).get("藥物基本資料", {})

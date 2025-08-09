@@ -3,32 +3,32 @@ from rclpy.node import Node
 import cv2
 import numpy as np
 from sensor_msgs.msg import Image
-from std_msgs.msg import Header,Bool
+from std_msgs.msg import Header, Bool, Int32
 from std_srvs.srv import Trigger
 from tm_robot_if.srv import GroundedSAM2Interface,PoseSrv,CaptureImage,SecondCheck,DrugIdentify,SecondCamera,Paddle, TMFlowMode, MedicineOrder
 from tm_rail_interface.srv import RailControl
 from tm_msgs.msg import SctResponse
-from tm_msgs.srv import SendScript
-from cv_bridge import CvBridge
+from tm_msgs.srv import SendScript, SetPositions
+from cv_bridge import CvBridge 
 import os
 import yaml
-from geometry_msgs.msg import Pose,Point,Quaternion
+from geometry_msgs.msg import Pose, Point, Quaternion
 import time
 from scipy.spatial.transform import Rotation as R
 import threading
 
 WORKFLOW_PATH= "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/workflow.yaml"
 ARM_CONTROL_POINT = ""
-COMBINE_PIC_PATH = "/workspace/tm_robot/data/second_cam"
+COMBINE_PIC_PATH = "/workspace/tm_robot/src/visuial/sample_picture/combined.jpg"
 MEDICINE_INFO_PATH = "/workspace/tm_robot/src/visuial/visuial/medicine_info2.yaml"
 ORDER_FOLDER = ""
+NAMED_POSE_YAML_PATH = '/workspace/tm_robot/src/tm_robot_main/tm_robot_main/robot_base_point.yaml'
 
 
 class MainControl(Node):
     def __init__(self):
         super().__init__("main_control")
-
-        # 訂閱彩色與深度影像
+        ## 訂閱彩色與深度影像
         self.color_image = self.create_subscription(Image, '/tm_robot/color_image', self.color_image_callback, 10)
         self.depth_image = self.create_subscription(Image, '/tm_robot/depth_image', self.depth_image_callback, 10)
         self.curobo_state = self.create_subscription(Bool, '/curobo/state', self.curobo_state_callback, 10)
@@ -37,30 +37,35 @@ class MainControl(Node):
         self.curobo_pose = self.create_publisher(Pose, '/cube_position', 10)
         self.leave_curobo = self.create_publisher(Bool, '/leave_node', 10)
         # self.curobo_control = self.create_publisher(Pose, '/curobo/control', 10)
+        self.grab_pose = self.create_subscription(Pose, '/grab_pose', self.grab_pose_callback, 10)
+        self.shelf_level = self.create_publisher(Int32, '/open_floor', 10)
+        self.shelf_ignore = self.create_publisher(Bool, '/shelf_status', 10)
 
-        # 建立服務 client
+        ## 建立服務 client
+        self.slider_client = self.create_client(RailControl, 'rail_control')
         self.detect_client = self.create_client(GroundedSAM2Interface, 'grounded_sam2')
         self.grab_client = self.create_client(CaptureImage,'grab_detect')
         self.ocr_client = self.create_client(Paddle, 'paddleocr_check')
         self.llm_client = self.create_client(DrugIdentify, 'drug_identify')
         self.second_camera_client = self.create_client(SecondCamera, 'camera2')
-        self.slider_client = self.create_client(RailControl,'rail_control')
         self.tm_flow_mode_client = self.create_client(TMFlowMode,'tm_flow_mode')
         self.tm_flow_script_client = self.create_client(SendScript, 'send_script')
         self.order_service = self.create_service(MedicineOrder,'medicine_order',self.medicine_order_callback)
         self.curobo_state_client = self.create_client(Trigger,'/check_goal_arrival')
+        self.moveit_set_pose_client = self.create_client(SetPositions,'set_positions')
         ## clients dict
         self.service_clients = {
             "grounded_sam2": self.detect_client,
             # "ocr": self.ocr_client,
             # "llm": self.llm_client,
-            # "camera2": self.second_camera_client,
+            # "sencond_camera": self.second_camera_client,
             "grab_detect": self.grab_client,
             # "rail_control": self.slider_client,
             # "order": self.order_service,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
-            "curobo_state": self.curobo_state_client
+            "curobo_state": self.curobo_state_client,
+            "moveit_set_pose": self.moveit_set_pose_client
         }
         # self.tm_flow_mode_client.wait_for_service()
         ## wait all client activate
@@ -76,90 +81,110 @@ class MainControl(Node):
         self.has_run = False
         self.order_list = ["test"]
         self.sct_listen_flag = False
+        self.current_med = None
+        self.grab_pose: Pose = None
 
 
+    ## ======= [Realsense Camera] =======
 
-    def execute_next_step(self):
-        if self.current_step_index >= len(self.workflow.queue):
-            self.get_logger().info("Workflow Finish")
-            return
-        step = self.workflow_queue[self.current_step_index]
-        self.get_logger().info("step {step}")
-        self.current_step_index += 1
-
-
-        #======workflow arm control mode 
-        if step == "detect_med":
-            self.call_groundsam2()
-        elif step == "ocr_service":
-            self.call_ocr()
-        elif step == "second_camera_check":
-            self.call_camera2()
-        elif step == "second_check":
-            self.call_llm()
-
-        # =====workflow slider mode
-        elif step == "slider_init":
-            self.call_slider(self.slider_mode["take_package"])
-        elif step == "slider_come":
-            self.call_slider(self.slider_mode["finish package"])
-        elif step == "medicine_finish":
-            self.call_slider(self.slider_mode["finish package"])
-
-
-        else:
-            self.get_logger().warn(f"未知步驟：{step}")
-            self.execute_next_step()
-
-
-    def run_once(self):
-        pass
-        # if self.has_run:
-        #     return
-        # self.has_run = True
-
-        # self.workflow_data = self.workflow()
-        # if not self.workflow_data:
-        #     self.get_logger().error("無法載入工作流程")
-        #     return
-
-        # self.workflow_queue = self.flatten_workflow(self.workflow_data['workflow'])
-        # self.current_step_index = 0
-        # self.get_logger().info(f"工作流程：{self.workflow_queue}")
-        # self.execute_next_step()
-                    
-
-    def workflow(self):
-        if os.path.exists(WORKFLOW_PATH):
-            with open(WORKFLOW_PATH, 'r', encoding='utf-8') as f:
-                workflow = yaml.safe_load(f)
-            return workflow
-        else:
-            self.get_logger().error(f"找不到工作流程檔案：{WORKFLOW_PATH}")
-            return None
-
-    
-    def color_image_callback(self, msg):
+    def color_image_callback(self, msg) -> None:
         self.color_image_np = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
 
 
-    def depth_image_callback(self, msg):
+    def depth_image_callback(self, msg) -> None:
         self.depth_image_np = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
 
 
-    def curobo_state_callback(self, msg):
+    ## ======= [Curobo] =======
+
+    def curobo_state_callback(self, msg) -> None:
         self.curobo_state_flag = msg.data
 
 
-    def io_state_callback(self, msg):
-        self.io_state_flag = msg.data
+    def spin_until_curobo_finish(self):
+        while True:
+            future = self.curobo_state_client.call_async(Trigger.Request())
+            rclpy.spin_until_future_complete(self, future)
+            res = future.result()
+            if res.success == True:
+                self.get_logger().info(f"curobo point finish")
+                self.leave_curobo.publish(Bool(data=True))
+                break
+            time.sleep(0.1)
 
 
-    def slider_state_callback(self, msg):
-        self.slider_state_flag = msg.data
+    def send_curobo_pose_and_spin(self, pose: Pose) -> None:
+        self.leave_curobo.publish(Bool(data=False))
+        time.sleep(1)
+        ## clear last point
+        # clear_pose = Pose()
+        # clear_pose.position = Point(x=0.0,y=0.0,z=40.0)
+        # clear_pose.orientation = Quaternion(x=0.0,y=0.0,z=0.0,w=1.0)
+        # self.curobo_pose.publish(clear_pose)
+        ## normal point
+        self.curobo_pose.publish(pose)
+        self.get_logger().info(f"Published cube_position pose:\n{pose}")
+        time.sleep(2)
+        self.spin_until_curobo_finish()
+
+
+    def vec_pose_to_ros2_pose(self, pose_vec: list[float]) -> Pose:
+        x,y,z = pose_vec[:3]
+        roll,pitch,yaw = pose_vec[3:]
+        quat = R.from_euler('xyz',[roll,pitch,yaw],degrees=True).as_quat()
+        pose_msg = Pose()
+        pose_msg.position = Point(x=x,y=y,z=z)
+        pose_msg.orientation = Quaternion(x=quat[0],y=quat[1],z=quat[2],w=quat[3])
+        return pose_msg
     
 
-    def send_tm_flow_mode(self, mode:str, argument:str) -> bool:
+    ## ======= [Moveit] =======  
+    
+    def send_moveit_point(self, pose: Pose):
+        self.get_logger().info(f"moveit set pose: {pose}")
+        setpos_req = SetPositions.Request()
+        setpos_req.motion_type = 2  # PTP_T
+        r = R.from_quat([pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w])
+        euler = r.as_euler('xyz', degrees=False)
+        setpos_req.positions = [
+            pose.position.x, pose.position.y, pose.position.z,
+            euler[0],
+            euler[1],
+            euler[2]
+        ]
+        euler = r.as_euler('xyz', degrees=True)
+        print(f"euler: {euler}")
+        print(setpos_req.positions)
+        setpos_req.velocity = 0.2
+        setpos_req.acc_time = 0.2
+        setpos_req.blend_percentage = 0
+        setpos_req.fine_goal = True
+        future = self.moveit_set_pose_client.call_async(setpos_req)
+        rclpy.spin_until_future_complete(self, future)
+        result = future.result()
+        if result.ok:
+            self.get_logger().info("set_positions success")
+            input("press enter after move finished...")
+        else:
+            self.get_logger().error("set_positions failed")
+        pass
+
+
+    ## ======= [TM Flow] =======
+
+    def sct_callback(self, msg: SctResponse) -> None:
+        # self.get_logger().info(f"[SCT] ID: {msg.id} | SCRIPT: {msg.script}")
+        if "Listen" in msg.script:
+            self.sct_listen_flag = True
+            self.get_logger().info("Listen code")
+        elif "leave" in msg.script:
+            self.get_logger().info("leave the codd")
+        else:
+            pass
+            # self.get_logger().info(f"unknown SCT: {msg.script}")
+
+
+    def send_tm_flow_mode_and_spin(self, mode:str, argument:str) -> bool:
         self.get_logger().info(f"send tm flow mode: {mode}, argument: {argument}")
         req = TMFlowMode.Request()
         req.mode = mode
@@ -175,7 +200,7 @@ class MainControl(Node):
                 return False
 
 
-    def send_tm_flow_leave_node(self):
+    def send_tm_flow_leave_and_spin(self) -> bool:
         req = SendScript.Request()
         req.id = "main"
         req.script = "ScriptExit()"
@@ -183,32 +208,38 @@ class MainControl(Node):
         rclpy.spin_until_future_complete(self, future)
         if future.result() is not None:
             if future.result().ok:
-                self.get_logger().info("Script success")
+                self.get_logger().info("TM flow leave success")
+                return True
             else:
-                self.get_logger().warn("Script failed")
+                self.get_logger().warn("TM flow leave failed")
         else:
-            self.get_logger().error("can't send_script service")
+            self.get_logger().error("call TM flow leave service failed")
+        return False
 
-
-    def sct_callback(self, msg: SctResponse):
-        # self.get_logger().info(f"[SCT] ID: {msg.id} | SCRIPT: {msg.script}")
-        if "Listen" in msg.script:
-            self.sct_listen_flag = True
-            self.get_logger().info("Listen code")
-        elif "leave" in msg.script:
-            self.get_logger().info("leave the codd")
-        else:
-            pass
-            # self.get_logger().info(f"unknown SCT: {msg.script}")
-
-
-    def spin_until_sct_listen_flag(self):
+    
+    def spin_until_sct_listen_flag(self) -> None:
         while not self.sct_listen_flag:
             rclpy.spin_once(self)
         self.sct_listen_flag = False
 
 
-    def call_and_wait_groundsam2(self):
+    ## ======= [Suck] =======
+
+    def grab_pose_callback(self, msg: Pose) -> None:
+        self.get_logger().info(f"grab pose receive: {msg}")
+        self.grab_pose = msg
+
+
+    def spin_until_grab_pose_available(self, timeout: float = 8) -> Pose | None:
+        start_time = time.time()
+        while not self.grab_pose and time.time() - start_time < timeout:
+            rclpy.spin_once(self)
+        pose = self.grab_pose
+        self.grab_pose = None
+        return pose
+    
+
+    def call_groundsam2_and_spin(self) -> tuple[list[float], np.ndarray] | None:
         if self.color_image_np is None or self.depth_image_np is None:
             self.get_logger().warn("color 或 depth 尚未準備好，略過 GroundedSAM2 呼叫")
             return
@@ -220,8 +251,11 @@ class MainControl(Node):
         # ros_depth_image.header = Header(stamp=now, frame_id='camera')
         req.image = ros_color_image
         req.depth = ros_depth_image
-        req.prompt = 'whilte circle bottle'
-        req.confidence_threshold = 0.20
+        req.prompt = 'White medicine jar with red lid'
+        req.prompt = 'White medicine jar with label on lid'
+        # req.prompt = 'ointment'
+        # req.prompt = "tablet"
+        req.confidence_threshold = 0.3
         req.size_threshold = 0.02
         req.selection_mode = "closest"
         future = self.detect_client.call_async(req)
@@ -270,6 +304,139 @@ class MainControl(Node):
             return res.bbox, mask_img
 
 
+    def call_grab_and_spin(self, bbox: list[float], mask_img: np.ndarray) -> bool:
+        req = CaptureImage.Request()
+        req.mask = self.bridge.cv2_to_imgmsg(mask_img.astype(np.uint8), encoding='mono8')
+        req.bbox = bbox
+        self.get_logger().info("呼叫 grab_detect(mask 傳入中）...")
+        future = self.grab_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
+        if res.success:
+            self.get_logger().info("抓取位置已處理成功")
+            return True
+        else:
+            self.get_logger().warn("抓取服務回傳失敗")
+            return False
+
+
+    ## ======= [Slider] =======
+
+    def call_slider_and_wait(self, code: int) -> bool:
+        req = RailControl.Request()
+        req.opt_code = code
+        req.rail_name = "arm_rail1"
+        future = self.slider_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
+        if res.result >= 0:
+            self.get_logger().info(f"slider opt: {code} Success: {res.result}")
+            return True
+        else:
+            self.get_logger().error(f"slider opt: {code} Fail: {res.result}")
+            return False
+
+
+    ## ======= [Second Check] =======
+
+    def call_second_camera_and_spin(self) -> bool:
+
+       #==============request service===============
+        req = SecondCamera.Request()
+        future = self.second_camera_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
+        if res.success:
+            self.get_logger().info("SecondCamera finish combine picture")
+            return True
+        else:
+            self.get_logger().warn("SecondCamera 啟動失敗")
+            return False
+        # def handle_camera_response(fut):
+        #     try:
+        #         res = fut.result()
+        #         if res.success:
+        #             self.get_logger().info("SecondCamera finish combine picture")
+        #         else:
+        #             self.get_logger().warn("SecondCamera 啟動失敗")
+        #     except Exception as e:
+        #         self.get_logger().error(f"SecondCamera callback 錯誤: {str(e)}")
+
+        # future.add_done_callback(handle_camera_response)
+
+
+    def call_llm_and_spin(self, med_name: str) -> bool:
+        req = DrugIdentify.Request()
+        img = cv2.imread(COMBINE_PIC_PATH)
+        req.image = self.bridge.cv2_to_imgmsg(img, encoding='bgr8')
+        req.name = med_name
+        future = self.llm_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
+        self.get_logger().info(f"LLM 回傳結果: {res.result}")
+        if res.result == "yes":
+            return True
+        else:
+            return False
+
+
+    ## ======= [Shelf] =======  
+
+    def send_shelf_level(self, layer: int) -> None:
+        self.shelf_level.publish(Int32(data=layer))
+
+
+    def send_shelf_ignore(self, ignore: bool) -> None:
+        self.shelf_ignore.publish(Bool(data=ignore))
+
+
+    ## ======= [Other] =======
+
+    def load_order_medicines(self, order_id: str):
+        ORDER_PATH = "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/med_order/order_data.yaml"
+        with open(ORDER_PATH, 'r', encoding='utf-8') as f:
+            order_data = yaml.safe_load(f)
+
+        if order_id not in order_data:
+            self.get_logger().error(f"找不到訂單 {order_id}")
+            return False
+
+        self.medicine_map = order_data[order_id]  # e.g. {"medicine_1": {...}, "medicine_2": {...}}
+        self.medicine_queue = list(self.medicine_map.keys())
+        self.get_logger().info(f"載入訂單 {order_id}，藥物列表：{self.medicine_queue}")
+        return True
+    
+
+    def execute_next_medicine(self):
+        if not self.medicine_queue:
+            self.get_logger().info("所有藥品已處理完成")
+            return
+
+        current_key = self.medicine_queue.pop(0)
+        current_item = self.medicine_map[current_key]  # e.g. {"amount": 87, "locate": [1,1]}
+        locate_str = f"{current_item['locate'][0]}-{current_item['locate'][1]}"
+        self.get_logger().info(f"處理藥物：{current_key}，位置：{locate_str}")
+
+        # 找對應的藥名
+        MED_INFO_PATH = "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/med_order/med_info.yaml"
+        with open(MED_INFO_PATH, 'r', encoding='utf-8') as f:
+            med_info = yaml.safe_load(f)
+
+        found_name = None
+        for name, info in med_info.items():
+            if info.get("藥物基本資料", {}).get("存取位置", "") == locate_str:
+                found_name = name
+                break
+
+        if not found_name:
+            self.get_logger().warn(f"找不到與位置 {locate_str} 相符的藥物")
+            return
+
+        self.current_med_name = found_name
+        self.get_logger().info(f"當前藥物名稱為：{self.current_med_name}")
+        self.execute_next_medicine()
+
+
     def medicine_order_callback(self, request, response):
         self.order_list.append(request.command)
         response.success = True
@@ -299,233 +466,144 @@ class MainControl(Node):
         res = future.result()
         self.get_logger().info(f"OCR 結果: {res.text}")
 
-        # future.add_done_callback(self.ocr_response_callback) 
-
-    # def ocr_response_callback(self, future):
-    #     try:
-    #         res = future.result()
-    #         self.get_logger().info(f"OCR 結果: {res.text}")
-    #     except Exception as e:
-    #         self.get_logger(). error(f"OCR callback 發生錯誤: {str(e)}")
-
-
-    def call_llm(self):
-        self.pic_combine()  
-
-        combined_path = os.path.join(COMBINE_PIC_PATH, "combined.jpg")
-        if not os.path.exists(combined_path):
-            self.get_logger().warn("找不到合成圖片")
-            return
-        combined_cv2 = cv2.imread(combined_path)
-        ros_image = self.bridge.cv2_to_imgmsg(combined_cv2, encoding='bgr8')
-        ros_image.header.stamp = self.get_clock().now().to_msg()
-        ros_image.header.frame_id = "combined_picture"
-
-        if not os.path.exists(MEDICINE_INFO_PATH):
-            self.get_logger().error("找不到 YAML 路徑")
-            return
-        with open(MEDICINE_INFO_PATH, 'r', encoding='utf-8') as f:
-            drug_yaml = f.read()
-
-        req = DrugIdentify.Request()
-        req.image = ros_image
-        req.drug_yaml = drug_yaml
-
-        future = self.llm_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        res = future.result()
-        self.get_logger().info(f"LLM 回傳結果: {res.result}")
-        # def handle_llm_response(future):
-        #     try:
-        #         res = future.result()
-        #         self.get_logger().info(f"LLM 回傳結果: {res.result}")
-        #     except Exception as e:
-        #         self.get_logger().error(f"LLM callback 發生錯誤: {str(e)}")
-
-        # future.add_done_callback(handle_llm_response)
-                          
-
-    def call_and_wait_camera2(self) -> bool:
-        # second_camera_point = [-2.97,-502.80,632.32,178.79,0.75,-0.89]
-        # camera_point = [-215.405,804.799,138.406,0.168,-87.438]
-        # second_camera_point = [-318.7, -357.26, 650.05, 152.85, -0.26, -89.987]
-        # second_camera_point = [-18.9, -498.5, 529.99,178.99 , 0.37, -4.12]
-        # second_camera_point = [-45.19, -342.78, 522.97, 127.31, 2.07, 1.36]
-        # x, y, z = second_camera_point[:3]
-        # x, y, z = [v / 1000.0 for v in second_camera_point[:3]]
-        # roll, pitch, yaw = second_camera_point[3:]
-        # rotation = R.from_euler('xyz', [roll, pitch, yaw], degrees=True)
-        # quat = rotation.as_quat()
-        # self.get_logger().info("Published cube_position pose:\n{}".format(quat))
-        # pose_msg = Pose()
-        # pose_msg.position = Point(x=x, y=y, z=z)
-        # pose_msg.orientation = Quaternion(x=quat[0], y=quat[1], z=quat[2], w=quat[3])
-        # self.curobo_pose.publish(pose_msg)
-        # self.get_logger().info("Published cube_position pose:\n{}".format(pose_msg))
-
-
-       #==============request service===============
-        req = SecondCamera.Request()
-        future = self.second_camera_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        res = future.result()
-        if res.success:
-            self.get_logger().info("SecondCamera finish combine picture")
-        else:
-            self.get_logger().warn("SecondCamera 啟動失敗")
-        # def handle_camera_response(fut):
-        #     try:
-        #         res = fut.result()
-        #         if res.success:
-        #             self.get_logger().info("SecondCamera finish combine picture")
-        #         else:
-        #             self.get_logger().warn("SecondCamera 啟動失敗")
-        #     except Exception as e:
-        #         self.get_logger().error(f"SecondCamera callback 錯誤: {str(e)}")
-
-        # future.add_done_callback(handle_camera_response)
-
-
-    def call_and_wait_slider(self, code: int) -> bool:
-        req = RailControl.Request()
-        req.opt_code = code
-        req.rail_name = "arm_rail1"
-        future = self.slider_client.call_async(req)
-        # future.add_done_callback(self.slider_callback)
-        rclpy.spin_until_future_complete(self, future)
-        res = future.result()
-        if res.result >= 0:
-            self.get_logger().info(f"slider opt: {code} Success: {res.result}")
-            return True
-        else:
-            self.get_logger().error(f"slider opt: {code} Fail: {res.result}")
-            return False
-
-
-    def call_and_wait_grab(self, bbox, mask_img) -> bool:
-        req = CaptureImage.Request()
-        req.mask = self.bridge.cv2_to_imgmsg(mask_img.astype(np.uint8), encoding='mono8')
-        req.bbox = bbox
-        self.get_logger().info("呼叫 grab_detect（mask 傳入中）...")
-        future = self.grab_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        res = future.result()
-        if res.success:
-            self.get_logger().info("抓取位置已處理成功")
-            return True
-        else:
-            self.get_logger().warn("抓取服務回傳失敗")
-            return False
+                    
 
 
     def spin_until_grab_finish(self):
         while not self.grab_finished:
             rclpy.spin_once(self)
 
-    
-    def socket_receive(self, host, port):
-        self.host = host
-        self.port = port
-        threading.Thread(target=self.start_service,daemon=True).start()
-    
 
 
-
-    def curobo_point_and_wait(self, pose: list[float]) -> None:
-        self.leave_curobo.publish(Bool(data=False))
-        ## clear last point
-        pose_msg = Pose()
-        pose_msg.position = Point(x=0.0,y=0.0,z=40.0)
-        pose_msg.orientation = Quaternion(x=0.0,y=0.0,z=0.0,w=1.0)
-        self.curobo_pose.publish(pose_msg)
-        ## normal point
-        x,y,z = pose[:3]
-        roll,pitch,yaw = pose[3:]
-        quat = R.from_euler('xyz',[roll,pitch,yaw],degrees=True).as_quat()
-        pose_msg = Pose()
-        pose_msg.position = Point(x=x,y=y,z=z)
-        pose_msg.orientation = Quaternion(x=quat[0],y=quat[1],z=quat[2],w=quat[3])
-        self.curobo_pose.publish(pose_msg)
-        self.get_logger().info(f"Published cube_position pose:\n{pose_msg}")
-        time.sleep(2)
-        while True:
-            # print("poll")
-            future = self.curobo_state_client.call_async(Trigger.Request())
-            rclpy.spin_until_future_complete(self, future)
-            res = future.result()
-            if res.success == True:
-                self.get_logger().info(f"curobo point finish")
-                self.leave_curobo.publish(Bool(data=True))
-                break
-            time.sleep(0.1)
 
 
 
 
 def main(args=None):
-    YAML_PATH = '/workspace/tm_robot/src/tm_robot_main/tm_robot_main/robot_base_point.yaml'
     named_pose: dict = None
-    with open(YAML_PATH, 'r', encoding='utf-8') as f:
+    with open(NAMED_POSE_YAML_PATH, 'r', encoding='utf-8') as f:
         named_pose = yaml.safe_load(f)
     if named_pose is None:
         raise("cannot find yaml")
-
     rclpy.init(args=args)
     node = MainControl()
-    node.create_rate(100)
+    node.create_rate(100)   
+    ## init slider
+    # if not node.call_slider_and_wait(0):
+    #     node.get_logger().error("call slider with 0 return failed")
+    ## loop
+    # node.order_list = []
     while rclpy.ok():
         rclpy.spin_once(node, timeout_sec=0.1)
-        # node.spin_until_sct_listen_flag()
-        # print("reach listen")
-        # time.sleep(3)
-        # node.send_tm_flow_leave_node()
         order = node.get_order()
         if order is not None:
             print("new order")
-            # if not node.call_and_wait_slider(0):
-            #     node.get_logger().error("call slider with 0 return failed")
-            #     continue
-            # if not node.call_and_wait_slider(1):
+
+
+            ## slider get bag
+            # if not node.call_slider_and_wait(1):
             #     node.get_logger().error("call slider with 1 return failed")
             #     continue
-            ## tm flow: med_box
-            # if not node.send_tm_flow_mode("medicine_box", "-1"):
-            #     node.get_logger().error("call tm_flow_mode return failed")
+
+            # ## tm flow: location_shelf
+            if not node.send_tm_flow_mode_and_spin("location_shelf", "0"):
+                node.get_logger().error("call tm_flow_mode return failed")
+                continue
+            # ## check SCT
+            node.spin_until_sct_listen_flag()
+            
+            # ## curobo move to shelf photo pose
+            print("load")
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["arm_base_pose"]["first_shelf_pull"]))
+            ## set shelf level
+            node.send_shelf_level(1)
+            print("load1")
+            # ## tm flow leave
+
+            if not node.send_tm_flow_leave_and_spin():
+                node.get_logger().error("call tm_flow_leave return failed")
+                continue
+            # time.sleep(10)
+            # ## wait until curobo finish
+            node.spin_until_curobo_finish()
+            print("finish")
+            # #  ## tm flow leave
+            if not node.send_tm_flow_leave_and_spin():
+                node.get_logger().error("call tm_flow_leave return failed")
+                continue
+            # # ## check SCT pose positions
+
+            # node.send_curobo_point_and_spin(pose)
+            node.spin_until_sct_listen_flag()
+            # # ## tm flow leave
+            if not node.send_tm_flow_leave_and_spin():
+                node.get_logger().error("call tm_flow_leave return failed")
+                continue
+            # # # # ## curobo do not ignore shelf
+            node.send_shelf_ignore(False)
+
+            # ## tm flow: med_box
+            if not node.send_tm_flow_mode_and_spin("medicine_box", "-1"):
+                node.get_logger().error("call tm_flow_mode return failed")
             # ## check SCT
             # node.spin_until_sct_listen_flag()
             # ## groundSAM
-            # gsam_result =  node.call_and_wait_groundsam2()
+            # gsam_result =  node.call_groundsam2_and_spin()
             # if gsam_result is None:
             #     node.get_logger().error("call GroundedSAM2 return failed")
             #     continue
             # bbox, mask_img = gsam_result
-            # ## grab
-            # if not node.call_and_wait_grab(bbox, mask_img):
+            # ## call grab point estimation
+            # if not node.call_grab_and_spin(bbox, mask_img):
             #     node.get_logger().error("call grab return failed")
             #     continue
-            # ## wait move finish
-            # input("Press Enter to when move finish...")
-            # ## tm flow leave
-            # node.send_tm_flow_leave_node()
-            # ## tm flow: grab_and_check
-            # if not node.send_tm_flow_mode("grab_and_check", "0"):
-            #     node.get_logger().error("call tm_flow_mode return failed")
+            # ## receive grab pose
+            # pose = node.spin_until_grab_pose_available()
+            # if not pose:
+            #     node.get_logger().error("wait grab pose failed")
+            #     continue
             # ## check SCT
             # node.spin_until_sct_listen_flag()
-            # ## move to second camera
-            node.curobo_point_and_wait(named_pose["rail_photo"]["rail_photo"])
-            print("1")
-            node.send_tm_flow_leave_node()
-            print("2")
-            node.spin_until_sct_listen_flag()
-            print("3")
-            node.curobo_point_and_wait(named_pose["rail_photo"]["rail_photo"])
-            print("4")
-            node.send_tm_flow_leave_node()
-            print("finish job")
-            # node.call_and_wait_camera2()
-            # node.call_llm()
-            # node.call_slider(2)
+            # ## curobo move to rail landmark
+            # # node.curobo_point_and_wait(node.vec_pose_to_ros2_pose(named_pose["rail_photo"]["rail_photo"]))
+            # ## check SCT
+            # # node.spin_until_sct_listen_flag()
+            # #     continue
+            # ## moveit move to grab pose
+            # node.send_moveit_point(pose)
+            # # ## curobo move to grab pose
+            # # node.send_curobo_point_and_spin(pose)
+            # ## tm flow leave
+            # node.send_tm_flow_leave_and_spin()
+
+            # # ## tm flow: grab_and_check
+            # if not node.send_tm_flow_mode_and_spin("grab_and_check", "0"):
+            #     node.get_logger().error("call tm_flow_mode return failed")
+            # # # ## check SCT
+            # node.spin_until_sct_listen_flag()
+            # # # ## curobo move to rail landmark
+            # node.curobo_point_and_wait(node.vec_pose_to_ros2_pose(named_pose["rail_photo"]["rail_photo"]))
+            # # ## check SCT
+            # node.spin_until_sct_listen_flag()
+            # ## tm flow leave
+            # node.send_tm_flow_leave_and_spin()
+            # ## take picture for medicine
+            # if not node.call_second_camera_and_spin():
+            #     node.get_logger().error("call second camera return failed")
+            #     continue
+            # ## send picture to llm
+            # if not node.call_llm_and_spin("Andsodhcd"):
+            #     node.get_logger().error("call llm return failed")
+            #     continue
+            # ## tm flow leave
+            # node.send_tm_flow_leave_and_spin()
+            # ## check SCT
+            # node.spin_until_sct_listen_flag()
+            # ## tm flow leave
+            # node.send_tm_flow_leave_and_spin()
+
+
+            
     node.destroy_node()
     rclpy.shutdown()
 

@@ -20,8 +20,8 @@ class PlaneFittingNode(Node):
         super().__init__('plane_fitting_node')
 
         # Parameters
-        self.declare_parameter('distance_threshold', 0.01)
-        self.declare_parameter('ransac_n', 5)
+        self.declare_parameter('distance_threshold', 0.001)
+        self.declare_parameter('ransac_n', 3)
         self.declare_parameter('num_iterations', 1000)
 
         # Subscribers
@@ -208,7 +208,7 @@ class PlaneFittingNode(Node):
         MAX_ANGLE_THRESHOLD = 20.0  # 可自行調整允許最大夾角
         if angle_deg > MAX_ANGLE_THRESHOLD:
             self.get_logger().warn(f"法向量夾角超過 {MAX_ANGLE_THRESHOLD}°，忽略此平面")
-            return
+            # return
 
 
         inlier_cloud = pcd_filtered.select_by_index(best_inliers)
@@ -238,7 +238,7 @@ class PlaneFittingNode(Node):
         x_axis /= np.linalg.norm(x_axis)
         rot_matrix = np.stack([x_axis, y_axis, normal], axis=1)
         quat = R.from_matrix(rot_matrix).as_quat()
-        center[2] = center[2]-0.05
+        center[2] = center[2]
         pose_msg = PoseStamped()
         pose_msg.header.frame_id = 'camera_depth_optical_frame'
         pose_msg.header.stamp = self.get_clock().now().to_msg()

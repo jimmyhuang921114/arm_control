@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'order_listen = user_callback.order_listen:main',
         ],
     },
 )

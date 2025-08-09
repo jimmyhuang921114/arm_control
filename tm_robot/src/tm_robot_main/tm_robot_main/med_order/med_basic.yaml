@@ -1,0 +1,11 @@
+order_id: "000001"
+medicine:
+  - name: Antipsychotics
+    amount: 87
+    locate: [1, 1]
+    prompt: white_circle_box
+
+  - name: dwd
+    amount: 212
+    locate: [1, 3]
+    prompt: tablet

@@ -30,7 +30,7 @@ class ShelfPublisher(Node):
             data = yaml.safe_load(f)
 
         if 'arm_base_pose' not in data or self.target_name not in data['arm_base_pose']:
-            self.get_logger().error(f"no target pose in yaml：{self.target_name}")
+            self.get_logger().error(f"no target pose in yaml: {self.target_name}")
             return
 
     #     if not self.order_list:

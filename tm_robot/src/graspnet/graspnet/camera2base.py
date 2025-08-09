@@ -21,8 +21,8 @@ class Camera2Base(Node):
         timer_cb_group = client_cb_group
 
         self.thing_pose_srv = self.create_service(PoseSrv, 'thing_pose', self.pose_recevice, callback_group=client_cb_group)
-        self.set_positions_client = self.create_client(SetPositions,'set_positions')
-        # self.base_pose_pub = self.create_publisher(Pose, '/cube_position', 10)
+        # self.set_positions_client = self.create_client(SetPositions,'set_positions')
+        self.base_pose_pub = self.create_publisher(Pose, '/grab_pose', 10)
 
         self.br = TransformBroadcaster(self)
         self.tf_buffer = Buffer()
@@ -85,42 +85,43 @@ class Camera2Base(Node):
         quat = R.from_matrix(T_base[:3, :3]).as_quat()
         rpy = R.from_matrix(T_base[:3, :3]).as_euler('xyz', degrees=True)
 
-        ## z offset
+        ## offset
         # pos[0] += 0.012
         pos[1] -= 0.005
         # pos[2] += 0.05
+
         # == 新增：呼叫機器人 /set_positions ==
-        if not self.set_positions_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().error("❌ set_positions 服務未啟用")
-            response.success = False
-            return response
+        # if not self.set_positions_client.wait_for_service(timeout_sec=1.0):
+        #     self.get_logger().error("❌ set_positions 服務未啟用")
+        #     response.success = False
+        #     return response
 
-        setpos_req = SetPositions.Request()
-        setpos_req.motion_type = 2  # PTP_T
-        setpos_req.positions = [
-            pos[0], pos[1], pos[2],
-            np.deg2rad(rpy[0]),
-            np.deg2rad(rpy[1]),
-            np.deg2rad(rpy[2])
-        ]
-        setpos_req.velocity = 0.2
-        setpos_req.acc_time = 0.2
-        setpos_req.blend_percentage = 0
-        setpos_req.fine_goal = True
+        # setpos_req = SetPositions.Request()
+        # setpos_req.motion_type = 2  # PTP_T
+        # setpos_req.positions = [
+        #     pos[0], pos[1], pos[2],
+        #     np.deg2rad(rpy[0]),
+        #     np.deg2rad(rpy[1]),
+        #     np.deg2rad(rpy[2])
+        # ]
+        # setpos_req.velocity = 0.2
+        # setpos_req.acc_time = 0.2
+        # setpos_req.blend_percentage = 0
+        # setpos_req.fine_goal = True
 
-        future = self.set_positions_client.call_async(setpos_req)
+        # future = self.set_positions_client.call_async(setpos_req)
 
-        def callback(fut):
-            try:
-                result = fut.result()
-                if result.ok:
-                    self.get_logger().info("機器人已接收 set_positions 並執行")
-                else:
-                    self.get_logger().error("機器人 set_positions 執行失敗")
-            except Exception as e:
-                self.get_logger().error(f"set_positions 發送失敗: {e}")
+        # def callback(fut):
+        #     try:
+        #         result = fut.result()
+        #         if result.ok:
+        #             self.get_logger().info("機器人已接收 set_positions 並執行")
+        #         else:
+        #             self.get_logger().error("機器人 set_positions 執行失敗")
+        #     except Exception as e:
+        #         self.get_logger().error(f"set_positions 發送失敗: {e}")
 
-        future.add_done_callback(callback)
+        # future.add_done_callback(callback)
 
         base_pose = Pose()
         base_pose.position.x = pos[0]
@@ -138,7 +139,7 @@ class Camera2Base(Node):
             f"  Rotation -> rx: {rpy[0]:.2f}°, ry: {rpy[1]:.2f}°, rz: {rpy[2]:.2f}°"
         )
 
-        # self.base_pose_pub.publish(base_pose)
+        self.base_pose_pub.publish(base_pose)
         self.get_logger().info("Published converted pose to /converted_pose")
 
         tf_msg = TransformStamped()

@@ -68,7 +68,7 @@ class GroundedSAM2Service(Node):
             image=image_tensor,
             caption=prompt,
             box_threshold=request.confidence_threshold,
-            text_threshold=0.2,
+            text_threshold=0.3,
             device="cuda"
         )
 
@@ -124,8 +124,35 @@ class GroundedSAM2Service(Node):
             response.bbox, response.seg, response.label, response.score = [], [], [], []
             return response
 
+
+        # ---------- 新增：面積與形狀過濾 ----------
+        def compute_aspect_ratio(box):
+            xmin, ymin, xmax, ymax = box
+            w = xmax - xmin
+            h = ymax - ymin
+            return max(w / (h + 1e-6), h / (w + 1e-6))
+
+        # 參考面積與形狀（第一個 mask）
+        ref_mask = masks[0]
+        ref_box = input_boxes[0]
+        ref_area = np.sum(ref_mask)
+        ref_ratio = compute_aspect_ratio(ref_box)
+
+        area_tol = 0.2    # 面積容忍 ±20%
+        ratio_tol = 0.3   # 長寬比容忍 ±30%
+
         candidates = []
         for i, (box, mask, conf, label) in enumerate(zip(input_boxes, masks, confidences, labels)):
+            # 面積 & 形狀過濾
+            area = np.sum(mask)
+            ratio = compute_aspect_ratio(box)
+
+            if not (ref_area * (1 - area_tol) <= area <= ref_area * (1 + area_tol)):
+                continue
+            if not (ref_ratio * (1 - ratio_tol) <= ratio <= ref_ratio * (1 + ratio_tol)):
+                continue
+
+            # 深度篩選
             ys, xs = np.where(mask > 0)
             if len(xs) == 0 or len(ys) == 0:
                 continue
@@ -134,7 +161,10 @@ class GroundedSAM2Service(Node):
                 z = float(depth_np[cy, cx])
                 if z == 0.0:
                     continue
-                score = cx + cy - z * 1000
+                center_x = image_bgr.shape[1] // 2
+                distance_from_center = abs(cx - center_x)
+                score = -distance_from_center - z * 1000  # 中間越靠近分數越高
+
                 candidates.append({
                     "score": score,
                     "box": box,
@@ -143,6 +173,7 @@ class GroundedSAM2Service(Node):
                     "conf": conf
                 })
 
+        # ---------- 其餘流程照舊 ----------
         if not candidates:
             self.get_logger().warn("No valid mask candidates.")
             response.bbox, response.seg, response.label, response.score = [], [], [], []
@@ -185,15 +216,11 @@ class GroundedSAM2Service(Node):
         response.seg = [json.dumps(single_mask_to_rle(best["mask"]))]
         response.label = [str(best["label"])]
         response.score = [float(best["conf"])]
-
-        # Optional: publish or return binary mask
-        _, buffer = cv2.imencode(".png", binary_mask)
-        binary_mask = (best["mask"] > 0).astype(np.uint8) * 255
         response.binary_image = self.bridge.cv2_to_imgmsg(binary_mask, encoding='mono8') 
         response.binary_image.header = request.image.header
 
-
         return response
+
 
 
 def main(args=None):
