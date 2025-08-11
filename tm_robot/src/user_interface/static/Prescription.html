@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-TW" translate="no" class="notranslate">
+<head>
+    <meta charset="UTF-">
+    <meta name="viewport" content="width=device-width, initial-scale=.">
+    <title>處方籤管理 - 醫院管理系統</title>
+
+    <!--  -->
+    <link rel="stylesheet" href="/static/css/unified_style.css">
+
+    <!-- Handsontable () -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@../dist/handsontable.full.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable@../dist/handsontable.full.min.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h> 系統選單</h>
+        <button onclick="location.href='doctor.html'"> 醫生工作台</button>
+        <button onclick="location.href='integrated_medicine_management.html'"> 整合管理</button>
+        <button onclick="location.href='Prescription.html'" class="active"> 處方籤管理</button>
+        <button onclick="location.href='integrated_medicine_management.html'"> 藥物管理</button>
+    </div>
+
+    <div class="main-content">
+        <div class="header fade-in">
+            <h>處方籤管理系統</h>
+            <p>醫院處方籤管理 - 查看和處理患者處方籤</p>
+        </div>
+
+        <!--  -->
+        <div class="card fade-in">
+            <div style="padding: px;">
+                <h>處方籤統計</h>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(px, fr)); gap: px; margin-top: px;">
+                    <div style="padding: px; background: rgba(, , , .); border-radius: px; text-align: center;">
+                        <div style="font-size: px; font-weight: bold; color: db;" id="totalCount"></div>
+                        <div style="color: fcd;">總處方籤數</div>
+                    </div>
+                    <div style="padding: px; background: rgba(, , , .); border-radius: px; text-align: center;">
+                        <div style="font-size: px; font-weight: bold; color: fc;" id="pendingCount"></div>
+                        <div style="color: fcd;">待處理</div>
+                    </div>
+                    <div style="padding: px; background: rgba(, , , .); border-radius: px; text-align: center;">
+                        <div style="font-size: px; font-weight: bold; color: bb;" id="processingCount"></div>
+                        <div style="color: fcd;">處理中</div>
+                    </div>
+                    <div style="padding: px; background: rgba(, , , .); border-radius: px; text-align: center;">
+                        <div style="font-size: px; font-weight: bold; color: ae;" id="completedCount"></div>
+                        <div style="color: fcd;">已完成</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="card fade-in">
+            <div style="padding: px;">
+                <div style="display: flex; gap: px; align-items: center; flex-wrap: wrap;">
+                    <div class="form-group" style="margin: ;">
+                        <label for="statusFilter">篩選狀態</label>
+                        <select id="statusFilter" onchange="filterPrescriptions()" style="width: px;">
+                            <option value="">全部狀態</option>
+                            <option value="pending">待處理</option>
+                            <option value="processing">處理中</option>
+                            <option value="completed">已完成</option>
+                            <option value="cancelled">已取消</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-info" onclick="loadPrescriptions()">刷新資料</button>
+                    <button class="btn btn-success" onclick="exportPrescriptions()">導出報表</button>
+                    <button class="btn btn-primary" onclick="location.href='doctor.html'"> 開立處方籤</button>
+                </div>
+            </div>
+        </div>
+    <!-- 處方籤列表卡片 -->
+    <div class="card fade-in">
+        <div style="padding: 16px;">
+            <h2 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 700;">處方籤列表</h2>
+            <div class="table-container">
+                <div id="prescriptionTable" style="width: 100%; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #fffaf0, #eeceff);">
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">處方籤編號</th>
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">患者姓名</th>
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">藥物數量</th>
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">狀態</th>
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">建立時間</th>
+                                <th style="padding: 8px; border: 1px solid #ddeeee; font-weight: 600;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prescriptionTableBody">
+                            <tr>
+                                <td colspan="6" style="padding: 12px; text-align: center; color: #999;">
+                                    <div>目前沒有符合條件的處方籤</div>
+                                    <div style="margin-top: 6px; font-size: 14px;">請調整篩選條件或由醫生開立新處方籤</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <!--  -->
+        <div id="prescriptionModal" style="display: none; position: fixed; top: ; left: ; width: %; height: %; background: rgba(,,,.); z-index: ;">
+            <div style="position: absolute; top: %; left: %; transform: translate(-%, -%); background: white; border-radius: px; padding: px; max-width: px; width: %; max-height: %; overflow-y: auto;">
+                <div style="display: flex; justify-content: between; align-items: center; margin-bottom: px;">
+                    <h id="modalTitle"></h>
+                    <button onclick="closeModal()" style="background: none; border: none; font-size: px; cursor: pointer; color: ;">×</button>
+                </div>
+                <div id="modalContent"></div>
+                <div style="margin-top: px; text-align: right;">
+                    <button class="btn btn-danger" onclick="closeModal()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //
+        const API_BASE = 'http://localhost:';
+        let allPrescriptions = [];
+        let filteredPrescriptions = [];
+
+        //
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPrescriptions();
+        });
+
+        //
+        async function loadPrescriptions() {
+            try {
+                const response = await fetch(`${API_BASE}/api/prescription/`);
+                if (response.ok) {
+                    allPrescriptions = await response.json();
+                    filteredPrescriptions = [...allPrescriptions];
+                    updateStatistics();
+                    renderPrescriptions();
+                    console.log(`  ${allPrescriptions.length} `);
+                } else {
+                    showMessage('', 'error');
+                }
+            } catch (error) {
+                console.error(':', error);
+                showMessage('API', 'error');
+            }
+        }
+
+        //
+        function updateStatistics() {
+            const total = allPrescriptions.length;
+            const pending = allPrescriptions.filter(p => p.status === 'pending').length;
+            const processing = allPrescriptions.filter(p => p.status === 'processing').length;
+            const completed = allPrescriptions.filter(p => p.status === 'completed').length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('processingCount').textContent = processing;
+            document.getElementById('completedCount').textContent = completed;
+        }
+
+        //
+        function filterPrescriptions() {
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            filteredPrescriptions = allPrescriptions.filter(prescription => {
+                const statusMatch = !statusFilter || prescription.status === statusFilter;
+                return statusMatch;
+            });
+
+            renderPrescriptions();
+        }
+
+        //
+        function renderPrescriptions() {
+            const tbody = document.getElementById('prescriptionTableBody');
+
+            if (filteredPrescriptions.length === ) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="" style="padding: px; text-align: center; color: fcd;">
+                                                    <div>暫無處方籤資料</div>
+                        <div style="margin-top: px; font-size: px;">請由醫生開立處方籤</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredPrescriptions.map(prescription => {
+                const statusText = getStatusText(prescription.status);
+                const statusColor = getStatusColor(prescription.status);
+
+                return `
+                    <tr style="cursor: pointer;" onmouseover="this.style.backgroundColor='fffa'" onmouseout="this.style.backgroundColor='white'">
+                        <td style="padding: px; border: px solid deee; font-weight: ; color: db;">${prescription.id}</td>
+                        <td style="padding: px; border: px solid deee;">${prescription.patient_name}</td>
+                        <td style="padding: px; border: px solid deee; text-align: center;">
+                            <span style="background: rgba(, , , .); color: db; padding: px px; border-radius: px; font-weight: ;">
+                                ${prescription.medicine_count || (prescription.medicines && prescription.medicines.length) || }
+                            </span>
+                        </td>
+                        <td style="padding: px; border: px solid deee;">
+                            <span style="background: ${statusColor}; padding: px px; border-radius: px; font-weight: ; font-size: px;">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td style="padding: px; border: px solid deee;">${formatDate(prescription.prescription_date)}</td>
+                        <td style="padding: px; border: px solid deee;">
+                            <div style="display: flex; gap: px;">
+                                <button class="btn btn-info" style="padding: px px; font-size: px;" onclick="showPrescriptionDetail(${prescription.id})">查看</button>
+                                <button class="btn btn-warning" style="padding: px px; font-size: px;" onclick="updateStatus(${prescription.id})">更新</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        //
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': '⏳ ',
+                'processing': ' ',
+                'completed': ' ',
+                'cancelled': ' '
+            };
+            return statusMap[status] || status;
+        }
+
+        //
+        function getStatusColor(status) {
+            const colorMap = {
+                'pending': 'rgba(, , , .); color: fc',
+                'processing': 'rgba(, , , .); color: bb',
+                'completed': 'rgba(, , , .); color: ae',
+                'cancelled': 'rgba(, , , .); color: ecc'
+            };
+            return colorMap[status] || 'rgba(, , , .); color: fcd';
+        }
+
+        //
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-TW') + ' ' + date.toLocaleTimeString('zh-TW', {hour: '-digit', minute: '-digit'});
+        }
+
+        //
+        async function showPrescriptionDetail(prescriptionId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/prescription/${prescriptionId}`);
+                if (response.ok) {
+                    const prescription = await response.json();
+
+                    document.getElementById('modalTitle').textContent = `處方籤詳細資訊 - ${prescription.id}`;
+                    document.getElementById('modalContent').innerHTML = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(px, fr)); gap: px; margin-bottom: px;">
+                            <div>
+                                <h>患者資訊</h>
+                                <p><strong>姓名:</strong> ${prescription.patient_name}</p>
+                                <p><strong>患者ID:</strong> ${prescription.patient_id || ''}</p>
+                            </div>
+                            <div>
+                                <h>處方籤狀態</h>
+                                <p><strong>狀態:</strong> ${getStatusText(prescription.status)}</p>
+                                <p><strong>建立時間:</strong> ${formatDate(prescription.created_at)}</p>
+                            </div>
+                        </div>
+
+                        <h>處方用藥</h>
+                        <div style="background: fffa; border-radius: px; padding: px; margin-top: px;">
+                            <table style="width: %; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: eecef;">
+                                        <th style="padding: px; border: px solid deee; text-align: left;">藥物名稱</th>
+                                        <th style="padding: px; border: px solid deee; text-align: left;">劑量</th>
+                                        <th style="padding: px; border: px solid deee; text-align: left;">頻率</th>
+                                        <th style="padding: px; border: px solid deee; text-align: left;">療程</th>
+                                        <th style="padding: px; border: px solid deee; text-align: left;">特殊說明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${prescription.medicines.map(med => `
+                                        <tr>
+                                            <td style="padding: px; border: px solid deee; font-weight: ;">${med.medicine_name}</td>
+                                            <td style="padding: px; border: px solid deee;">${med.dosage}</td>
+                                            <td style="padding: px; border: px solid deee;">${med.frequency}</td>
+                                            <td style="padding: px; border: px solid deee;">${med.duration}</td>
+                                            <td style="padding: px; border: px solid deee;">${med.instructions || ''}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    document.getElementById('prescriptionModal').style.display = 'block';
+                } else {
+                    showMessage('', 'error');
+                }
+            } catch (error) {
+                console.error(':', error);
+                showMessage('API', 'error');
+            }
+        }
+
+        //
+        async function updateStatus(prescriptionId) {
+            const newStatus = prompt(':\n- pending ()\n- processing ()\n- completed ()\n- cancelled ()\n\n:', 'processing');
+
+            if (!newStatus) return;
+
+            const validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
+            if (!validStatuses.includes(newStatus)) {
+                alert(': pending, processing, completed,  cancelled');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/prescription/${prescriptionId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: newStatus,
+                        updated_by: '',
+                        notes: `: ${getStatusText(newStatus)}`
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage('', 'success');
+                    loadPrescriptions(); //
+                } else {
+                    const error = await response.json();
+                    showMessage(`: ${error.detail}`, 'error');
+                }
+            } catch (error) {
+                console.error(':', error);
+                showMessage('API', 'error');
+            }
+        }
+
+        //
+        function closeModal() {
+            document.getElementById('prescriptionModal').style.display = 'none';
+        }
+
+        //
+        function exportPrescriptions() {
+            if (filteredPrescriptions.length === ) {
+                alert('');
+                return;
+            }
+
+            const csvContent = generateCSV(filteredPrescriptions);
+            downloadCSV(csvContent, `_${new Date().toISOString().split('T')[]}.csv`);
+        }
+
+        // CSV
+        function generateCSV(prescriptions) {
+            const headers = ['編號', '患者', '狀態', '日期', '藥物'];
+            const csvRows = [headers.join(',')];
+
+            prescriptions.forEach(prescription => {
+                const medicines = prescription.medicines.map(med =>
+                    `${med.medicine_name}(${med.dosage},${med.frequency},${med.duration})`
+                ).join(';');
+
+                const row = [
+                    prescription.id,
+                    `"${prescription.patient_name}"`,
+                    getStatusText(prescription.status),
+                    prescription.prescription_date,
+                    `"${medicines}"`
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            return csvRows.join('\n');
+        }
+
+        // CSV
+        function downloadCSV(content, filename) {
+            const blob = new Blob(['\ufeff' + content], { type: 'text/csv;charset=utf-;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        //
+        function showMessage(message, type = 'info') {
+            const alertColor = type === 'success' ? 'ae' : type === 'error' ? 'ecc' : 'db';
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed; top: px; right: px; z-index: ;
+                background: ${alertColor}; color: white; padding: px px;
+                border-radius: px; box-shadow:  px px rgba(,,,.);
+                font-weight: ; max-width: px;
+            `;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                document.body.removeChild(alertDiv);
+            }, );
+        }
+    </script>
+</body>
+</html>

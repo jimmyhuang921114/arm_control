@@ -1,0 +1,213 @@
+2025-08-07 06:23:23,959 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 06:23:24,055 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 06:23:24,056 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 06:23:29,688 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 06:23:29,696 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 06:28:31,367 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 06:28:31,404 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 06:28:31,404 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 06:28:33,705 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 06:28:33,705 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 06:28:33,717 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 0 種藥物
+2025-08-07 06:28:33,719 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 0 種藥物
+2025-08-07 06:28:38,378 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 06:28:38,379 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 06:32:56,585 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 06:32:56,624 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 06:32:56,624 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 06:33:00,838 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 06:33:00,844 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 06:33:00,853 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:00,855 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:01,668 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 06:33:01,670 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 06:33:02,503 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 06:33:02,505 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:13,559 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 06:33:13,560 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 06:33:13,561 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:13,564 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:15,088 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 06:33:15,090 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 06:33:29,142 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 06:33:29,142 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 07:32:49,461 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 07:32:49,500 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 07:32:49,500 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 07:32:52,323 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:32:52,323 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:32:52,337 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:32:52,337 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:32:56,708 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:32:56,709 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:06,551 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:06,552 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:33:06,555 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:06,557 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:17,206 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:17,209 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:19,085 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:19,087 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:33:19,089 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:19,096 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:20,223 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:33:20,224 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:20,233 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:20,234 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:42,050 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 07:33:42,052 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 07:33:43,921 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:43,922 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:33:43,925 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:43,926 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:44,634 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:44,635 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:58,891 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:33:58,891 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:33:58,894 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:33:58,895 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:34:01,328 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:34:01,329 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:34:06,165 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:34:06,165 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:34:06,168 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:34:06,169 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:34:07,258 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:34:07,260 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:36:04,744 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:36:04,745 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:36:04,748 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:36:04,749 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:36:33,198 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:36:33,200 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:36:33,845 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 07:36:33,845 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 07:36:33,849 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 5 種藥物
+2025-08-07 07:36:33,850 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 5 種藥物
+2025-08-07 07:39:02,905 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 07:39:02,906 - hospital_system_ros2_real - INFO - 返回 0 張處方籤
+2025-08-07 08:30:58,280 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 08:30:58,318 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 08:30:58,319 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 08:31:00,830 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:31:00,830 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:31:00,841 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:00,844 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:02,369 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:02,375 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:04,109 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:31:04,111 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:04,985 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:31:04,986 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:31:04,988 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:04,990 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:05,882 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:05,884 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:11,397 - hospital_system_ros2_real - INFO - 更新處方籤 1 狀態為: pending
+2025-08-07 08:31:11,399 - hospital_system_ros2_real - INFO - 處理處方籤 1 庫存變更: pending -> pending
+2025-08-07 08:31:11,409 - hospital_system_ros2_real - INFO - 處方籤 1 狀態已更新: pending -> pending
+2025-08-07 08:31:11,413 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:11,415 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:19,722 - hospital_system_ros2_real - INFO - 更新處方籤 1 狀態為: processing
+2025-08-07 08:31:19,723 - hospital_system_ros2_real - INFO - 處理處方籤 1 庫存變更: pending -> processing
+2025-08-07 08:31:19,736 - hospital_system_ros2_real - INFO - 處方籤 1 狀態已更新: pending -> processing
+2025-08-07 08:31:19,741 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:19,743 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:26,183 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:26,184 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:27,768 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:27,773 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:27,952 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:27,957 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:28,113 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:28,119 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:28,282 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:28,287 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:28,423 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:28,425 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:28,579 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:28,590 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:28,761 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:31:28,767 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:31:29,686 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:31:29,686 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:31:29,690 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:29,691 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:31:31,941 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:31:31,944 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:13,632 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:32:13,634 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:14,427 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:32:14,428 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:32:14,430 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:14,435 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:18,711 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:32:18,714 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:21,376 - hospital_system_ros2_real - INFO - 正在調整庫存: medicine_id=None medicine_name='阿司匹林' adjustment=-1 reason='減少庫存'
+2025-08-07 08:32:21,391 - hospital_system_ros2_real - INFO - 藥物 阿司匹林 庫存調整: 90 -> 89 (調整: -1, 原因: 減少庫存)
+2025-08-07 08:32:21,395 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:32:21,396 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:32:22,228 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:32:22,230 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:32:24,739 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:32:24,741 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:43:38,203 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:43:38,206 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:43:40,247 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:43:40,247 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:43:40,252 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 6 種藥物
+2025-08-07 08:43:40,253 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 6 種藥物
+2025-08-07 08:43:41,370 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:43:41,373 - hospital_system_ros2_real - INFO - 返回 5 張處方籤
+2025-08-07 08:54:26,918 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 08:54:26,955 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 08:54:26,955 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 08:54:31,465 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:54:31,465 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:31,478 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:54:31,480 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:54:32,810 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:32,811 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:54:33,864 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:54:33,865 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:33,866 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:54:33,870 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:54:34,556 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:54:34,560 - hospital_system_ros2_real - INFO - 返回 8 張處方籤
+2025-08-07 08:54:43,357 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:43,358 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:54:52,320 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:52,321 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:54:52,322 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:54:52,326 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:54:54,544 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:54:54,546 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:56:07,162 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:56:07,164 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:56:07,165 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:56:07,168 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:57:28,777 - hospital_system_ros2_real - INFO - 正在啟動醫院藥物管理系統...
+2025-08-07 08:57:28,815 - hospital_system_ros2_real - INFO - ROS2 節點已啟動
+2025-08-07 08:57:28,815 - hospital_system_ros2_real - INFO - 系統啟動完成
+2025-08-07 08:57:29,952 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:57:29,961 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:57:30,812 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:57:30,815 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:57:30,820 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:57:30,827 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:57:33,214 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:57:33,219 - hospital_system_ros2_real - INFO - 返回 8 張處方籤
+2025-08-07 08:57:36,091 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:57:36,092 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:58:04,982 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:58:04,983 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:58:04,987 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:58:04,988 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:58:06,091 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:58:06,092 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:58:07,762 - hospital_system_ros2_real - INFO - 開始獲取基本藥物列表
+2025-08-07 08:58:07,763 - hospital_system_ros2_real - INFO - 開始獲取詳細藥物列表
+2025-08-07 08:58:07,764 - hospital_system_ros2_real - INFO - 基本藥物列表構建完成，共 8 種藥物
+2025-08-07 08:58:07,769 - hospital_system_ros2_real - INFO - 詳細藥物列表構建完成，共 7 種藥物
+2025-08-07 08:58:11,641 - hospital_system_ros2_real - INFO - 獲取處方籤列表
+2025-08-07 08:58:11,644 - hospital_system_ros2_real - INFO - 返回 8 張處方籤

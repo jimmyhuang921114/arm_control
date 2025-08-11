@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "user_interface",
+			"path": "../../user_ineterface/user_interface"
+		},
+		{
+			"name": "src",
+			"path": "../.."
+		}
+	],
+	"settings": {}
+}

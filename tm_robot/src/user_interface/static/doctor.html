@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<html translate="no"></html>
+<head>
+    <meta charset="UTF-">
+    <meta name="viewport" content="width=device-width, initial-scale=.">
+    <title> 醫生工作台 - 醫院管理系統</title>
+    <link rel="stylesheet" href="/static/css/unified_style.css">
+    <style>
+            :root{
+        --primary: #2563eb;            /* 主色 */
+        --primary-100: #dbeafe;        /* 主色淺 */
+        --border: #e5e7eb;             /* 邊框色 */
+        --muted: #64748b;              /* 次文字 */
+        --text: #0f172a;               /* 主文字 */
+        --bg: #f8fafc;                 /* 背景 */
+        --shadow: 0 8px 24px rgba(0,0,0,.06);
+        --radius-lg: 12px;
+        --radius-md: 10px;
+        --space: 16px;
+        --space-sm: 12px;
+        }
+
+        /* 容器 */
+        .doctor-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--space);
+        }
+
+        /* 分頁列 */
+        .tabs {
+        display: flex;
+        background: #fff;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--shadow);
+        margin-bottom: var(--space);
+        overflow: hidden;
+        }
+
+        /* 分頁按鈕 */
+        .tab {
+        flex: 1;
+        padding: 12px 16px;
+        text-align: center;
+        cursor: pointer;
+        background: #fff;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--muted);
+        transition: all .2s ease;
+        border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+        background: #fff;
+        border-bottom-color: var(--primary);
+        color: var(--primary);
+        }
+
+        .tab:hover {
+        background: var(--primary-100);
+        }
+
+        /* 分頁內容 */
+        .tab-content {
+        display: none;
+        background: #fff;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: var(--space);
+        }
+
+        .tab-content.active {
+        display: block;
+        }
+
+        /* 統一藥物表單樣式 */
+        .unified-medicine-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space);
+        }
+
+        .form-section {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space);
+        background: #fff;
+        }
+
+        .section-title {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: var(--space-sm);
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--primary-100);
+        }
+
+        .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-sm);
+        }
+
+        .form-group {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .form-group.full-width {
+        grid-column: 1 / -1;
+        }
+
+        .form-group label {
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+        color: var(--text);
+        background: #fff;
+        }
+
+        .form-group textarea {
+        min-height: 96px;
+        resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+        }
+
+        /* / 處方籤樣式 / */
+        /* 處方籤樣式 */
+        .prescription-form {
+        background: linear-gradient(135deg, #fffaf0 0%, #eeceff 100%);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        }
+
+        /* 病患資訊區 */
+        .patient-info {
+        background: white;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* 自動產生欄位 */
+        .auto-field {
+        background: #eeffee;
+        color: #00aa66;
+        font-weight: bold;
+        text-align: center;
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #00aa66;
+        }
+
+        /* 藥品選擇容器 */
+        .medicine-selector {
+        background: white;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin: 12px 0;
+        border: 1px solid #ddddbb;
+        }
+
+        /* 單個藥品項目 */
+        .medicine-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        background: #fffaf0;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        border-left: 4px solid #ddddbb;
+        }
+
+        .medicine-item:last-child {
+        margin-bottom: 0;
+        }
+
+        /* 藥品選擇框與輸入框 */
+        .medicine-select {
+        flex: 2;
+        }
+
+        .medicine-input {
+        flex: 1;
+        }
+
+        /* 移除按鈕 */
+        .remove-medicine {
+        background: #ee4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .remove-medicine:hover {
+        background: #cc0000;
+        }
+
+        /* 新增按鈕 */
+        .add-medicine-btn {
+        background: #00aa66;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 8px;
+        }
+
+        .add-medicine-btn:hover {
+        background: #008855;
+        }
+
+        /* 按鈕樣式 */
+        .btn-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 16px;
+        }
+
+        .btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all .2s ease;
+        min-width: 80px;
+        }
+
+        .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        }
+
+        .btn-success {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        }
+
+        .btn-warning {
+        background: linear-gradient(135deg, #facc15, #eab308);
+        color: white;
+        }
+
+        .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 必填欄位標記 */
+        .required {
+        color: #ee4444;
+        }
+
+        /* 狀態訊息 */
+        .status-message {
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin: 8px 0;
+        display: none;
+        }
+
+        .status-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        }
+
+        .status-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+        }
+
+
+        /* / 響應式設計 / */
+        @media (max-width: px) {
+            .unified-medicine-form {
+                grid-template-columns: fr;
+            }
+            
+            .form-row {
+                grid-template-columns: fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .medicine-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h> 系統選單</h>
+        <button onclick="location.href='doctor.html'" class="active"> 醫生工作台</button>
+                    <button onclick="location.href='integrated_medicine_management.html'"> 整合管理</button>
+            <button onclick="location.href='Prescription.html'"> 處方籤管理</button>
+            <button onclick="location.href='integrated_medicine_management.html'"> 藥物管理</button>
+    </div>
+
+    <div class="main-content">
+        <div class="doctor-container">
+            <h style="text-align: center; color: ce; margin-bottom: px;">
+                 醫生工作台
+            </h>
+
+                         <!-- 處方籤系統 (專注於醫師核心功能) -->
+            <div id="prescription" class="tab-content active">
+                <div class="prescription-form">
+                    <h style="text-align: center; color: ce; margin-bottom: px;"> 開立處方籤</h>
+                    
+                    <form id="prescriptionForm">
+                        <!-- 病患資訊 -->
+                        <div class="patient-info">
+                            <h style="color: db; margin-bottom: px;"> 病患資訊</h>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patientName">病患姓名 <span class="required"></span></label>
+                                    <input type="text" id="patientName" name="patientName" required placeholder="請輸入病患姓名">
+                                </div>
+                                <div class="form-group">
+                                    <label for="patientIdCard">身份證號 <span class="required"></span></label>
+                                    <input type="text" id="patientIdCard" name="patientIdCard" required placeholder="請輸入身份證號" maxlength="">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>病患編號</label>
+                                    <div class="auto-field" id="patientNumber">系統將自動生成</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>處方時間</label>
+                                    <div class="auto-field" id="prescriptionTime">系統將自動生成</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 處方用藥 -->
+                        <div class="medicine-selector">
+                            <h style="color: db; margin-bottom: px;"> 處方用藥</h>
+                            
+                            <div id="medicineList">
+                                <!-- 藥物項目將在此動態生成 -->
+                            </div>
+                            
+                            <button type="button" class="add-medicine-btn" onclick="addMedicineItem()">
+                                 新增藥物
+                            </button>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary"> 開立處方籤</button>
+                            <button type="reset" class="btn btn-warning"> 重置表單</button>
+                        </div>
+                    </form>
+                    
+                    <div id="prescriptionStatus" class="status-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/doctor.js"></script>
+</body>
+</html>

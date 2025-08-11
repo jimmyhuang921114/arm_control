@@ -1,0 +1,5 @@
+string order_id
+string status    # "success" 或 "failed"
+---
+bool   success
+string error

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<html translate="no"></html>
+<head>
+    <meta charset="UTF-">
+    <meta name="viewport" content="width=device-width, initial-scale=.">
+    <title> 整合藥物管理系統</title>
+    <link rel="stylesheet" href="/static/css/unified_style.css">
+    <style>
+            .management-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px;
+        }
+
+        .tabs {
+        display: flex;
+        background: white;
+        border-radius: 8px 8px 0 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        margin-bottom: 16px;
+        overflow: hidden;
+        }
+
+        .tab {
+        flex: 1;
+        padding: 12px 16px;
+        text-align: center;
+        cursor: pointer;
+        background: #f8fafc;
+        border: none;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all .2s ease;
+        border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+        background: white;
+        border-bottom-color: #2563eb;
+        color: #2563eb;
+        }
+
+        .tab:hover {
+        background: #eef2ff;
+        }
+
+        .tab-content {
+        display: none;
+        background: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        padding: 16px;
+        }
+
+        .tab-content.active {
+        display: block;
+        }
+
+        /* / 表單樣式 / */
+            .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        }
+
+        .form-section {
+        border: 1px solid #eeeeed;
+        border-radius: 8px;
+        padding: 16px;
+        background: #fff;
+        }
+
+        .section-title {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #2563eb; /* 主色線條 */
+        }
+
+        .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+        }
+
+        .form-group {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .form-group.full-width {
+        grid-column: 1 / -1;
+        }
+
+        .form-group label {
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #222;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+        padding: 8px 10px;
+        border: 1px solid #bdccee;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+        border-color: #2563eb;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .required {
+        color: #ee4444;
+        }
+
+        
+        /* / 按鈕樣式 / */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+            .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all .2s ease;
+            }
+
+            .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            }
+
+            .btn-warning {
+            background: linear-gradient(135deg, #facc15, #eab308);
+            color: white;
+            }
+
+            .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            }
+
+            .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            /* 藥物列表樣式 */
+            .medicine-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee;
+            border-radius: 6px;
+            background: white;
+            }
+
+            .medicine-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid #eeceff;
+            transition: background-color .2s ease;
+            }
+
+            .medicine-item:hover {
+            background-color: #fffaf0;
+            }
+
+            .medicine-info {
+            flex: 1;
+            }
+
+            .medicine-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+            }
+
+            .medicine-details {
+            font-size: 13px;
+            color: #666;
+            }
+
+            .medicine-stock {
+            text-align: center;
+            margin: 0 8px;
+            }
+
+            .stock-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00aa66;
+            }
+
+            .stock-low {
+            color: #ee4444;
+            }
+
+            .medicine-actions {
+            display: flex;
+            gap: 8px;
+            }
+
+            .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            }
+
+        /* / 狀態訊息 / */
+        .status-message {
+            padding: px;
+            border-radius: px;
+            margin: px ;
+            display: none;
+        }
+        
+        .status-success {
+            background: dedda;
+            color: ;
+            border: px solid cecb;
+        }
+        
+        .status-error {
+            background: fdda;
+            color: c;
+            border: px solid fccb;
+        }
+        
+        /* / 搜尋和篩選 / */
+        .search-bar {
+            display: flex;
+            gap: px;
+            margin-bottom: px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: ;
+            padding: px;
+            border: px solid bdcc;
+            border-radius: px;
+        }
+        
+        .filter-select {
+            padding: px;
+            border: px solid bdcc;
+            border-radius: px;
+            min-width: px;
+        }
+        
+        /* / 統計卡片 / */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(px, fr));
+            gap: px;
+            margin-bottom: px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: px;
+            border-radius: px;
+            box-shadow:  px px rgba(,,,.);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: em;
+            font-weight: bold;
+            margin-bottom: px;
+        }
+        
+        .stat-label {
+            color: fcd;
+            font-size: px;
+        }
+        
+        /* / 響應式設計 / */
+        @media (max-width: px) {
+            .form-grid {
+                grid-template-columns: fr;
+            }
+            
+            .form-row {
+                grid-template-columns: fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h> 系統選單</h>
+        <button onclick="location.href='doctor.html'"> 醫生工作台</button>
+        <button onclick="location.href='integrated_medicine_management.html'" class="active"> 整合管理</button>
+        <button onclick="location.href='Prescription.html'"> 處方籤管理</button>
+    </div>
+
+    <div class="main-content">
+        <div class="management-container">
+            <h style="text-align: center; color: ce; margin-bottom: px;">
+                 整合藥物管理系統
+            </h>
+            
+            <!-- 統計資訊 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: db;" id="totalMedicines"></div>
+                    <div class="stat-label">總藥物種類</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: ae;" id="totalStock"></div>
+                    <div class="stat-label">總庫存數量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: ecc;" id="lowStockCount"></div>
+                    <div class="stat-label">低庫存警告</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: bb;" id="detailedCount"></div>
+                    <div class="stat-label">詳細資料完整</div>
+                </div>
+            </div>
+
+            <!-- 標籤切換 -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('add-medicine')"> 新增藥物</button>
+                <button class="tab" onclick="switchTab('manage-inventory')"> 庫存管理</button>
+                <button class="tab" onclick="switchTab('medicine-list')"> 藥物清單</button>
+                <button class="tab" onclick="location.href='Prescription.html'"> 處方籤管理</button>
+            </div>
+
+            <!-- 新增藥物標籤 -->
+            <div id="add-medicine" class="tab-content active">
+                <form id="medicineForm">
+                    <div class="form-grid">
+                        <!-- 基本藥物資料 -->
+                        <div class="form-section">
+                            <div class="section-title"> 基本藥物資料</div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name">藥物名稱 <span class="required"></span></label>
+                                    <input type="text" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="amount">初始數量 <span class="required"></span></label>
+                                    <input type="number" id="amount" name="amount" min="" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="position">儲存位置 <span class="required"></span></label>
+                                    <input type="text" id="position" name="position" required placeholder="例：-, -, A-">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group full-width">
+                                    <label for="prompt"> AI提示詞 (用於智能推薦)</label>
+                                    <textarea id="prompt" name="prompt" rows="" placeholder="例：適用於感冒發燒，成人每次-錠，兒童減半..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 詳細藥物資料 -->
+                        <div class="form-section">
+                            <div class="section-title"> 詳細藥物資料 (選填)</div>
+                            
+                            <div class="form-group full-width">
+                                <label for="description">藥物描述</label>
+                                <textarea id="description" name="description" rows="" placeholder="請詳細描述藥物的用途、功效、注意事項等..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary"> 保存藥物資料</button>
+                        <button type="reset" class="btn btn-warning"> 重置表單</button>
+                    </div>
+                </form>
+                
+                <div id="addMedicineStatus" class="status-message"></div>
+            </div>
+
+            <!-- 庫存管理標籤 -->
+            <div id="manage-inventory" class="tab-content">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="inventorySearch" placeholder=" 搜尋藥物名稱...">
+                    <select class="filter-select" id="stockFilter">
+                        <option value="">所有庫存狀態</option>
+                        <option value="sufficient">庫存充足 (>)</option>
+                        <option value="medium">庫存適中 (-)</option>
+                        <option value="low">庫存不足 (<)</option>
+                        <option value="empty">缺貨 ()</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="refreshInventory()"> 重新整理</button>
+                </div>
+                
+                <div class="medicine-list" id="inventoryList">
+                    <!-- 庫存項目將在此動態生成 -->
+                </div>
+                
+                <div id="inventoryStatus" class="status-message"></div>
+            </div>
+
+            <!-- 藥物清單標籤 -->
+            <div id="medicine-list" class="tab-content">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="medicineSearch" placeholder=" 搜尋藥物...">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">所有分類</option>
+                        <option value="抗生素">抗生素</option>
+                        <option value="止痛藥">止痛藥</option>
+                        <option value="消炎藥">消炎藥</option>
+                        <option value="心血管藥物">心血管藥物</option>
+                        <option value="維生素">維生素</option>
+                        <option value="其他">其他</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="refreshMedicineList()"> 重新整理</button>
+                </div>
+                
+                <div class="medicine-list" id="medicineListContainer">
+                    <!-- 藥物項目將在此動態生成 -->
+                </div>
+                
+                <div id="medicineListStatus" class="status-message"></div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="/static/js/integrated_medicine_management.js"></script>
+</body>
+</html>

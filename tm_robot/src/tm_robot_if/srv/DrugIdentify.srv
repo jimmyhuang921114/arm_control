@@ -1,0 +1,4 @@
+sensor_msgs/Image image
+string name  # 要查詢的藥物名稱
+---
+string result

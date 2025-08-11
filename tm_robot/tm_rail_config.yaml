@@ -1,0 +1,22 @@
+main_rail:          main_rail
+baud_rate:          115200 
+rails:
+  main_rail:
+    standby_pos:    10
+    moving_vel:     600
+    bag:
+      pos:      10
+      lock_deg:     0
+      release_deg:  170
+  arm_rail1:
+    moving_vel:     600
+    funnel_pos:     0
+    standby_pos:    30
+    m_docking_pos:  1069
+    a_docking_pos:  766
+    dock:      # bag give to main rail
+      m_move:       30
+      a_move:       -100
+    undock:    # bag give to sub rail
+      m_move:       0
+      a_move:       -40

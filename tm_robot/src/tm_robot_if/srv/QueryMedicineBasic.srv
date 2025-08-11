@@ -1,0 +1,10 @@
+string medicine_name
+---
+bool   success
+string name
+string position
+int32  amount
+float32 confidence
+string prompt
+string yaml
+string error

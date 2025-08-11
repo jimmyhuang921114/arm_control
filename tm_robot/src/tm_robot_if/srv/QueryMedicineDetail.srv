@@ -1,0 +1,7 @@
+string medicine_name
+---
+bool   success
+string name
+string content
+string yaml
+string error

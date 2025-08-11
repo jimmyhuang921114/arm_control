@@ -1,0 +1,6 @@
+string worker_id
+---
+bool   success
+string order_id
+string order_yaml
+string error

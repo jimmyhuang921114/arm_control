@@ -1,0 +1,19 @@
+openai_apiGrounded_SAM2_ROS2/Grounded-SAM-2/checkpoints/*.pt.1
+Grounded_SAM2_ROS2/Grounded-SAM-2/checkpoints/*.pt.1
+
+
+
+# 忽略 OpenAI API key 或相關腳本
+openai_api*
+openai_api.py
+openai_key
+
+# 忽略 Grounded SAM2 的 checkpoint 和大型模型
+Grounded_SAM2_ROS2/Grounded-SAM-2/checkpoints/*.pt*
+Grounded_SAM2_ROS2/Grounded-SAM-2/checkpoints/*.bin*
+
+# 忽略 ROS 2 build/install/log
+build/
+install/
+log/
+

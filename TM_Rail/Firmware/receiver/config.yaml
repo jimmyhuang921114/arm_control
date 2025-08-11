@@ -1,0 +1,15 @@
+main_rail:
+  bag:
+  - lock_deg:     0
+  - release_deg:  170
+  subrails: [arm_rail_1]
+arm_rail_1:
+  funnel_pos:     0
+  m_docking_pos:  180
+  s_docking_pos:  50
+  dock_move:      # bag give to main rail
+  - m_move:       -30
+  - s_move:       0
+  undock_move:    # bag give to sub rail
+  - m_move:       0
+  - s_move:       -30
