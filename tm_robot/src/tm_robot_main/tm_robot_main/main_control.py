@@ -40,8 +40,8 @@ class MainControl(Node):
         self.leave_curobo = self.create_publisher(Bool, '/leave_node', 10)
         # self.curobo_control = self.create_publisher(Pose, '/curobo/control', 10)
         self.grab_pose = self.create_subscription(Pose, '/grab_pose', self.grab_pose_callback, 10)
-        self.shelf_level = self.create_publisher(Int32, '/open_floor', 10)
-        self.shelf_ignore = self.create_publisher(Bool, '/shelf_status', 10)
+        # self.shelf_level = self.create_publisher(Int32, '/open_floor', 10)
+        # self.shelf_ignore = self.create_publisher(Bool, '/shelf_status', 10)
         self.order = self.create_subscription(String,'/hospital/new_order', self.new_order_callback,10)
 
         ## 建立服務 client
@@ -72,7 +72,7 @@ class MainControl(Node):
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
             "curobo_state": self.curobo_state_client,
-            "moveit_set_pose": self.moveit_set_pose_client,
+            # "moveit_set_pose": self.moveit_set_pose_client,
             "complete_order": self.complete_order_client,
             # "query_medicine_basic": self.basic_info_client,
             # "query_medicine_detail": self.detail_info_client
@@ -121,6 +121,7 @@ class MainControl(Node):
                 self.leave_curobo.publish(Bool(data=True))
                 break
             time.sleep(0.1)
+        time.sleep(0.5)
 
 
     def send_curobo_pose_and_spin(self, pose: Pose) -> None:
@@ -379,12 +380,12 @@ class MainControl(Node):
 
     ## ======= [Shelf] =======  
 
-    def send_shelf_level(self, layer: int) -> None:
-        self.shelf_level.publish(Int32(data=layer))
+    # def send_shelf_level(self, layer: int) -> None:
+    #     self.shelf_level.publish(Int32(data=layer))
 
 
-    def send_shelf_ignore(self, ignore: bool) -> None:
-        self.shelf_ignore.publish(Bool(data=ignore))
+    # def send_shelf_ignore(self, ignore: bool) -> None:
+    #     self.shelf_ignore.publish(Bool(data=ignore))
 
 
     ## ======= [Order] =======  
@@ -421,13 +422,15 @@ class MainControl(Node):
         return self.order_list.pop(0)
     
 
-    def complete_current_order(self, id: str, status="success"):
+    def complete_current_order(self, order_id: str, status="success"):
         req = CompleteOrder.Request()
-        req.order_id = id
+        req.order_id = order_id
         req.status = status
-        res = self.complete_order_client.call(req)
+        future = self.complete_order_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
         if res.success:
-            self.get_logger().info(f"訂單 {id} 已完成")
+            self.get_logger().info(f"訂單 {order_id} 已完成")
         else:
             self.get_logger().error(f"結單失敗: {res.error}")
 
@@ -624,12 +627,16 @@ def process_medicine(node: MainControl, medicine: dict):
                 continue
             ## update variable
             node.current_shelf_level = shelf_level
+            ## delay to wait isaac sync world
+            time.sleep(2)
 
         ## tm flow: med_box
         if not node.send_tm_flow_mode_and_spin("medicine_box", str(med_box_num)):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
         node.spin_until_sct_listen_flag()
+        ## curobo move to safe point
+        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["safe"]))
         ## curobo move to med_box
         med_box_pose: list[float] = None
         if shelf_level == 1:
@@ -639,6 +646,7 @@ def process_medicine(node: MainControl, medicine: dict):
             med_box_pose = named_pose["med_box_start"]["second"]
             med_box_pose[1] -= 0.2 * med_box_num
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
+        # input("press enter after move to med box...")
 
         ## groundSAM
         confidence = medicine['confidence'] + 0.05
@@ -671,27 +679,16 @@ def process_medicine(node: MainControl, medicine: dict):
         if not node.send_tm_flow_leave_and_spin():
             node.get_logger().error("call tm_flow_leave return failed")
             continue
-    
-        # ## check SCT
-        # node.spin_until_sct_listen_flag()
-        # ## curobo move to rail landmark
-        # node.curobo_point_and_wait(node.vec_pose_to_ros2_pose(named_pose["rail_photo"]["rail_photo"]))
-        # ## check SCT
-        # # node.spin_until_sct_listen_flag()
-        # #     continue
-        # ## moveit move to grab pose
-        # # node.send_moveit_point(pose)
-        # # ## curobo move to grab pose
-        # # node.send_curobo_point_and_spin(pose)
-        
 
         ## tm flow: grab_and_check
         if not node.send_tm_flow_mode_and_spin("grab_and_check", "null"):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
         node.spin_until_sct_listen_flag()
+        # curobo move to safe point
+        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["safe"]))
         ## curobo move to rail landmark
-        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail_photo"]["rail_photo"]))
+        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["landmark"]))
         ## tm flow leave
         if not node.send_tm_flow_leave_and_spin():
             node.get_logger().error("call tm_flow_leave return failed")
@@ -709,8 +706,8 @@ def process_medicine(node: MainControl, medicine: dict):
             continue
         ## send picture to llm
         if not node.call_llm_and_spin(name):
-            node.get_logger().error("call llm return failed")
-            continue
+            node.get_logger().warn("call llm return failed")
+            # continue
 
         ## check SCT
         node.spin_until_sct_listen_flag()
@@ -725,7 +722,7 @@ def process_medicine(node: MainControl, medicine: dict):
 
 def grab_test(node: MainControl):
     ## groundSAM
-    gsam_result =  node.call_groundsam2_and_spin("White medicine jar with label on lid", 0.4)
+    gsam_result =  node.call_groundsam2_and_spin("white pill can in box", 0.3)
     # gsam_result =  node.call_groundsam2_and_spin("White medicine jar with red lid", 0.4)
     if gsam_result is None:
         node.get_logger().error("call GroundedSAM2 return failed")
@@ -742,6 +739,35 @@ def grab_test(node: MainControl):
         return
 
 
+def llm_test(node: MainControl, name: str):
+    if not node.call_llm_and_spin(name):
+        node.get_logger().error("call llm return failed")
+
+# def main(args=None):
+#     rclpy.init(args=args)
+#     node = MainControl()
+#     try:
+#         med_name = "Andsodhcd"
+
+#         if not os.path.exists(COMBINE_PIC_PATH):
+#             node.get_logger().info("找不到 combined.jpg，先呼叫 SecondCamera 產生圖片")
+#             if not node.call_second_camera_and_spin():
+#                 node.get_logger().error("SecondCamera 失敗，無法進行 LLM 測試")
+#                 return
+
+#         # 只測一次，確保能看到結果
+#         if not node.call_llm_and_spin(med_name):
+#             node.get_logger().error("call llm return failed")
+#         else:
+#             node.get_logger().info("LLM 驗證通過（yes）")
+
+#         # 若還要讓 node 繼續跑，再 spin
+#         rclpy.spin(node)
+#     finally:
+#         node.destroy_node()
+#         rclpy.shutdown()
+
+
 def main(args=None):
     rclpy.init(args=args)
     node = MainControl()
@@ -749,19 +775,21 @@ def main(args=None):
     # init slider
     # if not node.call_slider_and_wait(0):
     #     node.get_logger().error("call slider with 0 return failed")
+    # time.sleep(3)
+    # if not node.call_slider_and_wait(1):
+    #     node.get_logger().error("call slider with 1 return failed")
     # loop
     # node.order_list = []
     while rclpy.ok():
         rclpy.spin_once(node, timeout_sec=0.1)
-        # grab_test(node)
-        # time.sleep(2)
+        # grab_test(node) 
         order = node.get_order()
         if order is not None:
-            id = order['id']
-            node.get_logger().info(f"process order: {id}")
+            order_id = order['id']
+            node.get_logger().info(f"process order: {order_id}")
             for medicine in order['medicine']:
                 process_medicine(node, medicine)
-            node.complete_current_order(id)
+            node.complete_current_order(order_id)
             
     node.destroy_node()
     rclpy.shutdown()

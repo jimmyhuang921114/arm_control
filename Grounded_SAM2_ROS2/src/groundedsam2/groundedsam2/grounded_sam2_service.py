@@ -44,8 +44,6 @@ class GroundedSAM2Service(Node):
         self.bridge = CvBridge()
         self.get_logger().info(f"\033[92mInitialization completed")
 
-
-
     def grounded_sam2_callback(self, request, response):
         self.get_logger().info(f"Processing image with prompt: {request.prompt}")
 
@@ -59,53 +57,47 @@ class GroundedSAM2Service(Node):
         h, w, _ = image_bgr.shape
         prompt = request.prompt
 
-        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-        image_tensor = torch.from_numpy(image_rgb).permute(2, 0, 1).float() / 255.0
-        image_tensor = image_tensor.to("cuda")
+        # ========= 只把「畫面中間」餵給 GroundingDINO =========
+        # 中間一半
+        half_width = w // 2
+        quarter_width = w // 4
+        x0, x1 = quarter_width, quarter_width + half_width
+
+        center_img_bgr = image_bgr[:, x0:x1]
+        ch, cw = center_img_bgr.shape[:2]
+
+        # GroundingDINO 用 RGB tensor（裁切影像）
+        center_img_rgb = cv2.cvtColor(center_img_bgr, cv2.COLOR_BGR2RGB)
+        center_tensor = torch.from_numpy(center_img_rgb).permute(2, 0, 1).float() / 255.0
+        center_tensor = center_tensor.to("cuda")
 
         boxes, confidences, labels = predict(
             model=self.grounding_model,
-            image=image_tensor,
+            image=center_tensor,
             caption=prompt,
             box_threshold=request.confidence_threshold,
-            text_threshold=0.3,
+            text_threshold=request.confidence_threshold,
             device="cuda"
         )
 
 
-        boxes = boxes * torch.Tensor([w, h, w, h]).to(boxes.device)
-        input_boxes = box_convert(boxes=boxes, in_fmt="cxcywh", out_fmt="xyxy").cpu().numpy()
+        if boxes is None or len(boxes) == 0:
+            self.get_logger().warn("No boxes from GroundingDINO on center crop.")
+            response.bbox, response.seg, response.label, response.score = [], [], [], []
+            return response
 
-        # total_area = h * w
-        # min_area = total_area * 0.005  
-        # max_area = total_area * request.size_threshold
+        boxes = boxes * torch.Tensor([cw, ch, cw, ch]).to(boxes.device)
+        input_boxes_crop_xyxy = box_convert(boxes=boxes, in_fmt="cxcywh", out_fmt="xyxy").cpu().numpy()
 
-        # filtered = []
-        # for box, conf, label in zip(input_boxes, confidences, labels):
-        #     xmin, ymin, xmax, ymax = box
-        #     w_box = xmax - xmin
-        #     h_box = ymax - ymin
-        #     box_area = w_box * h_box
-        #     aspect_ratio = max(w_box / h_box, h_box / w_box)
+  
+        input_boxes = input_boxes_crop_xyxy.copy()
+        input_boxes[:, [0, 2]] += x0  # xmin, xmax 加偏移
 
-        #     # 加入篩選條件（避免過大、過小、比例異常）
-        #     if box_area < min_area or box_area > max_area:
-        #         continue
-        #     if aspect_ratio > 3.0:  # 過細長的也排除
-        #         continue
 
-        #     filtered.append((box, conf, label))
-
-        # input_boxes = np.array([f[0] for f in filtered])
-        # confidences = [f[1] for f in filtered]
-        # labels = [f[2] for f in filtered]
-        input_boxes = input_boxes
-        confidences = confidences       
-        labels = labels
         self.sam2_predictor.set_image(image_bgr)
 
         if len(input_boxes) == 0:
-            self.get_logger().warn("No boxes passed filtering.")
+            self.get_logger().warn("No boxes after mapping back to full image.")
             response.bbox, response.seg, response.label, response.score = [], [], [], []
             return response
 
@@ -116,68 +108,62 @@ class GroundedSAM2Service(Node):
             multimask_output=False,
         )
 
-        if masks.ndim == 4:
-            masks = masks.squeeze(1)
-
         if masks is None or len(masks) == 0:
             self.get_logger().warn("No masks predicted.")
             response.bbox, response.seg, response.label, response.score = [], [], [], []
             return response
 
-
-        # ---------- 新增：面積與形狀過濾 ----------
-        def compute_aspect_ratio(box):
-            xmin, ymin, xmax, ymax = box
-            w = xmax - xmin
-            h = ymax - ymin
-            return max(w / (h + 1e-6), h / (w + 1e-6))
-
-        # 參考面積與形狀（第一個 mask）
-        ref_mask = masks[0]
-        ref_box = input_boxes[0]
-        ref_area = np.sum(ref_mask)
-        ref_ratio = compute_aspect_ratio(ref_box)
-
-        area_tol = 0.2    # 面積容忍 ±20%
-        ratio_tol = 0.3   # 長寬比容忍 ±30%
+        if masks.ndim == 4:
+            masks = masks.squeeze(1)
 
         candidates = []
+
+
+        total_area = float(h * w)
+        max_area_ratio = 0.10  # 10%：過大雜訊丟掉
+        min_area_ratio = 0.002  # 0.2%：過小雜訊丟掉
+        min_area = total_area * min_area_ratio
+        max_area = total_area * max_area_ratio
         for i, (box, mask, conf, label) in enumerate(zip(input_boxes, masks, confidences, labels)):
-            # 面積 & 形狀過濾
-            area = np.sum(mask)
-            ratio = compute_aspect_ratio(box)
-
-            if not (ref_area * (1 - area_tol) <= area <= ref_area * (1 + area_tol)):
-                continue
-            if not (ref_ratio * (1 - ratio_tol) <= ratio <= ref_ratio * (1 + ratio_tol)):
-                continue
-
-            # 深度篩選
             ys, xs = np.where(mask > 0)
+
+            area = float(np.sum(mask))
+            
+            if area < min_area or area > max_area:
+                # 可視需要印 log
+                # self.get_logger().debug(f"Reject by area: {area/total_area:.4f}")
+                continue
+
+
+
             if len(xs) == 0 or len(ys) == 0:
                 continue
+            
             cx, cy = int(np.median(xs)), int(np.median(ys))
             if 0 <= cx < depth_np.shape[1] and 0 <= cy < depth_np.shape[0]:
                 z = float(depth_np[cy, cx])
                 if z == 0.0:
                     continue
-                center_x = image_bgr.shape[1] // 2
+
+                center_x = w // 2
                 distance_from_center = abs(cx - center_x)
-                score = -distance_from_center - z * 1000  # 中間越靠近分數越高
+
+                # 分數：越靠近中心、深度越小（越近）分數越高
+                score = -distance_from_center 
 
                 candidates.append({
                     "score": score,
                     "box": box,
                     "mask": mask,
                     "label": label,
-                    "conf": conf
+                    "conf": float(conf)
                 })
 
-        # ---------- 其餘流程照舊 ----------
         if not candidates:
-            self.get_logger().warn("No valid mask candidates.")
+            self.get_logger().warn("No valid mask candidates after scoring.")
             response.bbox, response.seg, response.label, response.score = [], [], [], []
             return response
+
 
         best = sorted(candidates, key=lambda x: x["score"], reverse=True)[0]
 
@@ -186,29 +172,35 @@ class GroundedSAM2Service(Node):
             rle["counts"] = rle["counts"].decode("utf-8")
             return rle
 
+        # 視覺化（可留著除錯）
         vis_image = image_bgr.copy()
+        
+        cv2.line(vis_image, (x0, 0), (x0, h-1), (0, 0, 0), 2)
+        cv2.line(vis_image, (x1-1, 0), (x1-1, h-1), (0, 0, 0), 2)
+
         for c in candidates:
             color = (0, 255, 0) if c is best else (255, 0, 0)
             xmin, ymin, xmax, ymax = [int(v) for v in c["box"]]
             w_box = xmax - xmin
             h_box = ymax - ymin
             cv2.rectangle(vis_image, (xmin, ymin), (xmax, ymax), color, 2)
-            cv2.putText(vis_image, f"{c['label']} {c['conf']:.2f} ({w_box}x{h_box})", (xmin, ymin - 5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+            cv2.putText(vis_image, f"{c['label']} {c['conf']:.2f} ({w_box}x{h_box})",
+                        (xmin, max(0, ymin - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
-            mask = (c["mask"] > 0).astype(np.uint8)
-            colored_mask = cv2.applyColorMap(mask * 255, cv2.COLORMAP_JET)
+            mask_u8 = (c["mask"] > 0).astype(np.uint8)
+            colored_mask = cv2.applyColorMap(mask_u8 * 255, cv2.COLORMAP_JET)
             alpha = 0.5
             for ch in range(3):
                 vis_image[:, :, ch] = np.where(
-                    mask == 1,
+                    mask_u8 == 1,
                     cv2.addWeighted(vis_image[:, :, ch], 1 - alpha, colored_mask[:, :, ch], alpha, 0),
                     vis_image[:, :, ch]
                 )
 
-        cv2.imshow("Grounded-SAM2 Result", vis_image)
+        cv2.imshow("Grounded-SAM2 Result (Center-fed DINO)", vis_image)
         cv2.waitKey(1)
 
+        # 回傳最佳
         box = best["box"]
         binary_mask = (best["mask"] > 0).astype(np.uint8) * 255
 
@@ -216,11 +208,10 @@ class GroundedSAM2Service(Node):
         response.seg = [json.dumps(single_mask_to_rle(best["mask"]))]
         response.label = [str(best["label"])]
         response.score = [float(best["conf"])]
-        response.binary_image = self.bridge.cv2_to_imgmsg(binary_mask, encoding='mono8') 
+        response.binary_image = self.bridge.cv2_to_imgmsg(binary_mask, encoding='mono8')
         response.binary_image.header = request.image.header
 
         return response
-
 
 
 def main(args=None):

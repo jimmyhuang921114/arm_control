@@ -9,6 +9,7 @@ import socket
 import threading
 import time
 from tm_robot_if.srv import SecondCamera
+import numpy as np
 
 class CameraPublisher(Node):
     def __init__(self):
@@ -159,7 +160,23 @@ class CameraPublisher(Node):
         client.close()
         server.close()
 
-    def combine_image(self):
+    def resize_with_pad(img, target_w=1024, target_h=1024):
+        """等比例縮放，不變形；不足的部分以黑色填充到指定大小。"""
+        h, w = img.shape[:2]
+        scale = min(target_w / w, target_h / h)
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+
+        # 建立黑底畫布並把縮放後的圖置中
+        canvas = np.zeros((target_h, target_w, 3), dtype=np.uint8)
+        x0 = (target_w - new_w) // 2
+        y0 = (target_h - new_h) // 2
+        canvas[y0:y0+new_h, x0:x0+new_w] = resized
+        return canvas
+
+    def combine_image(self, tile_size=1024, darken_factor=1.0):
+        """合併 4 張圖成 2x2；darken_factor < 1 會變暗，例如 0.7"""
         filenames = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg"]
         images = []
         for name in filenames:
@@ -171,8 +188,9 @@ class CameraPublisher(Node):
             if img is None:
                 self.get_logger().warn(f"無法讀取圖片: {path}")
                 return
-            img = cv2.resize(img, (1024, 1024))
-            images.append(img)
+            # 等比例縮放 + 補邊到 tile_size
+            img_pad = self.resize_with_pad(img, tile_size, tile_size)
+            images.append(img_pad)
 
         if len(images) != 4:
             self.get_logger().warn("圖片數量不足，無法合成")
@@ -180,10 +198,13 @@ class CameraPublisher(Node):
 
         top = cv2.hconcat([images[0], images[1]])
         bottom = cv2.hconcat([images[2], images[3]])
-        combined = cv2.vconcat([top, bottom])
+        combined = cv2.vconcat([top, bottom])  # 大小 = (2*tile_size, 2*tile_size)
         output_path = os.path.join(self.capture_dir, "combined.jpg")
-        cv2.imwrite(output_path, combined)
-        self.get_logger().info(f"合併圖片儲存於: {output_path}")
+        if cv2.imwrite(output_path, combined):
+            self.get_logger().info(f"合併圖片儲存於: {output_path}")
+        else:
+            self.get_logger().error(f"cv2.imwrite 失敗：{output_path}")
+
 
 def main(args=None):
     rclpy.init(args=args)

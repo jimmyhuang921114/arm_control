@@ -903,6 +903,7 @@ async def medicine_page():
                         <th>信心值</th>
                         <th>庫存數量</th>
                         <th>詳細資訊</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody id="medicineList">
@@ -1006,22 +1007,27 @@ async def medicine_page():
         function displayMedicines() {
             const tbody = document.getElementById('medicineList');
             if (medicines.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center">尚無藥物資料</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">尚無藥物資料</td></tr>';
                 return;
             }
 
             tbody.innerHTML = medicines.map(med => `
                 <tr>
-                    <td>${med.id}</td>
-                    <td><strong>${med.name}</strong></td>
-                    <td>${med.position}</td>
-                    <td>${med.prompt}</td>
-                    <td>${med.confidence.toFixed(2)}</td>
-                    <td><span class="status-badge ${med.amount > 50 ? 'status-high' : med.amount > 10 ? 'status-medium' : 'status-low'}">${med.amount}</span></td>
-                    <td>${med.content ? '✅ 已設定' : '❌ 未設定'}</td>
+                <td>${med.id}</td>
+                <td><strong>${med.name}</strong></td>
+                <td>${med.position}</td>
+                <td>${med.prompt}</td>
+                <td>${med.confidence.toFixed(2)}</td>
+                <td><span class="status-badge ${med.amount > 50 ? 'status-high' : med.amount > 10 ? 'status-medium' : 'status-low'}">${med.amount}</span></td>
+                <td>${med.content ? '✅ 已設定' : '❌ 未設定'}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="openEditMedicine(${med.id})">編輯</button>
+                    <button class="btn btn-success" style="background:linear-gradient(135deg,#dc3545,#c82333)" onclick="deleteMedicine(${med.id}, '${med.name.replace(/'/g, "\\'")}')">刪除</button>
+                </td>
                 </tr>
             `).join('');
-        }
+            }
+
 
         function clearMedicineForm() {
             document.getElementById('medicineName').value = '';
@@ -1031,11 +1037,129 @@ async def medicine_page():
             document.getElementById('medicineAmount').value = '100';
             document.getElementById('medicineContent').value = '';
         }
+        let editingId = null;
+
+        function openEditMedicine(id) {
+        editingId = id;
+        fetch(`/api/medicine/detailed/${id}`)
+            .then(r => { if (!r.ok) throw new Error('載入詳細資料失敗'); return r.json(); })
+            .then(data => {
+            document.getElementById('editName').value = data.name || '';
+            document.getElementById('editPosition').value = data.position || '';
+            document.getElementById('editPrompt').value = data.prompt || '';
+            document.getElementById('editConfidence').value = (data.confidence ?? 0.95);
+            document.getElementById('editAmount').value = (data.amount ?? 0);
+            document.getElementById('editContent').value = data.content || '';
+            document.getElementById('editModal').classList.remove('hidden');
+            })
+            .catch(err => showAlert('錯誤：' + err.message, 'error'));
+        }
+
+        function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+        editingId = null;
+        }
+
+        async function submitEdit() {
+        if (!editingId) return;
+
+        const name = document.getElementById('editName').value.trim();
+        const position = document.getElementById('editPosition').value.trim();
+        const prompt = document.getElementById('editPrompt').value.trim();
+        const confidence = parseFloat(document.getElementById('editConfidence').value);
+        const amount = parseInt(document.getElementById('editAmount').value) || 0;
+        const content = document.getElementById('editContent').value.trim();
+
+        if (!name || !position || !prompt || isNaN(confidence)) {
+            showAlert('請填寫所有必要欄位', 'error'); return;
+        }
+        if (!/^\d+-\d+$/.test(position)) {
+            showAlert('位置格式錯誤，應為 1-2 或 2-1 的格式', 'error'); return;
+        }
+        if (confidence < 0 || confidence > 1) {
+            showAlert('信心值必須在 0~1 之間', 'error'); return;
+        }
+
+        const payload = { name, position, prompt, confidence, amount, content };
+
+        try {
+            const resp = await fetch(`/api/medicine/${editingId}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+            });
+            if (!resp.ok) {
+            const e = await resp.json().catch(()=>({detail:'更新失敗'}));
+            throw new Error(e.detail || '更新失敗');
+            }
+            showAlert('藥物資訊已更新', 'success');
+            closeEditModal();
+            loadMedicines();
+        } catch (err) {
+            showAlert('錯誤：' + err.message, 'error');
+        }
+        }
+
+        async function deleteMedicine(id, name) {
+        if (!confirm(`確定刪除「${name}」？`)) return;
+        try {
+            const resp = await fetch(`/api/medicine/${id}`, { method: 'DELETE' });
+            if (!resp.ok) {
+            const e = await resp.json().catch(()=>({detail:'刪除失敗'}));
+            throw new Error(e.detail || '刪除失敗');
+            }
+            showAlert(`已刪除：${name}`, 'success');
+            loadMedicines();
+        } catch (err) {
+            showAlert('錯誤：' + err.message, 'error');
+        }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             loadMedicines();
         });
     </script>
+       <!-- ⬇⬇⬇ 把 Modal 貼在這裡（</body> 之前） ⬇⬇⬇ -->
+    <!-- 編輯藥物 Modal -->
+    <div id="editModal" class="hidden" style="
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.4); z-index:2000;">
+      <div style="background:#fff; width:min(700px,95vw); border-radius:12px; padding:24px; box-shadow:0 10px 40px rgba(0,0,0,.2);">
+        <h3 style="margin-bottom:16px;">編輯藥物</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>藥名 <span class="required">*</span></label>
+            <input type="text" id="editName">
+          </div>
+          <div class="form-group">
+            <label>位置 <span class="required">*</span></label>
+            <input type="text" id="editPosition" placeholder="例: 1-2">
+            <div class="position-help">格式：行-列（例 1-2）</div>
+          </div>
+          <div class="form-group">
+            <label>提示詞 <span class="required">*</span></label>
+            <input type="text" id="editPrompt" placeholder="例: white_bottle">
+          </div>
+          <div class="form-group">
+            <label>信心值 <span class="required">*</span></label>
+            <input type="number" id="editConfidence" step="0.01" min="0" max="1">
+          </div>
+          <div class="form-group">
+            <label>庫存</label>
+            <input type="number" id="editAmount" min="0">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>詳細內容（可選）</label>
+            <textarea id="editContent" rows="4"></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:8px;">
+          <button class="btn" onclick="closeEditModal()">取消</button>
+          <button class="btn btn-primary" onclick="submitEdit()">儲存</button>
+        </div>
+      </div>
+    </div>
+    <!-- ⬆⬆⬆ 貼在這裡 ⬆⬆⬆ -->
 </body>
 </html>
     """
@@ -2106,6 +2230,7 @@ if __name__ == "__main__":
     print("  - Medicine Management: http://localhost:8001/medicine.html")
     print("  - Doctor Interface: http://localhost:8001/doctor.html") 
     print("  - Prescription Management: http://localhost:8001/prescription.html")
+    print("  - Fast API Doc: http://localhost:8001/docs ")
     print("\n ROS2 Integration Endpoints:")
     print("  - Get Next Order: GET /api/ros2/order/next")
     print("  - Complete Order: POST /api/ros2/order/complete")
@@ -2120,4 +2245,4 @@ if __name__ == "__main__":
     print("  Clean Database (No Test Data)")
     print("  Complete ROS2 Integration")
     
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8001) 

@@ -8,7 +8,7 @@ import rclpy
 from rclpy.node import Node
 
 from std_msgs.msg import String
-from tm_robot_if.srv import GetNextOrder, CompleteOrder
+from tm_robot_if.srv import  CompleteOrder
 
 DEFAULT_BASE_URL = "http://localhost:8001"
 
@@ -39,7 +39,7 @@ class OrderGatewaySimple(Node):
         
         self._poll_order_timer = self.create_timer(1, self._poll_order_callback)
 
-        self.get_logger().info(f"[OrderGatewaySimple] base_url={self.base_url} | long_poll={self.long_poll_seconds}s")
+        self.get_logger().info(f"[OrderGatewaySimple] base_url={self.base_url} | long_poll={self.long_poll_seconds}")
 
     # # 取下一張訂單（阻塞直到有單）
     # def get_next_order_cb(self, req: GetNextOrder.Request, res: GetNextOrder.Response):
@@ -120,12 +120,14 @@ class OrderGatewaySimple(Node):
                 order_data = response.json()
                 order = order_data['order']
                 order_yaml = order_data['yaml']
+                print(f"order: {type(order)}, {order}")
                 # 檢查是否為新訂單
                 if order['order_id'] != self.last_order_id:
                     print(f"order: {type(order)}, {order}")
                     print(f"order yaml: {type(order_yaml)}, {order_yaml}")
                     self._push_order_to_ros2(order, order_yaml)
                     self.last_order_id = order['order_id']
+                    self.waiting_for_complete = True
                     
         except requests.exceptions.RequestException as e:
             self.get_logger().error(f"網路錯誤: {e}")
@@ -135,9 +137,11 @@ class OrderGatewaySimple(Node):
 
     def complete_order_cb(self, req: CompleteOrder.Request, res: CompleteOrder.Response):
         try:
+            
             if not self.waiting_for_complete or req.order_id != self.last_order_id:
                 res.success = False
                 res.error = "no matching order waiting for completion"
+                self.get_logger().error(f"no matching order waiting for completion,{req.order_id},{self.last_order_id},{self.waiting_for_complete}")
                 return res
 
             status = (req.status or "success").lower()

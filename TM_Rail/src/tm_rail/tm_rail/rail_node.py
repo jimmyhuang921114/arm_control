@@ -102,8 +102,8 @@ class TMRailNode(Node):
         ])
         ## transfer bag carrier to main rail (dock)
         arm_rail_node.controller.move(-arm_rail_dock_cfg["a_move"], 300),
-        self.controller.move(arm_rail_dock_cfg["m_move"], 50),
-        arm_rail_node.controller.move(arm_rail_dock_cfg["a_move"], 50)
+        self.controller.move(arm_rail_dock_cfg["m_move"], 20),
+        arm_rail_node.controller.move(arm_rail_dock_cfg["a_move"], 20)
 
     def transfer_to_arm_rail(self, arm_rail_node: 'TMRailNode'):
         '''
@@ -122,9 +122,9 @@ class TMRailNode(Node):
                      arm_rail_cfg["a_docking_pos"] + arm_rail_undock_cfg["a_move"], arm_rail_moving_vel)]
         ])
         ## transfer bag carrier to arm rail (undock)
-        arm_rail_node.controller.move(-arm_rail_undock_cfg["a_move"], 50)
-        arm_rail_node.controller.move(arm_rail_undock_cfg["a_move"], 50)
-        self.controller.move(arm_rail_undock_cfg["m_move"], 50)
+        arm_rail_node.controller.move(-arm_rail_undock_cfg["a_move"], 20)
+        arm_rail_node.controller.move(arm_rail_undock_cfg["a_move"], 20)
+        self.controller.move(arm_rail_undock_cfg["m_move"], 20)
 
     def rail_control_callback(self, request: RailControl.Request, response: RailControl.Response):
         ## read arm rail config
