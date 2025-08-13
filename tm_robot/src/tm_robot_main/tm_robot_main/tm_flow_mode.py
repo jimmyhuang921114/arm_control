@@ -16,15 +16,15 @@ class SocketService(Node):
         self.port = 6000
         # ROS 2 service
         self.tm_flow_mode_srv = self.create_service(TMFlowMode, 'tm_flow_mode', self.tm_flow_mode_callback)
+
+
+    def tm_flow_mode_callback(self, request, response):
         # 建立 socket server
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server.bind((self.host, self.port))
         self.server.listen()
         self.get_logger().info(f"Socket server listening on port {self.port}")
-
-
-    def tm_flow_mode_callback(self, request, response):
         try:
             self.get_logger().info(f"received call: mode = {request.mode}, argument = {request.argument}")
             conn, addr = self.server.accept()
@@ -38,6 +38,7 @@ class SocketService(Node):
         except Exception as e:
             self.get_logger().error(f"error: {e}")
             response.success = False
+        self.server.close()
         return response
 
 

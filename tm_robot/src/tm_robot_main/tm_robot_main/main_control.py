@@ -35,6 +35,7 @@ class MainControl(Node):
         self.depth_image = self.create_subscription(Image, '/tm_robot/depth_image', self.depth_image_callback, 10)
         self.curobo_state = self.create_subscription(Bool, '/curobo/state', self.curobo_state_callback, 10)
         self.sct_sub = self.create_subscription(SctResponse,'/sct_response',self.sct_callback,10)
+        self.curobo_error = self.create_subscription(Bool, '/curobo/plan_fail', self.curobo_error_callback, 10)
         # self.io_state = self.create_subscription(Bool, '/io/state', self.io_state_callback, 10)
         self.curobo_pose = self.create_publisher(Pose, '/cube_position', 10)
         self.leave_curobo = self.create_publisher(Bool, '/leave_node', 10)
@@ -43,7 +44,7 @@ class MainControl(Node):
         # self.shelf_level = self.create_publisher(Int32, '/open_floor', 10)
         # self.shelf_ignore = self.create_publisher(Bool, '/shelf_status', 10)
         self.order = self.create_subscription(String,'/hospital/new_order', self.new_order_callback,10)
-
+        
         ## 建立服務 client
         self.slider_client = self.create_client(RailControl, 'rail_control')
         self.detect_client = self.create_client(GroundedSAM2Interface, 'grounded_sam2')
@@ -55,10 +56,7 @@ class MainControl(Node):
         self.tm_flow_script_client = self.create_client(SendScript, 'send_script')
         self.curobo_state_client = self.create_client(Trigger,'/check_goal_arrival')
         self.moveit_set_pose_client = self.create_client(SetPositions,'set_positions')
-
         self.complete_order_client = self.create_client(CompleteOrder, 'complete_order')
-        # self.basic_info_client = self.create_client(QueryMedicineBasic, 'query_medicine_basic')
-        # self.detail_info_client = self.create_client(QueryMedicineDetail, 'query_medicine_detail')
 
 
         ## clients dict
@@ -66,17 +64,20 @@ class MainControl(Node):
             "grounded_sam2": self.detect_client,
             # "ocr": self.ocr_client,
             "llm": self.llm_client,
-            "sencond_camera": self.second_camera_client,
+            # "sencond_camera": self.second_camera_client,
             "grab_detect": self.grab_client,
-            # "rail_control": self.slider_client,
+            "rail_control": self.slider_client,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
-            "curobo_state": self.curobo_state_client,
+            # "curobo_state": self.curobo_state_client,
             # "moveit_set_pose": self.moveit_set_pose_client,
             "complete_order": self.complete_order_client,
             # "query_medicine_basic": self.basic_info_client,
             # "query_medicine_detail": self.detail_info_client
         }
+        # self.service_clients = {
+        #     "rail_control": self.slider_client,
+        # }
         # self.tm_flow_mode_client.wait_for_service()
         ## wait all client activate
         for name, client in self.service_clients.items():
@@ -88,6 +89,7 @@ class MainControl(Node):
         self.color_image_np = None
         self.depth_image_np = None
         self.curobo_state_flag = False
+        self.curobo_error_flag = False
         self.has_run = False
         self.order_list: list[dict] = []
         self.sct_listen_flag = False
@@ -110,21 +112,30 @@ class MainControl(Node):
     def curobo_state_callback(self, msg) -> None:
         self.curobo_state_flag = msg.data
 
+    def curobo_error_callback(self, msg) -> None:
+        self.curobo_error_flag = msg.data
 
-    def spin_until_curobo_finish(self):
+    def spin_until_curobo_finish(self) -> bool:
+        ret = False
         while True:
             future = self.curobo_state_client.call_async(Trigger.Request())
             rclpy.spin_until_future_complete(self, future)
             res = future.result()
             if res.success == True:
                 self.get_logger().info(f"curobo point finish")
-                self.leave_curobo.publish(Bool(data=True))
+                ret = True
+                break
+            if self.curobo_error_flag == False:
+                self.get_logger().error("curobo error")
                 break
             time.sleep(0.1)
+        self.leave_curobo.publish(Bool(data=True))
         time.sleep(0.5)
+        return ret
 
 
     def send_curobo_pose_and_spin(self, pose: Pose) -> None:
+        self.curobo_error_flag = False
         self.leave_curobo.publish(Bool(data=False))
         time.sleep(1)
         ## clear last point
@@ -136,7 +147,9 @@ class MainControl(Node):
         self.curobo_pose.publish(pose)
         self.get_logger().info(f"Published cube_position pose:\n{pose}")
         time.sleep(5)
-        self.spin_until_curobo_finish()
+        if not self.spin_until_curobo_finish():
+            self.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            self.get_logger().warn("curobo error, moveit try home")
 
 
     def vec_pose_to_ros2_pose(self, pose_vec: list[float]) -> Pose:
@@ -181,6 +194,27 @@ class MainControl(Node):
         pass
 
 
+    def send_moveit_joint(self, joints: list[float]):
+        self.get_logger().info(f"moveit set joint: {joints}")
+        setpos_req = SetPositions.Request()
+        setpos_req.motion_type = 1  # PTP_J
+        setpos_req.positions = joints
+        setpos_req.velocity = 1.0
+        setpos_req.acc_time = 0.2
+        setpos_req.blend_percentage = 0
+        setpos_req.fine_goal = False
+        future = self.moveit_set_pose_client.call_async(setpos_req)
+        rclpy.spin_until_future_complete(self, future)
+        result = future.result()
+        if result.ok:
+            self.get_logger().info("moveit set joint success")
+            time.sleep(5)
+            # input("press enter after move finished...")
+        else:
+            self.get_logger().error("moveit set joint failed")
+        pass
+
+
     ## ======= [TM Flow] =======
 
     def sct_callback(self, msg: SctResponse) -> None:
@@ -212,6 +246,7 @@ class MainControl(Node):
 
 
     def send_tm_flow_leave_and_spin(self) -> bool:
+        self.get_logger().info("Request TM flow leave")
         req = SendScript.Request()
         req.id = "main"
         req.script = "ScriptExit()"
@@ -229,6 +264,7 @@ class MainControl(Node):
 
     
     def spin_until_sct_listen_flag(self) -> None:
+        self.get_logger().info("Waiting TM flow SCT")
         while not self.sct_listen_flag:
             rclpy.spin_once(self)
         self.sct_listen_flag = False
@@ -560,11 +596,13 @@ def process_medicine(node: MainControl, medicine: dict):
     amount = medicine['amount']
     shelf_level = medicine['position'][0]
     med_box_num = medicine['position'][1]
+    
     if shelf_level == 1:
         med_box_num = -med_box_num + 1
     else:
         med_box_num = 4 - med_box_num
     node.get_logger().info(f"process medicine name: {name}, amount: {amount}, level: {shelf_level}, box: {med_box_num}")
+
     ## do amount times
     for _ in range(amount):
         ## slider get bag
@@ -573,6 +611,7 @@ def process_medicine(node: MainControl, medicine: dict):
         #     continue
 
         ## close shelf when needed
+
         if node.current_shelf_level != 0 and node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
             if not node.send_tm_flow_mode_and_spin("location_shelf", str(-node.current_shelf_level)):
@@ -603,17 +642,18 @@ def process_medicine(node: MainControl, medicine: dict):
         ## open shelf when needed
         if node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
-            if not node.send_tm_flow_mode_and_spin("location_shelf", str(shelf_level)):
+            while not node.send_tm_flow_mode_and_spin("location_shelf", str(shelf_level)):
                 node.get_logger().error("call tm_flow_mode return failed")
-                continue
             ## check SCT
             node.spin_until_sct_listen_flag()
             ## curobo move to landmark 
             if shelf_level == 1:
                 node.get_logger().info("first pull")
+                node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["first_safe"]))
                 node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["first_pull"]))
             else:
                 node.get_logger().info("second pull")
+                node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe"]))
                 node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_pull"]))
             ## tm flow leave
             if not node.send_tm_flow_leave_and_spin():
@@ -628,7 +668,7 @@ def process_medicine(node: MainControl, medicine: dict):
             ## update variable
             node.current_shelf_level = shelf_level
             ## delay to wait isaac sync world
-            time.sleep(2)
+            time.sleep(3)
 
         ## tm flow: med_box
         if not node.send_tm_flow_mode_and_spin("medicine_box", str(med_box_num)):
@@ -641,7 +681,7 @@ def process_medicine(node: MainControl, medicine: dict):
         med_box_pose: list[float] = None
         if shelf_level == 1:
             med_box_pose = named_pose["med_box_start"]["first"]
-            med_box_pose[1] -= 0.2 * med_box_num
+            med_box_pose[1] -= 0.185 * med_box_num
         else:
             med_box_pose = named_pose["med_box_start"]["second"]
             med_box_pose[1] -= 0.2 * med_box_num
@@ -705,8 +745,8 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call second camera return failed")
             continue
         ## send picture to llm
-        if not node.call_llm_and_spin(name):
-            node.get_logger().warn("call llm return failed")
+        # if not node.call_llm_and_spin(name):
+        #     node.get_logger().warn("call llm return failed")
             # continue
 
         ## check SCT
@@ -722,7 +762,7 @@ def process_medicine(node: MainControl, medicine: dict):
 
 def grab_test(node: MainControl):
     ## groundSAM
-    gsam_result =  node.call_groundsam2_and_spin("white pill can in box", 0.3)
+    gsam_result =  node.call_groundsam2_and_spin("white pill can in box", 0.25)
     # gsam_result =  node.call_groundsam2_and_spin("White medicine jar with red lid", 0.4)
     if gsam_result is None:
         node.get_logger().error("call GroundedSAM2 return failed")
@@ -772,14 +812,22 @@ def main(args=None):
     rclpy.init(args=args)
     node = MainControl()
     node.create_rate(100)   
-    # init slider
-    # if not node.call_slider_and_wait(0):
-    #     node.get_logger().error("call slider with 0 return failed")
-    # time.sleep(3)
-    # if not node.call_slider_and_wait(1):
-    #     node.get_logger().error("call slider with 1 return failed")
     # loop
+
     # node.order_list = []
+    named_pose: dict = None
+    with open(NAMED_POSE_YAML_PATH, 'r', encoding='utf-8') as f:
+        named_pose = yaml.safe_load(f)
+    if named_pose is None:
+        raise("cannot find yaml")
+    
+    node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["test"]["test1"]))
+    
+    node.get_logger().info("wait sct finish")
+    node.spin_until_sct_listen_flag()
+    if not node.send_tm_flow_leave_and_spin():
+        node.get_logger().error("call tm_flow_leave return failed")
+    
     while rclpy.ok():
         rclpy.spin_once(node, timeout_sec=0.1)
         # grab_test(node) 
@@ -787,8 +835,19 @@ def main(args=None):
         if order is not None:
             order_id = order['id']
             node.get_logger().info(f"process order: {order_id}")
+            ## slider get bag
+            # if not node.call_slider_and_wait(0):
+                # node.get_logger().error("call slider with 0 return failed")
+            # if not node.call_slider_and_wait(1):
+                # node.get_logger().error("call slider with 1 return failed")
+            ## process medicine
             for medicine in order['medicine']:
                 process_medicine(node, medicine)
+            # time.sleep(3)
+            ## slider put bag
+            # if not node.call_slider_and_wait(2):
+                # node.get_logger().error("call slider with 2 return failed")
+            ## UI complete
             node.complete_current_order(order_id)
             
     node.destroy_node()

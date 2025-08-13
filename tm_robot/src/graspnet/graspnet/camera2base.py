@@ -33,8 +33,8 @@ class Camera2Base(Node):
         self.get_logger().info("Camera2Base node initialized")
 
     def create_hand_eye_transform(self):
-        trans = np.array([0.03145729249883879, 0.03314633815159044, 0.06826212214917718])
-        quat = [0.002021777432980735, -0.0006116434897466934, 0.9999977661479411, 7.750729404482838e-05]
+        trans = np.array([0.03259844647312995, 0.03353493542635663, 0.06710244944028136])
+        quat = [0.002941215511589119, -0.0014954878102503809, 0.9999927889854823, 0.001880091636192428]
         T = np.eye(4)
         T[:3, :3] = R.from_quat(quat).as_matrix()
         T[:3, 3] = trans
@@ -87,7 +87,7 @@ class Camera2Base(Node):
 
         ## offset
         # pos[0] += 0.012
-        pos[1] -= 0.005
+        # pos[1] -= 0.005
         # pos[2] += 0.10
 
         # == 新增：呼叫機器人 /set_positions ==

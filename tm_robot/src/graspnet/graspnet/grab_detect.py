@@ -40,21 +40,23 @@ class PlaneFittingNode(Node):
         self.create_service(CaptureImage, 'grab_detect', self.handle_mask_service)
 
         # Intrinsics
-        self.K = np.array([[904.87290509, 0.0, 634.39373174],
-                           [0.0, 903.32017544, 369.06447261],
+        self.K = np.array([[905.5264861373364, 0.0, 633.5127254288533],
+                           [0.0, 904.4704173255083, 363.7238756445801],
                            [0.0, 0.0, 1.0]])
+        
+         
         self.dist_coeffs = np.array([
-            0.05773164354848198,
-            0.5821827164855585,
-            0.004314151191910511,
-            -0.001112447533308546,
-            -2.461367058886307
+            0.1457895796758955,
+            -0.3161928425604433,
+            0.0020954680239515847,
+            -0.001678205668629361,
+            0.03480936976818285
         ])
         self.intrinsic = {
-            'fx': 904.8729050868374,
-            'fy': 903.3201754368574,
-            'cx': 634.3937317400505,
-            'cy': 369.0644726085734
+            'fx': 905.5264861373364,
+            'fy': 904.4704173255083,
+            'cx': 633.5127254288533,
+            'cy': 363.7238756445801
         }
 
         # Latest buffers
@@ -115,6 +117,20 @@ class PlaneFittingNode(Node):
 
         xmin, ymin, xmax, ymax = map(int, self.bbox)
 
+        # region_pts = []
+        # for v in range(ymin, ymax):
+        #     for u in range(xmin, xmax):
+        #         if self.latest_mask is not None and self.latest_mask[v, u] != 255:
+        #             continue
+        #         z = self.latest_depth[v, u]
+        #         if z <= 0 or np.isnan(z):
+        #             continue
+        #         x = (u - cx) * z / fx
+        #         y = (v - cy) * z / fy
+        #         region_pts.append([x, y, z])
+        camera_matrix = self.K.astype(np.float32)
+        dist_coeffs = self.dist_coeffs.astype(np.float32)
+
         region_pts = []
         for v in range(ymin, ymax):
             for u in range(xmin, xmax):
@@ -123,8 +139,14 @@ class PlaneFittingNode(Node):
                 z = self.latest_depth[v, u]
                 if z <= 0 or np.isnan(z):
                     continue
-                x = (u - cx) * z / fx
-                y = (v - cy) * z / fy
+
+                # --- 去畸變 ---
+                pts = np.array([[[u, v]]], dtype=np.float32)
+                undistorted = cv2.undistortPoints(pts, camera_matrix, dist_coeffs, P=camera_matrix)
+                u_nd, v_nd = undistorted[0, 0]
+
+                x = (u_nd - cx) * z / fx
+                y = (v_nd - cy) * z / fy
                 region_pts.append([x, y, z])
 
 

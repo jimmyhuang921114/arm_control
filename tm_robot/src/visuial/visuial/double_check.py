@@ -17,7 +17,7 @@ class CameraPublisher(Node):
 
         self.publisher = self.create_publisher(Image, 'camera/image_raw', 10)
         self.bridge = CvBridge()
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture("/dev/v4l/by-id/usb-HD_Camera_Manufacturer_USB_2.0_Camera-video-index0")
 
         if not self.cap.isOpened():
             self.get_logger().error('無法開啟攝影機')
