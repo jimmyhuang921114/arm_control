@@ -91,7 +91,7 @@ class GroundedSAM2Service(Node):
 
   
         input_boxes = input_boxes_crop_xyxy.copy()
-        input_boxes[:, [0, 2]] += x0  # xmin, xmax 加偏移
+        input_boxes[:, [0, 2]] += x0 
 
 
         self.sam2_predictor.set_image(image_bgr)
@@ -130,11 +130,8 @@ class GroundedSAM2Service(Node):
             area = float(np.sum(mask))
             
             if area < min_area or area > max_area:
-                # 可視需要印 log
-                # self.get_logger().debug(f"Reject by area: {area/total_area:.4f}")
+                self.get_logger().debug(f"Reject by area: {area/total_area:.4f}")
                 continue
-
-
 
             if len(xs) == 0 or len(ys) == 0:
                 continue
@@ -143,13 +140,9 @@ class GroundedSAM2Service(Node):
             if 0 <= cx < depth_np.shape[1] and 0 <= cy < depth_np.shape[0]:
                 z = float(depth_np[cy, cx])
                 if z == 0.0:
-                    continue
+                    continue    
 
-                center_x = w // 2
-                distance_from_center = abs(cx - center_x)
-
-                # 分數：越靠近中心、深度越小（越近）分數越高
-                score = -distance_from_center 
+                score = cy * 10000
 
                 candidates.append({
                     "score": score,

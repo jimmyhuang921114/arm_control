@@ -110,7 +110,7 @@ RUN pip install --no-cache-dir \
 # WORKDIR /workspace
 # RUN git clone https://github.com/IDEA-Research/Grounded-SAM-2 /tmp/GroundSam2
 # RUN echo "CUDA_HOME=/usr/local/cuda-12.1/" >> ~/.bashrc
-# WORKDIR /tmp/GroundSam2
+# WORKDIR /tmp/GroundSam2OPENAI_API_KEY
 
 # RUN git clone https://github.com/IDEA-Research/GroundingDINO.git /tmp/grounding_dino
 # WORKDIR /tmp/grounding_dino
@@ -143,7 +143,7 @@ RUN pip install -e .
 
 # ========== ROS Packages ==========
 RUN apt install -y ros-humble-rmw-cyclonedds-cpp
-
+RUN pip install --no-cache-dir --upgrade openai
 
 # ========== User & Workspace ==========
 RUN useradd -ms /bin/bash work && echo "work ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \

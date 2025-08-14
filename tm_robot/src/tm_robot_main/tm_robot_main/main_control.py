@@ -62,20 +62,17 @@ class MainControl(Node):
         ## clients dict
         self.service_clients = {
             "grounded_sam2": self.detect_client,
-            # "ocr": self.ocr_client,
             "llm": self.llm_client,
-            # "sencond_camera": self.second_camera_client,
+            "sencond_camera": self.second_camera_client,
             "grab_detect": self.grab_client,
-            "rail_control": self.slider_client,
+            # "rail_control": self.slider_client,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
             # "curobo_state": self.curobo_state_client,
-            # "moveit_set_pose": self.moveit_set_pose_client,
+            "moveit_set_pose": self.moveit_set_pose_client,
             "complete_order": self.complete_order_client,
-            # "query_medicine_basic": self.basic_info_client,
-            # "query_medicine_detail": self.detail_info_client
         }
-        # self.service_clients = {
+              # self.service_clients = {
         #     "rail_control": self.slider_client,
         # }
         # self.tm_flow_mode_client.wait_for_service()
@@ -125,7 +122,7 @@ class MainControl(Node):
                 self.get_logger().info(f"curobo point finish")
                 ret = True
                 break
-            if self.curobo_error_flag == False:
+            if self.curobo_error_flag:
                 self.get_logger().error("curobo error")
                 break
             time.sleep(0.1)
@@ -134,22 +131,27 @@ class MainControl(Node):
         return ret
 
 
-    def send_curobo_pose_and_spin(self, pose: Pose) -> None:
-        self.curobo_error_flag = False
-        self.leave_curobo.publish(Bool(data=False))
-        time.sleep(1)
-        ## clear last point
-        # clear_pose = Pose()
-        # clear_pose.position = Point(x=0.0,y=0.0,z=40.0)
-        # clear_pose.orientation = Quaternion(x=0.0,y=0.0,z=0.0,w=1.0)
-        # self.curobo_pose.publish(clear_pose)
-        ## normal point
-        self.curobo_pose.publish(pose)
-        self.get_logger().info(f"Published cube_position pose:\n{pose}")
-        time.sleep(5)
-        if not self.spin_until_curobo_finish():
-            self.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-            self.get_logger().warn("curobo error, moveit try home")
+    def send_curobo_pose_and_spin(self, pose: Pose) -> bool:
+        MAX_RETRY = 3
+        for _ in range(MAX_RETRY):
+            self.curobo_error_flag = False
+            self.leave_curobo.publish(Bool(data=False))
+            time.sleep(0.5)
+            ## clear last point
+            # clear_pose = Pose()
+            # clear_pose.position = Point(x=0.0,y=0.0,z=40.0)
+            # clear_pose.orientation = Quaternion(x=0.0,y=0.0,z=0.0,w=1.0)
+            # self.curobo_pose.publish(clear_pose)
+            ## normal point
+            self.curobo_pose.publish(pose)
+            self.get_logger().info(f"Publish cube_position:\n{pose}")
+            time.sleep(3)
+            if not self.spin_until_curobo_finish():
+                self.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+                self.get_logger().warn("curobo error, go home with moveit")
+            else:
+                return True
+        return False
 
 
     def vec_pose_to_ros2_pose(self, pose_vec: list[float]) -> Pose:
@@ -194,7 +196,7 @@ class MainControl(Node):
         pass
 
 
-    def send_moveit_joint(self, joints: list[float]):
+    def send_moveit_joint(self, joints: list[float], op_time: float = 5):
         self.get_logger().info(f"moveit set joint: {joints}")
         setpos_req = SetPositions.Request()
         setpos_req.motion_type = 1  # PTP_J
@@ -208,7 +210,7 @@ class MainControl(Node):
         result = future.result()
         if result.ok:
             self.get_logger().info("moveit set joint success")
-            time.sleep(5)
+            time.sleep(op_time)
             # input("press enter after move finished...")
         else:
             self.get_logger().error("moveit set joint failed")
@@ -596,13 +598,12 @@ def process_medicine(node: MainControl, medicine: dict):
     amount = medicine['amount']
     shelf_level = medicine['position'][0]
     med_box_num = medicine['position'][1]
-    
+    ## calculate medicine box num count from landmark
     if shelf_level == 1:
         med_box_num = -med_box_num + 1
     else:
         med_box_num = 4 - med_box_num
     node.get_logger().info(f"process medicine name: {name}, amount: {amount}, level: {shelf_level}, box: {med_box_num}")
-
     ## do amount times
     for _ in range(amount):
         ## slider get bag
@@ -610,8 +611,7 @@ def process_medicine(node: MainControl, medicine: dict):
         #     node.get_logger().error("call slider with 1 return failed")
         #     continue
 
-        ## close shelf when needed
-
+        ## ======= [Close Shelf] =======
         if node.current_shelf_level != 0 and node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
             if not node.send_tm_flow_mode_and_spin("location_shelf", str(-node.current_shelf_level)):
@@ -639,7 +639,7 @@ def process_medicine(node: MainControl, medicine: dict):
             ## update variable
             node.current_shelf_level = 0
 
-        ## open shelf when needed
+        ## ======= [Open Shelf] =======
         if node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
             while not node.send_tm_flow_mode_and_spin("location_shelf", str(shelf_level)):
@@ -670,7 +670,7 @@ def process_medicine(node: MainControl, medicine: dict):
             ## delay to wait isaac sync world
             time.sleep(3)
 
-        ## tm flow: med_box
+        ## ======= [Medicine box] =======
         if not node.send_tm_flow_mode_and_spin("medicine_box", str(med_box_num)):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
@@ -719,8 +719,8 @@ def process_medicine(node: MainControl, medicine: dict):
         if not node.send_tm_flow_leave_and_spin():
             node.get_logger().error("call tm_flow_leave return failed")
             continue
-
-        ## tm flow: grab_and_check
+            
+        ## ======= [Grab and Check] =======
         if not node.send_tm_flow_mode_and_spin("grab_and_check", "null"):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
@@ -783,29 +783,6 @@ def llm_test(node: MainControl, name: str):
     if not node.call_llm_and_spin(name):
         node.get_logger().error("call llm return failed")
 
-# def main(args=None):
-#     rclpy.init(args=args)
-#     node = MainControl()
-#     try:
-#         med_name = "Andsodhcd"
-
-#         if not os.path.exists(COMBINE_PIC_PATH):
-#             node.get_logger().info("找不到 combined.jpg，先呼叫 SecondCamera 產生圖片")
-#             if not node.call_second_camera_and_spin():
-#                 node.get_logger().error("SecondCamera 失敗，無法進行 LLM 測試")
-#                 return
-
-#         # 只測一次，確保能看到結果
-#         if not node.call_llm_and_spin(med_name):
-#             node.get_logger().error("call llm return failed")
-#         else:
-#             node.get_logger().info("LLM 驗證通過（yes）")
-
-#         # 若還要讓 node 繼續跑，再 spin
-#         rclpy.spin(node)
-#     finally:
-#         node.destroy_node()
-#         rclpy.shutdown()
 
 
 def main(args=None):
@@ -821,7 +798,7 @@ def main(args=None):
     if named_pose is None:
         raise("cannot find yaml")
     
-    node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["test"]["test1"]))
+    # node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["test"]["test1"]))
     
     node.get_logger().info("wait sct finish")
     node.spin_until_sct_listen_flag()
@@ -852,6 +829,33 @@ def main(args=None):
             
     node.destroy_node()
     rclpy.shutdown()
+
+
+# def main(args=None):
+#     rclpy.init(args=args)
+#     node = MainControl()
+#     try:
+#         med_name = "Andsodhcd"
+
+#         if not os.path.exists(COMBINE_PIC_PATH):
+#             node.get_logger().info("找不到 combined.jpg，先呼叫 SecondCamera 產生圖片")
+#             if not node.call_second_camera_and_spin():
+#                 node.get_logger().error("SecondCamera 失敗，無法進行 LLM 測試")
+#                 return
+
+#         # 只測一次，確保能看到結果
+#         if not node.call_llm_and_spin(med_name):
+#             node.get_logger().error("call llm return failed")
+#         else:
+#             node.get_logger().info("LLM 驗證通過（yes）")
+
+#         # 若還要讓 node 繼續跑，再 spin
+#         rclpy.spin(node)
+#     finally:
+#         node.destroy_node()
+#         rclpy.shutdown()
+
+
 
 
 if __name__ == '__main__':

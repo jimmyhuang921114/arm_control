@@ -17,15 +17,15 @@ path:/tm_ws/ubuntudocker
 
 
 
-ros2 launch tm5s_moveit_config tm5s_run_move_group.launch.py  robot_ip:=192.168.10.2
+ros2 launch tm5s_moveit_config tm5s_run_move_group.launch.py  robot_ip:=192.168.10.10
 
 sudo apt update
 sudo apt install libvisp-dev
+pip install --upgrade --no-cache-dir opencv-contrib-python==4.6.0.66 numpy==1.24.4
 
-
-sudo apt install libfastrtps-dev
-sudo apt install ros-humble-rmw-fastrtps-cpp
 
 
 
 sudo apt install ros-humble-realsense2-camera
+sudo apt install libfastrtps-dev
+sudo apt install ros-humble-rmw-fastrtps-cpp

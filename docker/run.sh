@@ -27,6 +27,7 @@ echo -e "${YELLOW}Running Docker container from image '$IMAGE_NAME'...${NC}"
 xhost +local:root
 
 docker run -it --rm \
+    --env-file open_ai.env \
     --env ROS_DOMAIN_ID=10 \
     --privileged \
     --net=host \

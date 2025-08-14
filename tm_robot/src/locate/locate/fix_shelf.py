@@ -15,7 +15,7 @@ import threading
 class MinimalPublisher(Node):
 
     def __init__(self):
-        super().__init__('minimal_publisher')
+        super().__init__('fix_shelf')
         self.publisher_position = self.create_publisher(Pose, '/shelf_position', 10)
         # self.publisher_landmark = self.create_publisher(Pose, '/shelf_landmark', 10)
         self.leave_curobo = self.create_publisher(Bool, '/leave_node', 10)

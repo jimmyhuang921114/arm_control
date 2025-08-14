@@ -100,8 +100,9 @@ class TMRailNode(Node):
             [partial(arm_rail_node.controller.goto, 
                      arm_rail_cfg["a_docking_pos"] + arm_rail_dock_cfg["a_move"], arm_rail_moving_vel)]
         ])
+        input("enter after check")
         ## transfer bag carrier to main rail (dock)
-        arm_rail_node.controller.move(-arm_rail_dock_cfg["a_move"], 300),
+        arm_rail_node.controller.move(-arm_rail_dock_cfg["a_move"], 100),
         self.controller.move(arm_rail_dock_cfg["m_move"], 20),
         arm_rail_node.controller.move(arm_rail_dock_cfg["a_move"], 20)
 
@@ -150,6 +151,7 @@ class TMRailNode(Node):
         OPT_CALL_RAIL = 1
         OPT_RETURN_BAG = 2
         opt = request.opt_code
+        input("enter after check")
         try:
             if opt == OPT_INIT:
                 self.get_logger().info(f"init rail: {rail_name}")

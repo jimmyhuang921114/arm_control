@@ -12,7 +12,6 @@ def generate_launch_description():
             parameters=[],
         ),
 
-        # Second camera node (C++)
         Node(
             package='graspnet',
             executable='camera2base',

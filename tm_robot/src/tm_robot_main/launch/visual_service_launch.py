@@ -24,11 +24,11 @@ def generate_launch_description():
             name='camera_publisher',
             output='screen'
         ),
-        # Node(
-        #     package='visuial',
-        #     executable='paddleocr',``  # 應確認是否正確
-        #     name='easyocr_topic_node',
-        #     output='screen',
-        #     parameters=[]
-        # ),
+        Node(
+            package='visuial',
+            executable='second_camera', # 應確認是否正確
+            name='second_camera',
+            output='screen',
+            parameters=[]
+        )
     ])

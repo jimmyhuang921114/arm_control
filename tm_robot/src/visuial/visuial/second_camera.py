@@ -17,12 +17,14 @@ class SecondCamera(Node):
         self.bridge = CvBridge()
         # self.cap = cv2.VideoCapture(0)
         self.cap = cv2.VideoCapture("/dev/v4l/by-id/usb-HD_Camera_Manufacturer_USB_2.0_Camera-video-index0")
+        self.timer = self.create_timer(0.03, self.timer_callback)
+
         if not self.cap.isOpened():
-            self.get_logger().error('無法開啟攝影機')
+            self.get_logger().error('can not open second camera')
             return
         else:
-            self.get_logger().info('攝影機已開啟')
-                # 相機參數設定
+            self.get_logger().info('second camera open')
+        # camera parameters
         self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1.0)
         self.cap.set(cv2.CAP_PROP_EXPOSURE, 300.0)
         self.cap.set(cv2.CAP_PROP_BRIGHTNESS, 1)
@@ -47,10 +49,31 @@ class SecondCamera(Node):
             ("WHITE_BALANCE_RED_V", cv2.CAP_PROP_WHITE_BALANCE_RED_V),
             ("FPS", cv2.CAP_PROP_FPS),
         ]
-        self.get_logger().info("=== 相機目前參數 ===")
+
+        self.get_logger().info("=== camera parameter ===")
         for name, prop in param_names:
             val = self.cap.get(prop)
             self.get_logger().info(f"{name}: {val}")
 
 
-    def 
+    def timer_callback(self):
+        ret, frame = self.cap.read()
+        frame = cv2.flip(frame, -1)
+        if not ret:
+            self.get_logger().warn('can not read frame')
+            return
+        msg = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
+        self.img_pub.publish(msg)
+        self.get_logger().debug('pub second camera image')
+        
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = SecondCamera()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()

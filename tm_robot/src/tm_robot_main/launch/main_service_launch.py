@@ -5,17 +5,38 @@ def generate_launch_description():
     return LaunchDescription([
         # Main control node
         Node(
-            package='locate',
-            executable='shelf',  # 應確認這個是否正確（通常 executable 應是 'realsense'）
-            name='shelf',
+            package='tm_robot_main',
+            executable='main_control', 
+            name='main_control',
             output='screen',
             parameters=[],
         ),
         Node(
             package='locate',
-            executable='slider',  # 應確認這個是否正確（通常 executable 應是 'realsense'）
-            name='slider',
+            executable='fix_shelf',  
+            name='fix_shelf',
             output='screen',
             parameters=[],
+        ),
+        Node(
+            package='locate',
+            executable='fix_slider',  
+            name='fix_slider',
+            output='screen',
+            parameters=[],
+        ),
+        Node(
+            package='tm_robot_main',
+            executable='order_process',  
+            name='order_process',
+            output='screen',
+            parameters=[],
+        ),
+        Node(
+            package='tm_robot_main',
+            executable='tm_flow_mode',
+            name='tm_flow_mode',
+            output = 'screen',
+            parameters=[]
         )
     ])

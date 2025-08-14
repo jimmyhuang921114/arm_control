@@ -20,8 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'shelf = locate.shelf:main',
-            'slider = locate.slider:main',
+            'fix_slider = locate.slider:main',
             'fix_shelf = locate.fix_shelf:main',
         ],
     },

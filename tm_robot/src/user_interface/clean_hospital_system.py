@@ -38,6 +38,10 @@ class Medicine(Base):
     prompt = Column(String(255), nullable=False)    # 提示詞
     confidence = Column(Float, nullable=False)       # 信心值
     amount = Column(Integer, default=0)              # 庫存數量
+    length_mm = Column(Float, default=0, nullable = False )     
+    width_mm = Column(Float, default=0, nullable = False )   
+    area = Column(Float, default=0, nullable = False )  
+    category  = Column(String(100), default="", nullable=False)  # 文字型別         
     
 class MedicineDetail(Base):
     __tablename__ = "medicine_detail"
@@ -70,7 +74,11 @@ class MedicineCreate(BaseModel):
     prompt: str
     confidence: float
     amount: int = 100
-    content: str = ""  # 詳細內容 - 可選
+    content: str = ""
+    length_mm:float = 0.0
+    width_mm:float = 0.0
+    area: float = 0.0
+    category: str =""
 
 class MedicineDetailCreate(BaseModel):
     medicine_id: int
@@ -137,7 +145,11 @@ async def get_basic_medicines(db: Session = Depends(get_db)):
             "position": m.position,
             "prompt": m.prompt,
             "confidence": m.confidence,
-            "amount": m.amount
+            "amount": m.amount,
+            "length_mm": m.length_mm,
+            "width_mm": m.width_mm,
+            "area": m.area,
+            "category": m.category,
         } for m in medicines
     ]
 
@@ -172,7 +184,12 @@ async def get_combined_medicines(db: Session = Depends(get_db)):
             "prompt": medicine.prompt,
             "confidence": medicine.confidence,
             "amount": medicine.amount,
-            "content": detail.content if detail else ""
+            "content": detail.content if detail else "",
+            "length_mm": medicine.length_mm,
+            "width_mm": medicine.width_mm,
+            "area": medicine.area,
+            "category": medicine.category,
+
         })
     
     return result
@@ -193,7 +210,12 @@ async def get_medicine_detail(medicine_id: int, db: Session = Depends(get_db)):
         "prompt": medicine.prompt,
         "confidence": medicine.confidence,
         "amount": medicine.amount,
-        "content": detail.content if detail else ""
+        "content": detail.content if detail else "",
+        "length_mm": medicine.length_mm,
+        "width_mm": medicine.width_mm,
+        "area": medicine.area,
+        "category": medicine.category,
+
     }
 
 @app.post("/api/medicine/")
@@ -210,7 +232,11 @@ async def create_medicine(medicine: MedicineCreate, db: Session = Depends(get_db
         position=medicine.position,
         prompt=medicine.prompt,
         confidence=medicine.confidence,
-        amount=medicine.amount
+        amount=medicine.amount,
+        length_mm=medicine.length_mm,
+        width_mm=medicine.width_mm,
+        area = medicine.area,
+        category=medicine.category
     )
     db.add(db_medicine)
     db.commit()
@@ -253,6 +279,10 @@ async def update_medicine(medicine_id: int, medicine: MedicineCreate, db: Sessio
     db_medicine.prompt = medicine.prompt
     db_medicine.confidence = medicine.confidence
     db_medicine.amount = medicine.amount
+    db_medicine.length_mm = medicine.length_mm
+    db_medicine.width_mm = medicine.width_mm
+    db_medicine.area = medicine.area
+    db_medicine.category = medicine.category
     
     # Update detailed info
     detail = db.query(MedicineDetail).filter(MedicineDetail.medicine_id == medicine_id).first()
@@ -357,8 +387,8 @@ async def create_prescription(prescription: PrescriptionCreate, db: Session = De
 
 @app.put("/api/prescription/{prescription_id}/status")
 async def update_prescription_status(prescription_id: int, status_update: StatusUpdate, db: Session = Depends(get_db)):
-    global current_processing_order
     """Update prescription status"""
+    global current_processing_order
     prescription = db.query(Prescription).filter(Prescription.id == prescription_id).first()
     if not prescription:
         raise HTTPException(status_code=404, detail="Prescription not found")
@@ -367,13 +397,13 @@ async def update_prescription_status(prescription_id: int, status_update: Status
     prescription.updated_at = datetime.utcnow()
     db.commit()
 
-    if(prescription_id == current_processing_order and status_update.status == "completed"):
+    if(prescription_id == current_processing_order and status_update.status in ("completed", "failed")):
         current_processing_order = None
     
     logger.info(f"Prescription {prescription_id} status updated to: {status_update.status}")
     return {"message": "Status updated", "status": status_update.status}
 
-# ROS2 Integration APIs
+
 
 @app.get("/api/ros2/order/next")
 async def get_next_order_for_ros2(db: Session = Depends(get_db)):
@@ -388,7 +418,6 @@ async def get_next_order_for_ros2(db: Session = Depends(get_db)):
         pending_prescriptions = db.query(Prescription).filter(
             Prescription.status == "pending"
         ).order_by(Prescription.created_at.asc()).all()
-        
         order_queue = [p.id for p in pending_prescriptions]
     
     if not order_queue:
@@ -411,6 +440,7 @@ async def get_next_order_for_ros2(db: Session = Depends(get_db)):
         PrescriptionMedicine.prescription_id == prescription_id
     ).all()
     
+  
     medicines = []
     for pm in prescription_medicines:
         medicine = db.query(Medicine).filter(Medicine.id == pm.medicine_id).first()
@@ -420,16 +450,31 @@ async def get_next_order_for_ros2(db: Session = Depends(get_db)):
                 "amount": pm.amount,
                 "position": medicine.position,
                 "prompt": medicine.prompt,
-                "confidence": medicine.confidence
+                "confidence": medicine.confidence,
+                "length_mm": medicine.length_mm,
+                "width_mm": medicine.width_mm,
+                "area": medicine.area,
+                "category": medicine.category or ""
             })
-    
+
+    def _pos_key(pos: str):
+        try:
+            r, c = pos.split('-', 1)
+            return (int(r.strip()), int(c.strip()))
+        except Exception:
+            # 位置壞掉時丟到最後
+            return (10**9, 10**9)
+
+    medicines.sort(key=lambda m: _pos_key(m.get("position", "")))
+
+    # --- 打包訂單（用排序後的 medicines）---
     order = {
         "order_id": f"{prescription.id:06d}",
         "prescription_id": prescription.id,
         "patient_name": prescription.patient_name,
         "medicine": medicines
     }
-    
+
     logger.info(f"Sending order {prescription.id} to ROS2 for processing")
     
     return {
@@ -437,6 +482,7 @@ async def get_next_order_for_ros2(db: Session = Depends(get_db)):
         "yaml": yaml.safe_dump(order, allow_unicode=True, default_flow_style=False),
         "prescription_id": prescription.id
     }
+
 
 @app.post("/api/ros2/order/complete")
 async def complete_order_from_ros2(payload: Dict[str, Any], db: Session = Depends(get_db)):
@@ -505,7 +551,11 @@ async def get_medicine_basic_info_ros2(medicine_name: str, db: Session = Depends
         "position": medicine.position,
         "prompt": medicine.prompt,
         "confidence": medicine.confidence,
-        "amount": medicine.amount
+        "amount": medicine.amount,
+        "length_mm": medicine.length_mm,
+        "width_mm": medicine.width_mm,
+        "area": medicine.area,
+        "category": medicine.category or ""
     }
     
     return {
@@ -873,6 +923,23 @@ async def medicine_page():
                     <label for="medicineAmount">庫存數量</label>
                     <input type="number" id="medicineAmount" value="100" min="0">
                 </div>
+                <div class="form-group">
+                    <label for="medicineLength">長 (mm)</label>
+                    <input type="number" id="medicineLength" step="0.01" min="0" placeholder="例如 50">
+                </div>
+                <div class="form-group">
+                    <label for="medicineWidth">寬 (mm)</label>
+                    <input type="number" id="medicineWidth" step="0.01" min="0" placeholder="例如 30">
+                </div>
+                <div class="form-group">
+                    <label for="medicineArea">面積 (mm²)</label>
+                    <input type="number" id="medicineArea" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="medicineCategory">種類</label>
+                    <input type="text" id="medicineCategory" placeholder="例如：瓶裝、藥板、藥膏...">
+                </div>
+
             </div>
             
                          <div class="form-group">
@@ -903,6 +970,10 @@ async def medicine_page():
                         <th>信心值</th>
                         <th>庫存數量</th>
                         <th>詳細資訊</th>
+                        <th>長(mm)</th>
+                        <th>寬(mm)</th>
+                        <th>面積(mm²)</th>
+                        <th>種類</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -945,6 +1016,11 @@ async def medicine_page():
             const confidence = parseFloat(document.getElementById('medicineConfidence').value);
             const amount = parseInt(document.getElementById('medicineAmount').value) || 0;
             const content = document.getElementById('medicineContent').value.trim();
+            const length_mm = parseFloat(document.getElementById('medicineLength').value) || 0;
+            const width_mm  = parseFloat(document.getElementById('medicineWidth').value)  || 0;
+            let area = parseFloat(document.getElementById('medicineArea').value); 
+            const category  = document.getElementById('medicineCategory').value.trim();
+
 
                          // Validate required fields
              if (!name || !position || !prompt || isNaN(confidence)) {
@@ -970,7 +1046,11 @@ async def medicine_page():
                 prompt: prompt,
                 confidence: confidence,
                 amount: amount,
-                content: content
+                content: content,
+                length_mm: length_mm,
+                width_mm: width_mm,
+                area: area,
+                category: category
             };
 
             try {
@@ -1012,20 +1092,25 @@ async def medicine_page():
             }
 
             tbody.innerHTML = medicines.map(med => `
-                <tr>
+            <tr>
                 <td>${med.id}</td>
                 <td><strong>${med.name}</strong></td>
                 <td>${med.position}</td>
                 <td>${med.prompt}</td>
                 <td>${med.confidence.toFixed(2)}</td>
                 <td><span class="status-badge ${med.amount > 50 ? 'status-high' : med.amount > 10 ? 'status-medium' : 'status-low'}">${med.amount}</span></td>
-                <td>${med.content ? '✅ 已設定' : '❌ 未設定'}</td>
+                <td>${med.content ? '已設定' : '未設定'}</td>
+                <td>${(med.length_mm ?? 0).toFixed(2)}</td>
+                <td>${(med.width_mm ?? 0).toFixed(2)}</td>
+                <td>${(med.area ?? 0).toFixed(2)}</td>
+                <td>${med.category ? med.category : '-'}</td>
                 <td>
-                    <button class="btn btn-primary" onclick="openEditMedicine(${med.id})">編輯</button>
-                    <button class="btn btn-success" style="background:linear-gradient(135deg,#dc3545,#c82333)" onclick="deleteMedicine(${med.id}, '${med.name.replace(/'/g, "\\'")}')">刪除</button>
+                <button class="btn btn-primary" onclick="openEditMedicine(${med.id})">編輯</button>
+                <button class="btn btn-success" style="background:linear-gradient(135deg,#dc3545,#c82333)" onclick="deleteMedicine(${med.id}, '${med.name.replace(/'/g, "\\'")}')">刪除</button>
                 </td>
-                </tr>
+            </tr>
             `).join('');
+
             }
 
 
@@ -1036,6 +1121,10 @@ async def medicine_page():
             document.getElementById('medicineConfidence').value = '0.95';
             document.getElementById('medicineAmount').value = '100';
             document.getElementById('medicineContent').value = '';
+            document.getElementById('medicineLength').value = '';
+            document.getElementById('medicineWidth').value = '';
+            document.getElementById('medicineArea').value = '';
+            document.getElementById('medicineCategory').value = '';
         }
         let editingId = null;
 
@@ -1049,6 +1138,10 @@ async def medicine_page():
             document.getElementById('editPrompt').value = data.prompt || '';
             document.getElementById('editConfidence').value = (data.confidence ?? 0.95);
             document.getElementById('editAmount').value = (data.amount ?? 0);
+            document.getElementById('editLength').value   = (data.length_mm ?? 0);
+            document.getElementById('editWidth').value    = (data.width_mm ?? 0);
+            document.getElementById('editArea').value     = (data.area ?? 0);
+            document.getElementById('editCategory').value = data.category || '';
             document.getElementById('editContent').value = data.content || '';
             document.getElementById('editModal').classList.remove('hidden');
             })
@@ -1069,6 +1162,10 @@ async def medicine_page():
         const confidence = parseFloat(document.getElementById('editConfidence').value);
         const amount = parseInt(document.getElementById('editAmount').value) || 0;
         const content = document.getElementById('editContent').value.trim();
+        const length_mm = parseFloat(document.getElementById('editLength').value) || 0;
+        const width_mm  = parseFloat(document.getElementById('editWidth').value)  || 0;
+        let area   = parseFloat(document.getElementById('editArea').value);
+        const category  = document.getElementById('editCategory').value.trim();
 
         if (!name || !position || !prompt || isNaN(confidence)) {
             showAlert('請填寫所有必要欄位', 'error'); return;
@@ -1080,7 +1177,8 @@ async def medicine_page():
             showAlert('信心值必須在 0~1 之間', 'error'); return;
         }
 
-        const payload = { name, position, prompt, confidence, amount, content };
+        const payload = { name, position, prompt, confidence, amount, content,
+                  length_mm, width_mm, area, category };    
 
         try {
             const resp = await fetch(`/api/medicine/${editingId}`, {
@@ -1148,10 +1246,26 @@ async def medicine_page():
             <label>庫存</label>
             <input type="number" id="editAmount" min="0">
           </div>
-          <div class="form-group" style="grid-column:1/-1">
+          <div class="form-group">
+          <label>長 (mm)</label>
+          <input type="number" id="editLength" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label>寬 (mm)</label>
+          <input type="number" id="editWidth" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label>面積 (mm²)</label>
+          <input type="number" id="editArea" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label>種類</label>
+          <input type="text" id="editCategory">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
             <label>詳細內容（可選）</label>
             <textarea id="editContent" rows="4"></textarea>
-          </div>
+        </div>
         </div>
         <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:8px;">
           <button class="btn" onclick="closeEditModal()">取消</button>

@@ -1,9 +1,11 @@
+
 #!/usr/bin/env python3
 import time
 import yaml
 import requests
 from typing import Optional, Dict, Any, Tuple
-
+from sqlalchemy import func, cast
+from sqlalchemy.types import Integer as SAInteger
 import rclpy
 from rclpy.node import Node
 
@@ -78,7 +80,7 @@ class OrderGatewaySimple(Node):
     #         res.error = str(e)
     #         self.get_logger().exception("get_next_order exception")
     #         return res
-
+    
     def _push_order_to_ros2(self, order: Dict[str, Any], order_yaml: str):
         """推送訂單到ROS2"""
         order_id = order['order_id']
@@ -110,7 +112,6 @@ class OrderGatewaySimple(Node):
             if response.status_code != 200:
                 self.get_logger().warn("醫院系統不可用")
                 return
-            # 拉取下一個訂單
             response = requests.get(f"{self.base_url}/api/ros2/order/next", timeout=5)
             if response.status_code == 204:
                 # 沒有新訂單
