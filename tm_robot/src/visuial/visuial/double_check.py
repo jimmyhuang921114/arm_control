@@ -19,7 +19,7 @@ class CameraPublisher(Node):
         self.lock = threading.Lock()
         self.latest_frame = None
         self.last_capture_time = 0.0
-        self.capture_dir = os.path.abspath('./src/visuial/sample_picture') 
+        self.capture_dir = os.path.abspath('./tm_robot/src/visuial/sample_picture') 
         os.makedirs(self.capture_dir, exist_ok=True)
         self.create_subscription(Image, 'camera/image_raw', self.second_camera_img_callback, 10)
         self.create_service(SecondCameraSrv, 'camera2', self.capture_callback)

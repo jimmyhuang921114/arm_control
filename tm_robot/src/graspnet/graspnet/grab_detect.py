@@ -20,9 +20,9 @@ class PlaneFittingNode(Node):
         super().__init__('plane_fitting_node')
 
         # Parameters
-        self.declare_parameter('distance_threshold', 0.001)
+        self.declare_parameter('distance_threshold', 0.005)
         self.declare_parameter('ransac_n', 3)
-        self.declare_parameter('num_iterations', 1000)
+        self.declare_parameter('num_iterations', 2000)
 
         # Subscribers
         self.sub_pc = self.create_subscription(PointCloud2, '/tm_robot/pointcloud', self.pc_callback, 10)
@@ -52,6 +52,8 @@ class PlaneFittingNode(Node):
             -0.001678205668629361,
             0.03480936976818285
         ])
+
+
         self.intrinsic = {
             'fx': 905.5264861373364,
             'fy': 904.4704173255083,
@@ -75,7 +77,6 @@ class PlaneFittingNode(Node):
 
     def depth_callback(self, msg):
         try:
-            # 假設 depth_msg.encoding == '16UC1' (mm)
             depth_mm = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
             depth_m = depth_mm.astype(np.float32) * 0.001
             self.latest_depth = depth_m
@@ -140,7 +141,6 @@ class PlaneFittingNode(Node):
                 if z <= 0 or np.isnan(z):
                     continue
 
-                # --- 去畸變 ---
                 pts = np.array([[[u, v]]], dtype=np.float32)
                 undistorted = cv2.undistortPoints(pts, camera_matrix, dist_coeffs, P=camera_matrix)
                 u_nd, v_nd = undistorted[0, 0]
@@ -154,14 +154,43 @@ class PlaneFittingNode(Node):
         pts = np.array(region_pts, dtype=np.float32)
         # 取 z 欄的 50 分位做門檻
         z_vals = pts[:, 2]
-        z_thresh = np.percentile(z_vals, 50)
+        z_thresh = np.percentile(z_vals, 70)
         # 過濾出 z <= 門檻（後 50%）
-        bottom50_pts = pts[z_vals <= z_thresh]
+        bottom50_pts = pts[z_vals <= z_thresh]          
         if bottom50_pts.shape[0] < 50:
             self.get_logger().warn(f"篩選後點雲數量不足: {bottom50_pts.shape[0]}")
             return
         # 更新 region_pts 為後 50%
         region_pts = bottom50_pts.tolist()
+
+        # 取 bbox 內有效點後：
+        # pts = np.asarray(region_pts, dtype=np.float32)
+        # z = pts[:, 2].astype(np.float32)
+
+        # # 1) 先分群：近 / 遠
+        # z1 = z.reshape(-1, 1)
+        # criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 40, 1e-3)
+        # _compact, labels, centers = cv2.kmeans(z1, 2, None, criteria, 5, cv2.KMEANS_PP_CENTERS)
+        # near_label = int(np.argmin(centers.ravel()))
+        # mask_near = (labels.ravel() == near_label)
+
+        # # 2) 在近群上取「窄帶」
+        # z0 = np.median(z[mask_near])
+        # band = 0.02  # 4 mm，可調參
+        # mask_band = np.abs(z - z0) <= band
+        # mask_use = mask_near & mask_band
+
+        # pts_used = pts[mask_use]
+        # if pts_used.shape[0] < 50:
+        #     # 退化：近群前 10% 當窄帶
+        #     q = np.percentile(z[mask_near], 10.0)
+        #     pts_used = pts[(mask_near) & (z <= q)]
+        #     if pts_used.shape[0] < 50:
+        #         self.get_logger().warn(f"cap 候選太少: {pts_used.shape[0]}")
+        #         return
+
+        # region_pts = pts_used.tolist()
+
         # ==============================================================
 
 
@@ -328,3 +357,6 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
+
+

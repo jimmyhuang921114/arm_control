@@ -70,6 +70,9 @@ class RealsenseColorPointCloudNode(Node):
             self.get_logger().warn("無法取得影像")
             return
         filtered_depth = self.hole_filling.process(depth_frame)
+
+
+        
         # 發布彩色影像
         color_image = np.asanyarray(color_frame.get_data())
         color_msg = self.bridge.cv2_to_imgmsg(color_image, encoding="bgr8")
@@ -78,7 +81,7 @@ class RealsenseColorPointCloudNode(Node):
         self.color_pub.publish(color_msg)
 
         # 發布深度影像
-        depth_image = np.asanyarray(filtered_depth.get_data())
+        depth_image = np.asanyarray(depth_frame.get_data())
         depth_msg = self.bridge.cv2_to_imgmsg(depth_image, encoding="16UC1")
         depth_msg.header.stamp = self.get_clock().now().to_msg()
         depth_msg.header.frame_id = "camera_depth_optical_frame"
@@ -87,7 +90,7 @@ class RealsenseColorPointCloudNode(Node):
         # 建立並發布點雲
         pc = rs.pointcloud()
         pc.map_to(color_frame)
-        points = pc.calculate(filtered_depth)
+        points = pc.calculate(depth_frame)
         vtx = np.asanyarray(points.get_vertices()).view(np.float32).reshape(-1, 3)
 
         header = Header()

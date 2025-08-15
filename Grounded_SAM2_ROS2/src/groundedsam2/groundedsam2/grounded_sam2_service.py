@@ -120,7 +120,8 @@ class GroundedSAM2Service(Node):
 
 
         total_area = float(h * w)
-        max_area_ratio = 0.10  # 10%：過大雜訊丟掉
+        # max_area_ratio = 0.10  # 10%：過大雜訊丟掉
+        max_area_ratio = request.size_threshold
         min_area_ratio = 0.002  # 0.2%：過小雜訊丟掉
         min_area = total_area * min_area_ratio
         max_area = total_area * max_area_ratio
@@ -143,7 +144,7 @@ class GroundedSAM2Service(Node):
                     continue    
 
                 score = cy * 10000
-
+                score = cy  - abs(cx - half_width)
                 candidates.append({
                     "score": score,
                     "box": box,
@@ -209,8 +210,12 @@ class GroundedSAM2Service(Node):
 
 def main(args=None):
     rclpy.init(args=args)
+    # threading.Thread(target=cv2_key_handle).start()
     service = GroundedSAM2Service()
-    rclpy.spin(service)
+    service.create_rate(100)
+    while rclpy.ok:
+        rclpy.spin_once(service)
+        cv2.waitKey(1)
     rclpy.shutdown()
 
 if __name__ == '__main__':

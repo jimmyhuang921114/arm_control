@@ -924,15 +924,15 @@ async def medicine_page():
                     <input type="number" id="medicineAmount" value="100" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="medicineLength">長 (mm)</label>
+                    <label for="medicineLength">長</label>
                     <input type="number" id="medicineLength" step="0.01" min="0" placeholder="例如 50">
                 </div>
                 <div class="form-group">
-                    <label for="medicineWidth">寬 (mm)</label>
+                    <label for="medicineWidth">寬</label>
                     <input type="number" id="medicineWidth" step="0.01" min="0" placeholder="例如 30">
                 </div>
                 <div class="form-group">
-                    <label for="medicineArea">面積 (mm²)</label>
+                    <label for="medicineArea">面積</label>
                     <input type="number" id="medicineArea" step="0.01" min="0">
                 </div>
                 <div class="form-group">
@@ -970,9 +970,9 @@ async def medicine_page():
                         <th>信心值</th>
                         <th>庫存數量</th>
                         <th>詳細資訊</th>
-                        <th>長(mm)</th>
-                        <th>寬(mm)</th>
-                        <th>面積(mm²)</th>
+                        <th>長</th>
+                        <th>寬</th>
+                        <th>面積</th>
                         <th>種類</th>
                         <th>操作</th>
                     </tr>
@@ -1138,12 +1138,12 @@ async def medicine_page():
             document.getElementById('editPrompt').value = data.prompt || '';
             document.getElementById('editConfidence').value = (data.confidence ?? 0.95);
             document.getElementById('editAmount').value = (data.amount ?? 0);
+            document.getElementById('editContent').value = data.content || '';
+            document.getElementById('editModal').classList.remove('hidden');
             document.getElementById('editLength').value   = (data.length_mm ?? 0);
             document.getElementById('editWidth').value    = (data.width_mm ?? 0);
             document.getElementById('editArea').value     = (data.area ?? 0);
             document.getElementById('editCategory').value = data.category || '';
-            document.getElementById('editContent').value = data.content || '';
-            document.getElementById('editModal').classList.remove('hidden');
             })
             .catch(err => showAlert('錯誤：' + err.message, 'error'));
         }
@@ -1247,15 +1247,15 @@ async def medicine_page():
             <input type="number" id="editAmount" min="0">
           </div>
           <div class="form-group">
-          <label>長 (mm)</label>
+          <label>長</label>
           <input type="number" id="editLength" step="0.01" min="0">
         </div>
         <div class="form-group">
-          <label>寬 (mm)</label>
+          <label>寬</label>
           <input type="number" id="editWidth" step="0.01" min="0">
         </div>
         <div class="form-group">
-          <label>面積 (mm²)</label>
+          <label>面積</label>
           <input type="number" id="editArea" step="0.01" min="0">
         </div>
         <div class="form-group">
