@@ -33,8 +33,10 @@ class Camera2Base(Node):
         self.get_logger().info("Camera2Base node initialized")
 
     def create_hand_eye_transform(self):
-        trans = np.array([0.03259844647312995, 0.03353493542635663, 0.06710244944028136])
-        quat = [0.002941215511589119, -0.0014954878102503809, 0.9999927889854823, 0.001880091636192428]
+        # trans = np.array([0.03259844647312995, 0.03353493542635663, 0.06710244944028136])
+        # quat = [0.002941215511589119, -0.0014954878102503809, 0.9999927889854823, 0.001880091636192428]
+        trans = np.array([0.03519476430554744, 0.031179262982872283, 0.06895451368177878])
+        quat = [0.001933996002298429, -0.000168483111231493, 0.9999942581113687, 0.0027775919782450868]
         T = np.eye(4)
         T[:3, :3] = R.from_quat(quat).as_matrix()
         T[:3, 3] = trans
@@ -68,7 +70,8 @@ class Camera2Base(Node):
             cam_pose.orientation.z,
             cam_pose.orientation.w
         ]).as_matrix()
-        T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z - 0.1]
+        # T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z - 0.1]
+        T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z]
 
         self.get_logger().info(
             f"[Received Pose from thing_pose]\n"

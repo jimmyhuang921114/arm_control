@@ -40,26 +40,28 @@ class PlaneFittingNode(Node):
         self.create_service(CaptureImage, 'grab_detect', self.handle_mask_service)
 
         # Intrinsics
-        self.K = np.array([[905.5264861373364, 0.0, 633.5127254288533],
-                           [0.0, 904.4704173255083, 363.7238756445801],
+        self.intrinsic = {
+            'fx': 904.9848095391405,
+            'fy': 903.7175291660693,
+            'cx': 633.8065528892273,
+            'cy': 363.5218153379028
+        }
+
+        self.K = np.array([[self.intrinsic['fx'], 0.0, self.intrinsic['cx']],
+                           [0.0, self.intrinsic['fy'], self.intrinsic['cy']],
                            [0.0, 0.0, 1.0]])
         
          
         self.dist_coeffs = np.array([
-            0.1457895796758955,
-            -0.3161928425604433,
-            0.0020954680239515847,
-            -0.001678205668629361,
-            0.03480936976818285
+            0.14787459074090117,
+            -0.3418279021458157,
+            0.002034687037960633,
+            -0.0014113664491230658,
+            0.09191879730682097
         ])
 
 
-        self.intrinsic = {
-            'fx': 905.5264861373364,
-            'fy': 904.4704173255083,
-            'cx': 633.5127254288533,
-            'cy': 363.7238756445801
-        }
+        
 
         # Latest buffers
         self.latest_depth = None
@@ -117,6 +119,8 @@ class PlaneFittingNode(Node):
         cx, cy = self.intrinsic['cx'], self.intrinsic['cy']
 
         xmin, ymin, xmax, ymax = map(int, self.bbox)
+        bbox_uv_center = [(xmin + xmax) / 2, (ymin + ymax) / 2]
+            
 
         # region_pts = []
         # for v in range(ymin, ymax):
@@ -135,12 +139,13 @@ class PlaneFittingNode(Node):
         region_pts = []
         for v in range(ymin, ymax):
             for u in range(xmin, xmax):
-                if self.latest_mask is not None and self.latest_mask[v, u] != 255:
-                    continue
+                # if self.latest_mask is not None and self.latest_mask[v, u] != 255:
+                #     continue
                 z = self.latest_depth[v, u]
                 if z <= 0 or np.isnan(z):
                     continue
 
+                # --- 去畸變 ---
                 pts = np.array([[[u, v]]], dtype=np.float32)
                 undistorted = cv2.undistortPoints(pts, camera_matrix, dist_coeffs, P=camera_matrix)
                 u_nd, v_nd = undistorted[0, 0]
@@ -154,7 +159,9 @@ class PlaneFittingNode(Node):
         pts = np.array(region_pts, dtype=np.float32)
         # 取 z 欄的 50 分位做門檻
         z_vals = pts[:, 2]
-        z_thresh = np.percentile(z_vals, 70)
+        z_thresh = np.percentile(z_vals, 15)
+        self.get_logger().warn(f"z_thresh: {z_thresh}")
+        z_thresh += 0.005
         # 過濾出 z <= 門檻（後 50%）
         bottom50_pts = pts[z_vals <= z_thresh]          
         if bottom50_pts.shape[0] < 50:
@@ -241,30 +248,30 @@ class PlaneFittingNode(Node):
                 best_model = model
                 best_inliers = inliers
 
-        # 沒有找到平面
-        if best_model is None or len(best_inliers) < 50:
-            self.get_logger().warn("無法找到足夠 inlier 的平面")
-            return
+            # 沒有找到平面
+            if best_model is None or len(best_inliers) < 50:
+                self.get_logger().warn("無法找到足夠 inlier 的平面")
+                return
 
-        # 解析最佳平面
-        [a, b, c, d] = best_model
-        normal = np.array([a, b, c], dtype=np.float32)
-        normal /= np.linalg.norm(normal)
+            # 解析最佳平面
+            [a, b, c, d] = best_model
+            normal = np.array([a, b, c], dtype=np.float32)
+            normal /= np.linalg.norm(normal)
 
 
-        camera_z = np.array([0, 0, 1], dtype=np.float32)
-        angle_deg = np.rad2deg(np.arccos(np.clip(np.dot(normal, camera_z), -1.0, 1.0)))
-        self.get_logger().info(f"平面法向量與相機 z 軸夾角: {angle_deg:.2f}°")
+            camera_z = np.array([0, 0, 1], dtype=np.float32)
+            angle_deg = np.rad2deg(np.arccos(np.clip(np.dot(normal, camera_z), -1.0, 1.0)))
+            self.get_logger().info(f"平面法向量與相機 z 軸夾角: {angle_deg:.2f}°")
 
-        MAX_ANGLE_THRESHOLD = 20.0  # 可自行調整允許最大夾角
-        if angle_deg > MAX_ANGLE_THRESHOLD:
-            self.get_logger().warn(f"法向量夾角超過 {MAX_ANGLE_THRESHOLD}°，忽略此平面")
-            # return
+            MAX_ANGLE_THRESHOLD = 10.0  # 可自行調整允許最大夾角
+            if angle_deg < MAX_ANGLE_THRESHOLD:
+                self.get_logger().warn(f"法向量夾角超過 {MAX_ANGLE_THRESHOLD}°，忽略此平面")
+                break
 
 
         inlier_cloud = pcd_filtered.select_by_index(best_inliers)
         inlier_points = np.asarray(inlier_cloud.points)
-        center = np.median(inlier_points, axis=0)
+        center = np.mean(inlier_points, axis=0)
 
 
         # 畫出 inlier mask
@@ -289,7 +296,18 @@ class PlaneFittingNode(Node):
         x_axis /= np.linalg.norm(x_axis)
         rot_matrix = np.stack([x_axis, y_axis, normal], axis=1)
         quat = R.from_matrix(rot_matrix).as_quat()
-        center[2] = center[2]
+
+        # Mix XY from bbox and pcd
+        # center[2] = center[2]
+        # --- 去畸變 ---
+        bbox_pts = np.array([[bbox_uv_center]], dtype=np.float32)
+        bbox_undistorted = cv2.undistortPoints(bbox_pts, camera_matrix, dist_coeffs, P=camera_matrix)
+        bbox_u_nd, bbox_v_nd = bbox_undistorted[0, 0]
+        bbox_x = (bbox_u_nd - cx) * center[2] / fx
+        bbox_y = (bbox_v_nd - cy) * center[2] / fy
+        # center[0] = (bbox_x + center[0]) / 2
+        # center[1] = (bbox_y + center[1]) / 2
+        
         pose_msg = PoseStamped()
         pose_msg.header.frame_id = 'camera_depth_optical_frame'
         pose_msg.header.stamp = self.get_clock().now().to_msg()
