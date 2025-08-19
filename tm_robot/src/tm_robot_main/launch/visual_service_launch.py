@@ -6,28 +6,35 @@ def generate_launch_description():
         # Main control node
         Node(
             package='visuial',
-            executable='realsense',  # 應確認這個是否正確（通常 executable 應是 'realsense'）
+            executable='realsense',  
             name='realsense_node',
             output='screen',
             parameters=[],
         ),
         Node(
             package='visuial',
-            executable='medicine_check_service',  # 應確認是否正確
+            executable='medicine_check_service',  
             name='drug_identify_service',
             output='screen',
             parameters=[],
         ),
         Node(
             package='visuial',
-            executable='double_check',  # 應確認是否正確
+            executable='double_check', 
             name='camera_publisher',
             output='screen'
         ),
         Node(
             package='visuial',
-            executable='second_camera', # 應確認是否正確
+            executable='second_camera', 
             name='second_camera',
+            output='screen',
+            parameters=[]
+        ),
+        Node(
+            package='visuial',
+            executable='run_paadleocr', 
+            name='run_paadleocr',
             output='screen',
             parameters=[]
         )

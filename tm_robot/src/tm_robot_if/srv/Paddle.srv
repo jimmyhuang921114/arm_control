@@ -1,5 +1,7 @@
-#Request
-sensor_msgs/Image image
+# Request
+sensor_msgs/Image image     # 直接給當下的 color_image
+string med_name             # 當前藥物名稱
+
 ---
-#Response
-string[] text
+# Response
+bool matched                # 是否命中（true/false）

@@ -143,7 +143,7 @@ class GroundedSAM2Service(Node):
                     continue    
 
                 score = cy * 10000
-                score = cy - abs(cx - half_width)
+                score = cy - (abs(cx - half_width) * 10)
                 candidates.append({
                     "score": score,
                     "box": box,
@@ -210,7 +210,10 @@ class GroundedSAM2Service(Node):
 def main(args=None):
     rclpy.init(args=args)
     service = GroundedSAM2Service()
-    rclpy.spin(service)
+    service.create_rate(100)
+    while rclpy.ok():
+        rclpy.spin_once(service)
+        cv2.waitKey(1)
     rclpy.shutdown()
 
 if __name__ == '__main__':

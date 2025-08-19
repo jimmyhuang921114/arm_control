@@ -64,14 +64,16 @@ class Camera2Base(Node):
         cam_pose = request.pose
 
         T_cam = np.eye(4)
-        T_cam[:3, :3] = R.from_quat([
-            cam_pose.orientation.x,
-            cam_pose.orientation.y,
-            cam_pose.orientation.z,
-            cam_pose.orientation.w
-        ]).as_matrix()
-        # T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z - 0.1]
+        # T_cam[:3, :3] = R.from_quat([
+        #     cam_pose.orientation.x,
+        #     cam_pose.orientation.y,
+        #     cam_pose.orientation.z,
+        #     cam_pose.orientation.w
+        # ]).as_matrix()
+        T_cam[:3, :3] = R.from_quat([1,0,0,0]).as_matrix()
         T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z]
+
+        # T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z]
 
         self.get_logger().info(
             f"[Received Pose from thing_pose]\n"
@@ -125,15 +127,22 @@ class Camera2Base(Node):
         #         self.get_logger().error(f"set_positions 發送失敗: {e}")
 
         # future.add_done_callback(callback)
+        pos[0] +=0.02115 
+        pos[2] += 0.0453
 
         base_pose = Pose()
         base_pose.position.x = pos[0]
         base_pose.position.y = pos[1]
         base_pose.position.z = pos[2]
-        base_pose.orientation.x = quat[0]
-        base_pose.orientation.y = quat[1]
-        base_pose.orientation.z = quat[2]
-        base_pose.orientation.w = quat[3]
+        # base_pose.orientation.x = quat[0]
+        # base_pose.orientation.y = quat[1]
+        # base_pose.orientation.z = quat[2]
+        # base_pose.orientation.w = quat[3]
+        base_pose.orientation.x = 0.6903455
+        base_pose.orientation.y = -0.6903455
+        base_pose.orientation.z = -0.1530459
+        base_pose.orientation.w = 0.1530459 
+
 
         self.get_logger().info(f"PoseStamped:\n{base_pose}")
         self.get_logger().info(
@@ -184,3 +193,8 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
+
+
+
+

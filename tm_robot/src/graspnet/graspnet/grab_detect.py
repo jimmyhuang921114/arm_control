@@ -60,9 +60,6 @@ class PlaneFittingNode(Node):
             0.09191879730682097
         ])
 
-
-        
-
         # Latest buffers
         self.latest_depth = None
         self.latest_mask = None
@@ -82,6 +79,14 @@ class PlaneFittingNode(Node):
             depth_mm = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
             depth_m = depth_mm.astype(np.float32) * 0.001
             self.latest_depth = depth_m
+            # depth_normalized = cv2.normalize(depth_mm, None, 0, 255, cv2.NORM_MINMAX)
+            # depth_colored = cv2.applyColorMap(depth_normalized.astype(np.uint8), cv2.COLORMAP_JET)
+            # depth_show = depth_mm * 0.001
+            # print(depth_mm.shape)
+            # print(depth_mm.dtype)
+            img_clipped = np.clip(depth_mm / 2, 0, 255)
+            self.depth_img_showable = img_clipped.astype(np.uint8)
+            # cv2.imshow("Depth Image", self.depth_img_showable)
         except Exception as e:
             self.get_logger().error(f"深度影像轉換失敗: {e}")
             self.latest_depth = None
@@ -111,15 +116,21 @@ class PlaneFittingNode(Node):
         return response
 
     def fit_plane_from_bbox(self):
-        if self.latest_depth is None or self.bbox is None:
-            self.get_logger().warn("缺少 depth 或 bbox，無法執行平面擬合")
-            return
+        if self.latest_mask is not None:
+            ys, xs = np.where(self.latest_mask > 0)
+            if len(xs) > 0 and len(ys) > 0:
+                mask_center = (int(np.mean(xs)), int(np.mean(ys)))
+                # cv2.circle(combined_mask, mask_center, 5, (0, 255, 0), -1)
+                # self.get_logger().info(f"Mask center: {mask_center}")
+            else:
+                self.get_logger().warn("mask 沒有有效像素，無法計算中心點")
+
 
         fx, fy = self.intrinsic['fx'], self.intrinsic['fy']
         cx, cy = self.intrinsic['cx'], self.intrinsic['cy']
 
         xmin, ymin, xmax, ymax = map(int, self.bbox)
-        bbox_uv_center = [(xmin + xmax) / 2, (ymin + ymax) / 2]
+        bbox_center_uv = [int((xmin + xmax) / 2), int((ymin + ymax) / 2)]
             
 
         # region_pts = []
@@ -159,9 +170,9 @@ class PlaneFittingNode(Node):
         pts = np.array(region_pts, dtype=np.float32)
         # 取 z 欄的 50 分位做門檻
         z_vals = pts[:, 2]
-        z_thresh = np.percentile(z_vals, 15)
+        z_thresh = np.percentile(z_vals,80)
         self.get_logger().warn(f"z_thresh: {z_thresh}")
-        z_thresh += 0.005
+        z_thresh += 0.00
         # 過濾出 z <= 門檻（後 50%）
         bottom50_pts = pts[z_vals <= z_thresh]          
         if bottom50_pts.shape[0] < 50:
@@ -273,21 +284,6 @@ class PlaneFittingNode(Node):
         inlier_points = np.asarray(inlier_cloud.points)
         center = np.mean(inlier_points, axis=0)
 
-
-        # 畫出 inlier mask
-        mask_img = np.zeros(self.latest_depth.shape, dtype=np.uint8)
-        inlier_cloud_final = pcd_filtered.select_by_index(best_inliers)
-        inlier_points_final = np.asarray(inlier_cloud_final.points)
-        for x, y, z in inlier_points_final:
-            if z <= 0 or not np.isfinite(z):
-                continue
-            u = int((x * fx) / z + cx)
-            v = int((y * fy) / z + cy)
-            if 0 <= u < mask_img.shape[1] and 0 <= v < mask_img.shape[0]:
-                mask_img[v, u] = 255
-        cv2.imshow("Inlier Mask", mask_img)
-        cv2.waitKey(1)
-
         # 建立姿態
         x_ref = np.array([-1.0, 0.0, 0.0])
         y_axis = np.cross(normal, x_ref)
@@ -300,13 +296,34 @@ class PlaneFittingNode(Node):
         # Mix XY from bbox and pcd
         # center[2] = center[2]
         # --- 去畸變 ---
-        bbox_pts = np.array([[bbox_uv_center]], dtype=np.float32)
+        bbox_pts = np.array([[bbox_center_uv]], dtype=np.float32)
         bbox_undistorted = cv2.undistortPoints(bbox_pts, camera_matrix, dist_coeffs, P=camera_matrix)
         bbox_u_nd, bbox_v_nd = bbox_undistorted[0, 0]
-        bbox_x = (bbox_u_nd - cx) * center[2] / fx
-        bbox_y = (bbox_v_nd - cy) * center[2] / fy
+        # bbox_x = (bbox_u_nd - cx) * center[2] / fx
+        # bbox_y = (bbox_v_nd - cy) * center[2] / fy
         # center[0] = (bbox_x + center[0]) / 2
         # center[1] = (bbox_y + center[1]) / 2
+
+        # 畫出 inlier mask
+        mask_img = np.zeros(self.latest_depth.shape, dtype=np.uint8)
+        inlier_cloud_final = pcd_filtered.select_by_index(best_inliers)
+        inlier_points_final = np.asarray(inlier_cloud_final.points)
+        for x, y, z in inlier_points_final:
+            if z <= 0 or not np.isfinite(z):
+                continue
+            u = int((x * fx) / z + cx)
+            v = int((y * fy) / z + cy)
+            if 0 <= u < mask_img.shape[1] and 0 <= v < mask_img.shape[0]:
+                mask_img[v, u] = 255
+        combined_mask = np.stack([mask_img, self.depth_img_showable, self.depth_img_showable], axis=-1)
+        # draw pcd center
+        pcd_center_uv = [int((center[0] * fx) / center[2] + cx), int((center[1] * fy) / center[2] + cy)]
+        cv2.circle(combined_mask, pcd_center_uv, 5, (255, 0, 0), -1)
+        # draw bbox center
+        cv2.circle(combined_mask, bbox_center_uv, 5, (0, 255, 0), -1)
+        cv2.circle(combined_mask, mask_center ,5 , (0,0,255) , -1)
+        cv2.imshow("Inlier Mask", combined_mask)
+        cv2.waitKey(1)
         
         pose_msg = PoseStamped()
         pose_msg.header.frame_id = 'camera_depth_optical_frame'
@@ -364,14 +381,10 @@ class PlaneFittingNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = PlaneFittingNode()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
-
+    node.create_rate(100)
+    while rclpy.ok():
+        rclpy.spin_once(node)
+        cv2.waitKey(1)
 
 if __name__ == '__main__':
     main()

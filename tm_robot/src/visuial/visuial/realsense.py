@@ -32,6 +32,14 @@ class RealsenseColorPointCloudNode(Node):
         # 取得 depth sensor 設定選項
         device = self.pipeline.get_active_profile().get_device()
         depth_sensor = device.first_depth_sensor()
+        color_sensor = device.query_sensors()[1]
+        if color_sensor.supports(rs.option.enable_auto_exposure):
+            color_sensor.set_option(rs.option.enable_auto_exposure, 0.0)  # 關閉自動曝光
+            self.get_logger().info("關閉自動曝光")
+
+        if color_sensor.supports(rs.option.exposure):
+            color_sensor.set_option(rs.option.exposure, 100.0)  # 單位 μs (200 非常小，建議測試大一點)
+            self.get_logger().info("設定曝光時間為 100 μs")
 
         # 設定近距離模式：High Accuracy + min_distance + laser_power
         if depth_sensor.supports(rs.option.visual_preset):

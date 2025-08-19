@@ -38,8 +38,7 @@ class Medicine(Base):
     prompt = Column(String(255), nullable=False)    # 提示詞
     confidence = Column(Float, nullable=False)       # 信心值
     amount = Column(Integer, default=0)              # 庫存數量
-    length_mm = Column(Float, default=0, nullable = False )     
-    width_mm = Column(Float, default=0, nullable = False )   
+
     area = Column(Float, default=0, nullable = False )  
     category  = Column(String(100), default="", nullable=False)  # 文字型別         
     
@@ -75,8 +74,6 @@ class MedicineCreate(BaseModel):
     confidence: float
     amount: int = 100
     content: str = ""
-    length_mm:float = 0.0
-    width_mm:float = 0.0
     area: float = 0.0
     category: str =""
 
@@ -146,8 +143,6 @@ async def get_basic_medicines(db: Session = Depends(get_db)):
             "prompt": m.prompt,
             "confidence": m.confidence,
             "amount": m.amount,
-            "length_mm": m.length_mm,
-            "width_mm": m.width_mm,
             "area": m.area,
             "category": m.category,
         } for m in medicines
@@ -185,8 +180,6 @@ async def get_combined_medicines(db: Session = Depends(get_db)):
             "confidence": medicine.confidence,
             "amount": medicine.amount,
             "content": detail.content if detail else "",
-            "length_mm": medicine.length_mm,
-            "width_mm": medicine.width_mm,
             "area": medicine.area,
             "category": medicine.category,
 
@@ -211,8 +204,6 @@ async def get_medicine_detail(medicine_id: int, db: Session = Depends(get_db)):
         "confidence": medicine.confidence,
         "amount": medicine.amount,
         "content": detail.content if detail else "",
-        "length_mm": medicine.length_mm,
-        "width_mm": medicine.width_mm,
         "area": medicine.area,
         "category": medicine.category,
 
@@ -233,8 +224,6 @@ async def create_medicine(medicine: MedicineCreate, db: Session = Depends(get_db
         prompt=medicine.prompt,
         confidence=medicine.confidence,
         amount=medicine.amount,
-        length_mm=medicine.length_mm,
-        width_mm=medicine.width_mm,
         area = medicine.area,
         category=medicine.category
     )
@@ -279,8 +268,6 @@ async def update_medicine(medicine_id: int, medicine: MedicineCreate, db: Sessio
     db_medicine.prompt = medicine.prompt
     db_medicine.confidence = medicine.confidence
     db_medicine.amount = medicine.amount
-    db_medicine.length_mm = medicine.length_mm
-    db_medicine.width_mm = medicine.width_mm
     db_medicine.area = medicine.area
     db_medicine.category = medicine.category
     
@@ -451,8 +438,6 @@ async def get_next_order_for_ros2(db: Session = Depends(get_db)):
                 "position": medicine.position,
                 "prompt": medicine.prompt,
                 "confidence": medicine.confidence,
-                "length_mm": medicine.length_mm,
-                "width_mm": medicine.width_mm,
                 "area": medicine.area,
                 "category": medicine.category or ""
             })
@@ -552,8 +537,6 @@ async def get_medicine_basic_info_ros2(medicine_name: str, db: Session = Depends
         "prompt": medicine.prompt,
         "confidence": medicine.confidence,
         "amount": medicine.amount,
-        "length_mm": medicine.length_mm,
-        "width_mm": medicine.width_mm,
         "area": medicine.area,
         "category": medicine.category or ""
     }
@@ -924,14 +907,6 @@ async def medicine_page():
                     <input type="number" id="medicineAmount" value="100" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="medicineLength">長</label>
-                    <input type="number" id="medicineLength" step="0.01" min="0" placeholder="例如 50">
-                </div>
-                <div class="form-group">
-                    <label for="medicineWidth">寬</label>
-                    <input type="number" id="medicineWidth" step="0.01" min="0" placeholder="例如 30">
-                </div>
-                <div class="form-group">
                     <label for="medicineArea">面積</label>
                     <input type="number" id="medicineArea" step="0.01" min="0">
                 </div>
@@ -970,8 +945,6 @@ async def medicine_page():
                         <th>信心值</th>
                         <th>庫存數量</th>
                         <th>詳細資訊</th>
-                        <th>長</th>
-                        <th>寬</th>
                         <th>面積</th>
                         <th>種類</th>
                         <th>操作</th>
@@ -1016,8 +989,6 @@ async def medicine_page():
             const confidence = parseFloat(document.getElementById('medicineConfidence').value);
             const amount = parseInt(document.getElementById('medicineAmount').value) || 0;
             const content = document.getElementById('medicineContent').value.trim();
-            const length_mm = parseFloat(document.getElementById('medicineLength').value) || 0;
-            const width_mm  = parseFloat(document.getElementById('medicineWidth').value)  || 0;
             let area = parseFloat(document.getElementById('medicineArea').value); 
             const category  = document.getElementById('medicineCategory').value.trim();
 
@@ -1047,8 +1018,6 @@ async def medicine_page():
                 confidence: confidence,
                 amount: amount,
                 content: content,
-                length_mm: length_mm,
-                width_mm: width_mm,
                 area: area,
                 category: category
             };
@@ -1100,8 +1069,6 @@ async def medicine_page():
                 <td>${med.confidence.toFixed(2)}</td>
                 <td><span class="status-badge ${med.amount > 50 ? 'status-high' : med.amount > 10 ? 'status-medium' : 'status-low'}">${med.amount}</span></td>
                 <td>${med.content ? '已設定' : '未設定'}</td>
-                <td>${(med.length_mm ?? 0).toFixed(2)}</td>
-                <td>${(med.width_mm ?? 0).toFixed(2)}</td>
                 <td>${(med.area ?? 0).toFixed(2)}</td>
                 <td>${med.category ? med.category : '-'}</td>
                 <td>
@@ -1121,8 +1088,6 @@ async def medicine_page():
             document.getElementById('medicineConfidence').value = '0.95';
             document.getElementById('medicineAmount').value = '100';
             document.getElementById('medicineContent').value = '';
-            document.getElementById('medicineLength').value = '';
-            document.getElementById('medicineWidth').value = '';
             document.getElementById('medicineArea').value = '';
             document.getElementById('medicineCategory').value = '';
         }
@@ -1140,8 +1105,6 @@ async def medicine_page():
             document.getElementById('editAmount').value = (data.amount ?? 0);
             document.getElementById('editContent').value = data.content || '';
             document.getElementById('editModal').classList.remove('hidden');
-            document.getElementById('editLength').value   = (data.length_mm ?? 0);
-            document.getElementById('editWidth').value    = (data.width_mm ?? 0);
             document.getElementById('editArea').value     = (data.area ?? 0);
             document.getElementById('editCategory').value = data.category || '';
             })
@@ -1162,8 +1125,6 @@ async def medicine_page():
         const confidence = parseFloat(document.getElementById('editConfidence').value);
         const amount = parseInt(document.getElementById('editAmount').value) || 0;
         const content = document.getElementById('editContent').value.trim();
-        const length_mm = parseFloat(document.getElementById('editLength').value) || 0;
-        const width_mm  = parseFloat(document.getElementById('editWidth').value)  || 0;
         let area   = parseFloat(document.getElementById('editArea').value);
         const category  = document.getElementById('editCategory').value.trim();
 
@@ -1177,8 +1138,7 @@ async def medicine_page():
             showAlert('信心值必須在 0~1 之間', 'error'); return;
         }
 
-        const payload = { name, position, prompt, confidence, amount, content,
-                  length_mm, width_mm, area, category };    
+        const payload = { name, position, prompt, confidence, amount, content, area, category };    
 
         try {
             const resp = await fetch(`/api/medicine/${editingId}`, {
@@ -1246,14 +1206,6 @@ async def medicine_page():
             <label>庫存</label>
             <input type="number" id="editAmount" min="0">
           </div>
-          <div class="form-group">
-          <label>長</label>
-          <input type="number" id="editLength" step="0.01" min="0">
-        </div>
-        <div class="form-group">
-          <label>寬</label>
-          <input type="number" id="editWidth" step="0.01" min="0">
-        </div>
         <div class="form-group">
           <label>面積</label>
           <input type="number" id="editArea" step="0.01" min="0">
@@ -2131,7 +2083,7 @@ async def prescription_page():
     <div class="main-content">
         <div class="page-header">
             <h1>處方籤管理系統</h1>
-            <p>監控和管理處方籤狀態，支援ROS2自動處理</p>
+            <p>監控和管理處方籤狀態</p>
         </div>
 
         <div class="stats-grid">

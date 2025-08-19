@@ -6,7 +6,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Header, Bool, Int32
 from std_srvs.srv import Trigger
 from tm_robot_if.srv import GroundedSAM2Interface,CaptureImage,DrugIdentify,SecondCamera,Paddle, TMFlowMode
-from tm_robot_if.srv import CompleteOrder
+from tm_robot_if.srv import CompleteOrder,Paddle
 from std_msgs.msg import String
 from tm_rail_interface.srv import RailControl
 from tm_msgs.msg import SctResponse
@@ -66,18 +66,14 @@ class MainControl(Node):
             "llm": self.llm_client,
             "sencond_camera": self.second_camera_client,
             "grab_detect": self.grab_client,
+            "paddle_check": self.ocr_client,
             # "rail_control": self.slider_client,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
-            # "curobo_state": self.curobo_state_client,
+            "curobo_state": self.curobo_state_client,
             "moveit_set_pose": self.moveit_set_pose_client,
             "complete_order": self.complete_order_client,
         }
-              # self.service_clients = {
-        #     "rail_control": self.slider_client,
-        # }
-        # self.tm_flow_mode_client.wait_for_service()
-        ## wait all client activate
         for name, client in self.service_clients.items():
             while not client.wait_for_service(timeout_sec=1.0):
                 self.get_logger().info(f"等待服務 [{name}] 啟動中...")
@@ -216,6 +212,20 @@ class MainControl(Node):
             self.get_logger().error("set_positions failed")
         pass
 
+    def verify_medicine_by_ocr_service(self, med_name: str) -> bool:
+        if self.color_image_np is None:
+            self.get_logger().warn("尚未有 color image，無法驗證")
+            return False
+        req = Paddle.Request()
+        req.image = self.bridge.cv2_to_imgmsg(self.color_image_np, encoding='bgr8')
+        req.med_name = med_name
+        future = self.ocr_verify_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        res = future.result()
+        if res is None:
+            self.get_logger().error("ocr_verify_img 回傳 None")
+            return False
+        return bool(res.matched)
 
     def send_moveit_joint(self, joints: list[float], op_time: float = 5):
         self.get_logger().info(f"moveit set joint: {joints}")
@@ -352,7 +362,7 @@ class MainControl(Node):
             self.get_logger().error("遮罩為全黑，無有效區域")
         else:
             self.get_logger().info("遮罩有效，可用於後續步驟")
-        cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_raw.png", mask_raw)
+        # cv2.imwrite("/workspace/tm_robot/src/visuial/visuial/mask_raw.png", mask_raw)
         ## for debug ?
         # if self.color_image_np is not None:
         #     overlay = self.color_image_np.copy()
@@ -395,6 +405,8 @@ class MainControl(Node):
         req = RailControl.Request()
         req.opt_code = code
         req.rail_name = "arm_rail1"
+        self.get_logger().info(f"call slider opt: {code}")
+
         future = self.slider_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         res = future.result()
@@ -503,7 +515,7 @@ class MainControl(Node):
             return
 
         current_key = self.medicine_queue.pop(0)
-        current_item = self.medicine_map[current_key]  # e.g. {"amount": 87, "locate": [1,1]}
+        current_item = self.medicine_map[current_key]
         locate_str = f"{current_item['locate'][0]}-{current_item['locate'][1]}"
         self.get_logger().info(f"處理藥物：{current_key}，位置：{locate_str}")
 
@@ -525,24 +537,6 @@ class MainControl(Node):
         self.current_med_name = found_name
         self.get_logger().info(f"當前藥物名稱為：{self.current_med_name}")
         self.execute_next_medicine()
-
-
-    def call_ocr(self):
-        if self.color_image_np is None:
-            self.get_logger().warn("尚未收到 color image，無法執行 OCR")
-    #     if not self.order_list:
-    #         return None
-    #     return self.order_list.pop(0)
-            # return med_box
-
-        req = Paddle.Request()
-        ros_image = self.bridge.cv2_to_imgmsg(self.color_image_np, encoding='bgr8')
-        req.image = ros_image
-
-        future = self.ocr_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        res = future.result()
-        self.get_logger().info(f"OCR 結果: {res.text}")
 
 
     # def process_order(self):
@@ -650,6 +644,7 @@ def process_medicine(node: MainControl, medicine: dict):
         #     continue
 
         ## ======= [Close Shelf] =======
+        node.get_logger().info("======= [Close Shelf] =======")
         if node.current_shelf_level != 0 and node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
             if not node.send_tm_flow_mode_and_spin("location_shelf", str(-node.current_shelf_level)):
@@ -659,8 +654,9 @@ def process_medicine(node: MainControl, medicine: dict):
             node.spin_until_sct_listen_flag()
             ## curobo move to landmark 
             if node.current_shelf_level == 1:
-                node.get_logger().info("first shelf")
-                node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["first_push"]))
+                pass
+                # node.get_logger().info("first shelf")
+                # node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["first_push"]))
             else:
                 node.get_logger().info("second push")
                 node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_push"]))
@@ -678,6 +674,7 @@ def process_medicine(node: MainControl, medicine: dict):
             node.current_shelf_level = 0
 
         ## ======= [Open Shelf] =======
+        node.get_logger().info("======= [Open Shelf] =======")
         if node.current_shelf_level != shelf_level:
             ## tm flow: location_shelf
             while not node.send_tm_flow_mode_and_spin("location_shelf", str(shelf_level)):
@@ -692,6 +689,7 @@ def process_medicine(node: MainControl, medicine: dict):
             else:
                 node.get_logger().info("second pull")
                 node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe"]))
+                node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe2"]))
                 node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_pull"]))
             ## tm flow leave
             if not node.send_tm_flow_leave_and_spin():
@@ -709,6 +707,7 @@ def process_medicine(node: MainControl, medicine: dict):
             time.sleep(3)
 
         ## ======= [Medicine box] =======
+        node.get_logger().info("======= [Medicine box] =======")
         if not node.send_tm_flow_mode_and_spin("medicine_box", str(med_box_num)):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
@@ -718,6 +717,20 @@ def process_medicine(node: MainControl, medicine: dict):
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["first_safe"]))
         else:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["second_safe"]))
+
+
+        ##move to medicine box for check name
+        if shelf_level == 1:
+            med_box_pose = named_pose["med_box_start"]["first_med_front"]
+            med_box_pose[1] -= 0.185 * med_box_num
+        else:
+            med_box_pose = named_pose["med_box_start"]["second_med_front"]
+            med_box_pose[1] -= 0.185 * med_box_num
+
+        if not node.verify_medicine_by_ocr_service(name):
+            node.get_logger().warn(f"OCR 驗證未通過：{name}")
+            continue
+
         ## curobo move to med_box
         med_box_pose: list[float] = None
         if shelf_level == 1:
@@ -732,6 +745,7 @@ def process_medicine(node: MainControl, medicine: dict):
         ## groundSAM
         confidence = medicine['confidence'] + 0.05
         pose = None
+        time.sleep(0.5)
         for _ in range(3):
             confidence -= 0.05
             gsam_result =  node.call_groundsam2_and_spin(medicine['prompt'], confidence, medicine['area'])
@@ -754,7 +768,7 @@ def process_medicine(node: MainControl, medicine: dict):
         if pose is None:
             node.get_logger().error("failed to get grab pose after retry")
             continue
-        ## curobo move to grab poseC
+        ## curobo move to grab pose
         if shelf_level == 2:
             pose = node.ros2_pose_rotate_z(pose, 180)
         node.send_curobo_pose_and_spin(pose)
@@ -764,6 +778,7 @@ def process_medicine(node: MainControl, medicine: dict):
             continue
             
         ## ======= [Grab and Check] =======
+        node.get_logger().info("======= [Grab and Check] =======")
         # if not node.send_tm_flow_mode_and_spin("grab_and_check", "null"):
         if not node.send_tm_flow_mode_and_spin("grab_and_check", str(med_class)):
             node.get_logger().error("call tm_flow_mode return failed")
@@ -774,14 +789,12 @@ def process_medicine(node: MainControl, medicine: dict):
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         else:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["second_safe"]))
-
         ## curobo move to rail landmark
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["landmark"]))
         ## tm flow leave
         if not node.send_tm_flow_leave_and_spin():
             node.get_logger().error("call tm_flow_leave return failed")
             continue
-        
         
         ## check SCT
         node.spin_until_sct_listen_flag()
@@ -794,9 +807,9 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call second camera return failed")
             continue
         ## send picture to llm
-        # if not node.call_llm_and_spin(name):
-        #     node.get_logger().warn("call llm return failed")
-            # continue
+        if not node.call_llm_and_spin(name):
+            node.get_logger().warn("call llm return failed")
+            continue
 
         ## check SCT
         node.spin_until_sct_listen_flag()
@@ -811,12 +824,18 @@ def process_medicine(node: MainControl, medicine: dict):
 
 def grab_test(node: MainControl):
     ## groundSAM
-    # gsam_result =  node.call_groundsam2_and_spin("white plastic pill bottle", 0.2, 0.2)  #1-1
-    # gsam_result =  node.call_groundsam2_and_spin("white plastic pill bottle", 0.2, 0.2)  #1-1
-    gsam_result =  node.call_groundsam2_and_spin("white plastic pill bottle", 0.15, 0.01)  #1-3 eye drop
-    # gsam_result =  node.call_groundsam2_and_spin("silver blister pack", 0.15, 0.08)
-    # gsam_result =  node.call_groundsam2_and_spin("white pill can in box.", 0.15, 0.05)  #2-4
-    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.3, 0.1)  #1-2
+    # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.1)  #1-1
+    # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.01)  #1-3
+    # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.2, 0.05)  #2-4
+    gsam_result =  node.call_groundsam2_and_spin("bottle",0.35 ,0.05)
+    # gsam_result =  node.call_groundsam2_and_spin("bottle, Usually 5–15 ml in volume, handheld size",0.2,0.05)
+
+
+    # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.15, 0.05)  #1-3
+    #  
+    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.5, 0.08)  #2-1
+    
+    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.1)  #1-2
     # gsam_result =  node.call_groundsam2_and_spin("White medicine jar with red lid", 0.4)
 
     if gsam_result is None:
@@ -861,8 +880,12 @@ def main(args=None):
     if named_pose is None:
         raise("cannot find yaml")
     
-    # node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["test"]["test1"]))
-    
+    # if not node.call_slider_and_wait(0):
+    #     node.get_logger().error("call slider with 0 return failed")
+    # if not node.call_slider_and_wait(1):
+    #     node.get_logger().error("call slider with 1 return failed")
+    # if not node.call_slider_and_wait(2):
+    #     node.get_logger().error("call slider with 2 return failed")
     node.get_logger().info("wait sct finish")
     node.spin_until_sct_listen_flag()
     if not node.send_tm_flow_leave_and_spin():
@@ -870,7 +893,7 @@ def main(args=None):
     
     while rclpy.ok():
         rclpy.spin_once(node, timeout_sec=0.1)
-        # grab_test(node) 
+        # grab_test(node)
         # test_med_class(node,"藥膏")
         order = node.get_order()
         if order is not None:
@@ -881,15 +904,18 @@ def main(args=None):
                 # node.get_logger().error("call slider with 0 return failed")
             # if not node.call_slider_and_wait(1):
                 # node.get_logger().error("call slider with 1 return failed")
+            # else:
+                # node.get_logger().info("slider get bag success")
             ## process medicine
             for medicine in order['medicine']:
                 process_medicine(node, medicine)
-            # time.sleep(3)
-            ## slider put bag
+            time.sleep(3)
+            # slider put bag
             # if not node.call_slider_and_wait(2):
-                # node.get_logger().error("call slider with 2 return failed")
+            #     node.get_logger().error("call slider with 2 return failed")
             ## UI complete
             node.complete_current_order(order_id)
+        
             
     node.destroy_node()
     rclpy.shutdown()

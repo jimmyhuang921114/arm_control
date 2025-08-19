@@ -323,7 +323,7 @@ class SerialPacketController:
                 if bag_detect:
                     time.sleep(0.2)
                     self.bag(lock_deg)
-                    time.sleep(1)
+                    time.sleep(2)
                     break
 
 

@@ -3,16 +3,16 @@ baud_rate:          115200
 rails:
   main_rail:
     standby_pos:    10
-    moving_vel:     600
+    moving_vel:     300
     bag:
       pos:      10
       lock_deg:     0
       release_deg:  170
   arm_rail1:
-    moving_vel:     600
+    moving_vel:     300
     funnel_pos:     0
     standby_pos:    30
-    m_docking_pos:  1070
+    m_docking_pos:  1068
     a_docking_pos:  746
     dock:      # bag give to main rail
       m_move:       30

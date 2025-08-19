@@ -111,96 +111,81 @@ class PlaneFittingNode(Node):
             self.get_logger().error(f"mask 轉換失敗: {e}")
             response.success = False
         return response
+    
+    
     def fit_plane_from_bbox(self):
-        if self.latest_depth is None or self.bbox is None:
-            self.get_logger().warn("缺少 depth 或 bbox，無法執行平面擬合")
+        if self.latest_depth is None or self.latest_mask is None or self.bbox is None:
+            self.get_logger().warn("缺少 depth 或 mask 或 bbox")
             return
 
         fx, fy = self.intrinsic['fx'], self.intrinsic['fy']
         cx, cy = self.intrinsic['cx'], self.intrinsic['cy']
+        xmin, ymin, xmax, ymax = map(int, self.bbox)
+        camera_matrix = self.K.astype(np.float32)
+        dist_coeffs   = self.dist_coeffs.astype(np.float32)
 
-        xmin = int(self.bbox[0])
-        ymin = int(self.bbox[1])
-        xmax = int(self.bbox[2])
-        ymax = int(self.bbox[3])
-
-        region_pts = []
-        for v in range(ymin, ymax):
-            for u in range(xmin, xmax):
-                z = self.latest_depth[v, u] * 0.001  # mm to m
-                if z <= 0 or np.isnan(z):
-                    continue
-                x = (u - cx) * z / fx
-                y = (v - cy) * z / fy
-                region_pts.append([x, y, z])
-        # region_pts_np = np.array(region_pts)
-        # z_median = np.median(region_pts_np[:, 2])
-        # z_threshold = 0.02  # 公差 ±2cm
-
-        # filtered_points = []
-        # for pt in region_pts:
-        #     if np.abs(pt[2] - z_median) <= z_threshold:
-        #         pt[2] = z_median  # 避免小幅度波動影響擬合
-        #         filtered_points.append(pt)
-
-
-        if len(region_pts) < 50:
-            self.get_logger().warn(f"ROI 點雲數量不足: {len(region_pts)}")
+        # 只取 mask∩bbox 的像素
+        submask = self.latest_mask[ymin:ymax, xmin:xmax] > 0
+        ys, xs = np.where(submask)
+        xs = xs + xmin
+        ys = ys + ymin
+        if xs.size == 0:
+            self.get_logger().warn("mask∩bbox 沒有有效像素")
             return
 
+        # 回投影成 3D
+        region_pts = []
+        for u, v in zip(xs, ys):
+            z = self.latest_depth[v, u]
+            if z <= 0 or not np.isfinite(z):
+                continue
+            pts_uv = np.array([[[u, v]]], dtype=np.float32)
+            und = cv2.undistortPoints(pts_uv, camera_matrix, dist_coeffs, P=camera_matrix)
+            u_nd, v_nd = und[0, 0]
+            x = (u_nd - cx) * z / fx
+            y = (v_nd - cy) * z / fy
+            region_pts.append([x, y, z])
+
+        if len(region_pts) < 200:
+            self.get_logger().warn(f"有效點太少: {len(region_pts)}")
+            return
+
+        # 平面擬合（一次）
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(region_pts)
-        pcd_filtered, _ = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=1.0)
-        pcd_filtered, _ = pcd_filtered.remove_radius_outlier(nb_points=32, radius=0.02)
-        # 多次擬合取中位數 normal
-        normals = []
-        centers = []
-        max_angle_deg = 8.0  # 可接受的最大傾斜角度
-        max_angle_rad = np.deg2rad(max_angle_deg)
-        z_axis = np.array([0, 0, 1], dtype=np.float32)
+        pcd, _ = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
 
-        for i in range(10):
-            model, inliers = pcd_filtered.segment_plane(
-                distance_threshold=self.get_parameter('distance_threshold').get_parameter_value().double_value,
-                ransac_n=self.get_parameter('ransac_n').get_parameter_value().integer_value,
-                num_iterations=self.get_parameter('num_iterations').get_parameter_value().integer_value
-            )
-            [a, b, c, d] = model
-            normal = np.array([a, b, c], dtype=np.float32)
-            normal /= np.linalg.norm(normal)
-
-            # 檢查與 Z 軸夾角
-            angle = np.arccos(np.clip(np.dot(normal, z_axis), -1.0, 1.0))
-            if angle > max_angle_rad:
-                self.get_logger().info(f"[{i}] Skip plane (angle={np.rad2deg(angle):.1f}° > {max_angle_deg}°)")
-                continue  # 跳過太傾斜的平面
-
-            inlier_points = np.asarray(pcd_filtered.select_by_index(inliers).points)
-            if inlier_points.shape[0] == 0:
-                continue
-
-            normals.append(normal)
-            centers.append(inlier_points[np.argmin(inlier_points[:, 2])])
-            last_inliers = inliers  # 儲存最後一次有效的 inliers
-
-        if len(normals) == 0:
-            self.get_logger().warn("找不到有效平面")
+        model, inliers = pcd.segment_plane(
+            distance_threshold=self.get_parameter('distance_threshold').get_parameter_value().double_value,
+            ransac_n=self.get_parameter('ransac_n').get_parameter_value().integer_value,
+            num_iterations=self.get_parameter('num_iterations').get_parameter_value().integer_value
+        )
+        if not inliers or len(inliers) < 50:
+            self.get_logger().warn("無法找到足夠 inlier 的平面")
             return
 
-        normals = np.array(normals)
-        normal = np.median(normals, axis=0)
+        a, b, c, d = model
+        normal = np.array([a, b, c], dtype=np.float32)
         normal /= np.linalg.norm(normal)
-        center = np.median(np.array(centers), axis=0)
 
+        inlier_points = np.asarray(pcd.select_by_index(inliers).points)
+        # 生成 10 個候選中心：對 inliers 做隨機子取樣後取中位數
+        rng = np.random.default_rng()
+        k   = min(400, len(inlier_points))
+        centers = []
+        for _ in range(10):
+            idx = rng.choice(len(inlier_points), size=k, replace=False)
+            centers.append(np.median(inlier_points[idx], axis=0))
+
+        # 姿態：以擬合平面的法向為 z 軸（朝外），構造右手座標
+        x_ref = np.array([-1.0, 0.0, 0.0], dtype=np.float32)
+        y_axis = np.cross(normal, x_ref); y_axis /= np.linalg.norm(y_axis)
+        x_axis = np.cross(y_axis, normal); x_axis /= np.linalg.norm(x_axis)
+        rot_matrix = np.stack([x_axis, y_axis, normal], axis=1)
+        quat = R.from_matrix(rot_matrix).as_quat()
+
+        # 視覺化（可選）
         mask_img = np.zeros(self.latest_depth.shape, dtype=np.uint8)
-
-        fx, fy = self.intrinsic['fx'], self.intrinsic['fy']
-        cx, cy = self.intrinsic['cx'], self.intrinsic['cy']
-
-        inlier_cloud = pcd_filtered.select_by_index(last_inliers)
-        inlier_points = np.asarray(inlier_cloud.points)
-        # inlier_points = np.asarray(inlier_cloud.points)
-
         for x, y, z in inlier_points:
             if z <= 0 or not np.isfinite(z):
                 continue
@@ -208,69 +193,35 @@ class PlaneFittingNode(Node):
             v = int((y * fy) / z + cy)
             if 0 <= u < mask_img.shape[1] and 0 <= v < mask_img.shape[0]:
                 mask_img[v, u] = 255
+        vis = np.stack([mask_img, self.depth_img_showable, self.depth_img_showable], axis=-1)
+        for ctr in centers:
+            u = int((ctr[0]*fx)/ctr[2] + cx)
+            v = int((ctr[1]*fy)/ctr[2] + cy)
+            cv2.circle(vis, (u, v), 4, (0, 0, 255), -1)
+        # 也畫一下 mask 中心
+        mcy, mcx = np.mean(ys).astype(int), np.mean(xs).astype(int)
+        cv2.circle(vis, (mcx, mcy), 5, (0, 255, 0), -1)
+        cv2.imshow("Inliers & 10 centers", vis); cv2.waitKey(1)
 
-        # 顯示平面 inlier 轉換後的 mask
-        cv2.imshow("Inlier Mask", mask_img)
-        cv2.waitKey(1)
+        # 將 10 個候選點逐一送到 thing_pose（camera frame）
+        for i, center in enumerate(centers, 1):
+            pose_msg = PoseStamped()
+            pose_msg.header.frame_id = 'camera_depth_optical_frame'
+            pose_msg.header.stamp = self.get_clock().now().to_msg()
+            pose_msg.pose.position.x = float(center[0])
+            pose_msg.pose.position.y = float(center[1])
+            pose_msg.pose.position.z = float(center[2])
+            pose_msg.pose.orientation.x = float(quat[0])
+            pose_msg.pose.orientation.y = float(quat[1])
+            pose_msg.pose.orientation.z = float(quat[2])
+            pose_msg.pose.orientation.w = float(quat[3])
 
-        # color_cv = self.bridge.imgmsg_to_cv2(self.latest_image, desired_encoding='bgr8').copy()
-        # xmin = int(self.bbox[0])
-        # ymin = int(self.bbox[1])
-        # xmax = int(self.bbox[2])
-        # ymax = int(self.bbox[3])
-        # cv2.rectangle(color_cv, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-        # cv2.imshow("BBOX ROI", color_cv)
-        # cv2.waitKey(1)
+            req = PoseSrv.Request()
+            req.pose = pose_msg.pose
+            self.pose_client.call_async(req)
 
+        self.get_logger().info(f"[Batch] 已送出 10 個候選抓取點（同一張 mask）")
 
-        # 建立姿態
-        x_ref = np.array([-1.0, 0.0, 0.0])
-        y_axis = np.cross(normal, x_ref)
-        y_axis /= np.linalg.norm(y_axis)
-        x_axis = np.cross(y_axis, normal)
-        x_axis /= np.linalg.norm(x_axis)
-        rot_matrix = np.stack([x_axis, y_axis, normal], axis=1)
-        quat = R.from_matrix(rot_matrix).as_quat()
-
-        pose_msg = PoseStamped()
-        pose_msg.header.frame_id = 'camera_depth_optical_frame'
-        pose_msg.header.stamp = self.get_clock().now().to_msg()
-        pose_msg.pose.position = Point(x=center[0], y=center[1], z=center[2])
-        pose_msg.pose.orientation = Quaternion(x=quat[0], y=quat[1], z=quat[2], w=quat[3])
-        self.pose_pub.publish(pose_msg)
-
-        tf_msg = TransformStamped()
-        tf_msg.header = pose_msg.header
-        tf_msg.child_frame_id = 'grasp_pose'
-        tf_msg.transform.translation = Vector3(x=center[0], y=center[1], z=center[2])
-        tf_msg.transform.rotation = pose_msg.pose.orientation
-        self.br.sendTransform(tf_msg)
-
-        # 發送 Marker
-        marker = Marker()
-        marker.header.frame_id = 'camera_depth_optical_frame'
-        marker.ns = 'fitted_plane'
-        marker.id = 0
-        marker.type = Marker.ARROW
-        marker.action = Marker.ADD
-        marker.points = [
-            Point(x=center[0], y=center[1], z=center[2]),
-            Point(x=center[0] + normal[0]*0.1, y=center[1] + normal[1]*0.1, z=center[2] + normal[2]*0.1)
-        ]
-        marker.scale.x = 0.01
-        marker.scale.y = 0.02
-        marker.scale.z = 0.0
-        marker.color.r = 1.0
-        marker.color.g = 0.0
-        marker.color.b = 0.0
-        marker.color.a = 1.0
-        self.pub_marker.publish(marker)
-
-        # 呼叫 PoseSrv
-        req = PoseSrv.Request()
-        req.pose = pose_msg.pose
-        self.sending = True
-        future = self.pose_client.call_async(req)
 
         def handle_result(fut):
             self.sending = False

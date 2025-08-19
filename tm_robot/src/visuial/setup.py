@@ -27,6 +27,7 @@ setup(
             'socket_receive = visuial.socket_receive:main',
             'double_check = visuial.double_check:main',
             'second_camera = visuial.second_camera:main',
+            'ocr = visuial.ocr:main',
         ],
     },
 )

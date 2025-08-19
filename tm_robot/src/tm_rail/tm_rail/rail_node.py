@@ -186,11 +186,15 @@ class TMRailNode(Node):
             elif opt == OPT_RETURN_BAG:
                 self.get_logger().info(f"return bag: {rail_name}")
                 self.transfer_to_main_rail(arm_rail_node)
+                
                 # arm_rail_node.controller.goto(arm_rail_standby_pos, arm_rail_moving_vel)
                 self.controller.goto(main_rail_bag_pos, main_rail_moving_vel)
                 ## drap the bag
                 self.controller.bag(main_rail_bag_release_deg)
-                time.sleep(1)
+                bag_detected = True
+                while bag_detected:
+                    _, _, _, _, bag_detected = self.controller.status()
+                    time.sleep(1)
                 self.controller.bag(main_rail_bag_lock_deg)
                 ## carrier back to arm rail
                 self.transfer_to_arm_rail(arm_rail_node)
