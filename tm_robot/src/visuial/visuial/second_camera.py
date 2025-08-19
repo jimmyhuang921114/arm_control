@@ -60,7 +60,7 @@ class SecondCamera(Node):
         ret, frame = self.cap.read()
         frame = cv2.flip(frame, -1)
         if not ret:
-            self.get_logger().warn('can not read frame')
+            # self.get_logger().warn('can not read frame')
             return
         msg = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
         self.img_pub.publish(msg)

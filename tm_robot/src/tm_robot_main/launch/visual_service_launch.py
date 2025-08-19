@@ -33,8 +33,8 @@ def generate_launch_description():
         ),
         Node(
             package='visuial',
-            executable='run_paadleocr', 
-            name='run_paadleocr',
+            executable='ocr', 
+            name='ocr',
             output='screen',
             parameters=[]
         )

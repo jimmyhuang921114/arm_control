@@ -9,7 +9,7 @@ Clean Hospital Medicine Management System
 
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Text, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship, Session
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -57,6 +57,7 @@ class Prescription(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     status = Column(String(50), default="pending")  # pending, processing, completed, failed
     updated_at = Column(DateTime, default=datetime.utcnow)
+    picked_up = Column(Boolean, default=False, nullable=False)
 
 class PrescriptionMedicine(Base):
     __tablename__ = "prescription_medicine"
@@ -308,37 +309,31 @@ async def delete_medicine(medicine_id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/prescription/")
 async def get_prescriptions(db: Session = Depends(get_db)):
-    """Get all prescriptions with detailed information"""
     prescriptions = db.query(Prescription).order_by(Prescription.created_at.desc()).all()
     result = []
-    
     for p in prescriptions:
         prescription_medicines = db.query(PrescriptionMedicine).filter(
             PrescriptionMedicine.prescription_id == p.id
         ).all()
-        
-        medicines = []
+        meds = []
         for pm in prescription_medicines:
-            medicine = db.query(Medicine).filter(Medicine.id == pm.medicine_id).first()
-            if medicine:
-                medicines.append({
-                    "id": medicine.id,
-                    "name": medicine.name,
-                    "amount": pm.amount,
-                    "position": medicine.position,
-                    "prompt": medicine.prompt
+            m = db.query(Medicine).filter(Medicine.id == pm.medicine_id).first()
+            if m:
+                meds.append({
+                    "id": m.id, "name": m.name, "amount": pm.amount,
+                    "position": m.position, "prompt": m.prompt
                 })
-        
         result.append({
             "id": p.id,
             "patient_name": p.patient_name,
             "created_at": p.created_at.isoformat() if p.created_at else None,
             "updated_at": p.updated_at.isoformat() if p.updated_at else None,
             "status": p.status,
-            "medicines": medicines
+            "picked_up": p.picked_up,  # ★ 帶出
+            "medicines": meds
         })
-    
     return result
+
 
 @app.post("/api/prescription/")
 async def create_prescription(prescription: PrescriptionCreate, db: Session = Depends(get_db)):
@@ -371,6 +366,22 @@ async def create_prescription(prescription: PrescriptionCreate, db: Session = De
     logger.info(f"New prescription {db_prescription.id} added to queue. Queue length: {len(order_queue)}")
     
     return {"id": db_prescription.id, "message": "Prescription created and added to queue"}
+
+@app.post("/api/prescription/{prescription_id}/pickup")
+async def mark_prescription_picked_up(prescription_id: int, db: Session = Depends(get_db)):
+    p = db.query(Prescription).filter(Prescription.id == prescription_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Prescription not found")
+    # 只有完成才可領藥；未完成就拒絕
+    if p.status != "completed":
+        raise HTTPException(status_code=400, detail="Prescription not completed yet")
+    if p.picked_up:
+        return {"message": "Already picked up", "id": p.id, "picked_up": True}
+    p.picked_up = True
+    p.updated_at = datetime.utcnow()
+    db.commit()
+    logger.info(f"Prescription {p.id} marked as picked up")
+    return {"message": "Picked up", "id": p.id, "picked_up": True}
 
 @app.put("/api/prescription/{prescription_id}/status")
 async def update_prescription_status(prescription_id: int, status_update: StatusUpdate, db: Session = Depends(get_db)):
@@ -565,6 +576,30 @@ async def get_medicine_detailed_info_ros2(medicine_name: str, db: Session = Depe
         **result,
         "yaml": yaml.safe_dump(result, allow_unicode=True, default_flow_style=False)
     }
+# —— 放在 route 區塊（例如 get_prescriptions 之後）——
+
+def _status_text(s: str) -> str:
+    mapping = {"pending":"待處理","processing":"處理中","completed":"已完成","failed":"失敗"}
+    return mapping.get(s, s)
+
+@app.get("/api/patient/{patient_name}/prescriptions")
+async def get_patient_prescriptions_simple(patient_name: str, db: Session = Depends(get_db)):
+    """
+    病患端用：只回傳每一單的狀態（新→舊）
+    """
+    rows = db.query(Prescription)\
+        .filter(Prescription.patient_name.ilike(f"%{patient_name}%"))\
+        .order_by(Prescription.created_at.desc())\
+        .all()
+    return [{
+        "id": p.id,
+        "patient_name": p.patient_name,
+        "status": _status_text(p.status),
+        "created_at": p.created_at.isoformat() if p.created_at else None,
+        "updated_at": p.updated_at.isoformat() if p.updated_at else None,
+    } for p in rows]
+
+
 
 # Web Interface Routes
 @app.get("/medicine.html", response_class=HTMLResponse)
@@ -874,6 +909,11 @@ async def medicine_page():
             <span class="icon">📋</span>
             <span>處方籤管理</span>
         </a>
+        <!-- 改這一行：把 active 拿掉 -->
+        <a href="/patient.html" class="nav-button">
+        <span class="icon">🧑‍🦽</span><span>病患查詢</span>
+        </a>
+
     </div>
 
     <div class="main-content">
@@ -1517,6 +1557,11 @@ async def doctor_page():
             <span class="icon">📋</span>
             <span>處方籤管理</span>
         </a>
+        <!-- 改這一行：把 active 拿掉 -->
+        <a href="/patient.html" class="nav-button">
+        <span class="icon">🧑‍🦽</span><span>病患查詢</span>
+        </a>
+
     </div>
 
     <div class="main-content">
@@ -1747,544 +1792,586 @@ async def doctor_page():
 </html>
     """
 
+
+
 @app.get("/prescription.html", response_class=HTMLResponse)
 async def prescription_page():
     return """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>處方籤管理 - 醫院管理系統</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-attachment: fixed;
-            color: #2c3e50;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 280px;
-            height: 100vh;
-            background: rgba(44, 62, 80, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 20px;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .sidebar .logo {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .sidebar .logo h2 {
-            color: #ecf0f1;
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .sidebar .logo p {
-            color: #bdc3c7;
-            font-size: 0.9em;
-        }
-        
-        .nav-button {
-            display: block;
-            width: 100%;
-            padding: 15px 20px;
-            margin: 10px 0;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .nav-button:hover {
-            background: linear-gradient(45deg, #2980b9, #1f4e79);
-            transform: translateX(8px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-        }
-        
-        .nav-button.active {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            transform: translateX(8px);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
-        }
-        
-        .nav-button .icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-        
-        .main-content {
-            margin-left: 280px;
-            padding: 30px;
-            min-height: 100vh;
-        }
-        
-        .page-header {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .page-header h1 {
-            color: #2c3e50;
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .content-card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            margin: 8px;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #ff8f00);
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-        }
-        
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .data-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .data-table td {
-            padding: 20px;
-            border-bottom: 1px solid #e9ecef;
-            color: #495057;
-            font-size: 14px;
-            vertical-align: top;
-        }
-        
-        .data-table tr:hover {
-            background: #f8f9fa;
-            transform: scale(1.01);
-            transition: all 0.2s ease;
-        }
-        
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-processing {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-        
-        .status-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-failed {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .medicine-item {
-            display: inline-block;
-            background: #f8f9fa;
-            padding: 6px 12px;
-            margin: 2px;
-            border-radius: 6px;
-            border: 1px solid #e9ecef;
-            font-size: 12px;
-        }
-        
-        .alert {
-            padding: 20px 25px;
-            border-radius: 12px;
-            margin: 20px 0;
-            font-weight: 500;
-            border-left: 4px solid;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border-color: #28a745;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #dc3545;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 25px;
-            height: 25px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .text-center { text-align: center; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>處方籤管理 - 醫院管理系統</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Microsoft JhengHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      color: #2c3e50;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      width: 280px; height: 100vh;
+      background: rgba(44, 62, 80, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000; padding: 20px;
+      box-shadow: 4px 0 20px rgba(0,0,0,.3);
+    }
+    .sidebar .logo { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,.1); }
+    .sidebar .logo h2 { color:#ecf0f1; font-size:1.5em; font-weight:700; margin-bottom:5px; }
+    .sidebar .logo p { color:#bdc3c7; font-size:.9em; }
+
+    .nav-button {
+      display:block; width:100%;
+      padding:15px 20px; margin:10px 0;
+      background:linear-gradient(45deg,#3498db,#2980b9);
+      color:#fff; text-decoration:none; border:none; border-radius:12px;
+      cursor:pointer; font-size:15px; font-weight:600; transition:.3s;
+      text-align:left; display:flex; align-items:center; gap:12px;
+    }
+    .nav-button:hover { background:linear-gradient(45deg,#2980b9,#1f4e79); transform:translateX(8px); box-shadow:0 8px 25px rgba(52,152,219,.4); }
+    .nav-button.active { background:linear-gradient(45deg,#e74c3c,#c0392b); transform:translateX(8px); box-shadow:0 8px 25px rgba(231,76,60,.4); }
+    .nav-button .icon { font-size:18px; width:24px; text-align:center; }
+
+    .main-content { margin-left:280px; padding:30px; min-height:100vh; }
+    .page-header {
+      background:#fff; padding:40px; border-radius:16px;
+      box-shadow:0 8px 32px rgba(0,0,0,.1); margin-bottom:30px; text-align:center;
+    }
+    .page-header h1 { color:#2c3e50; font-size:2.8em; margin-bottom:10px; font-weight:700; }
+
+    .content-card {
+      background:#fff; padding:40px; border-radius:16px;
+      box-shadow:0 8px 32px rgba(0,0,0,.1); margin-bottom:30px;
+    }
+
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:25px; margin-bottom:30px;
+    }
+    .stat-card { background:#fff; padding:30px; border-radius:12px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,.1); transition:.3s; }
+    .stat-card:hover { transform:translateY(-5px); }
+    .stat-number { font-size:2.5em; font-weight:bold; color:#667eea; margin-bottom:10px; }
+    .stat-label { color:#666; font-size:1em; letter-spacing:1px; font-weight:600; text-transform:uppercase; }
+
+    .btn {
+      padding:15px 30px; border:none; border-radius:12px; cursor:pointer;
+      font-size:15px; font-weight:600; transition:.3s; display:inline-flex; align-items:center; gap:10px; text-decoration:none; margin:8px;
+    }
+    .btn-success { background:linear-gradient(135deg,#28a745,#20c997); color:#fff; }
+    .btn-success:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(40,167,69,.4); }
+    .btn-warning { background:linear-gradient(135deg,#ffc107,#ff8f00); color:#fff; }
+    .btn-warning:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(255,193,7,.4); }
+    .btn-primary { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(102,126,234,.4); }
+
+    .data-table {
+      width:100%; border-collapse:collapse; margin-top:25px;
+      background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.1);
+    }
+    .data-table th {
+      background:linear-gradient(135deg,#667eea,#764ba2); color:#fff;
+      padding:20px; text-align:left; font-weight:600; font-size:14px;
+    }
+    .data-table td { padding:20px; border-bottom:1px solid #e9ecef; color:#495057; font-size:14px; vertical-align:top; }
+    .data-table tr:hover { background:#f8f9fa; transform:scale(1.01); transition:.2s; }
+
+    .status-badge { padding:8px 16px; border-radius:20px; font-size:12px; font-weight:600; display:inline-block; text-transform:uppercase; }
+    .status-pending { background:#fff3cd; color:#856404; }
+    .status-processing { background:#d1ecf1; color:#0c5460; }
+    .status-completed { background:#d4edda; color:#155724; }
+    .status-failed { background:#f8d7da; color:#721c24; }
+
+    .medicine-item {
+      display:inline-block; background:#f8f9fa; padding:6px 12px; margin:2px;
+      border-radius:6px; border:1px solid #e9ecef; font-size:12px;
+    }
+
+    .alert { padding:20px 25px; border-radius:12px; margin:20px 0; font-weight:500; border-left:4px solid; }
+    .alert-success { background:#d4edda; color:#155724; border-color:#28a745; }
+    .alert-error { background:#f8d7da; color:#721c24; border-color:#dc3545; }
+
+    .loading { display:inline-block; width:25px; height:25px; border:3px solid #f3f3f3; border-top:3px solid #667eea; border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+
+    /* 已完成待領取—編號籤（有間隔橫向排列） */
+    .chip-list { display:flex; flex-wrap:wrap; gap:12px; }
+    .chip {
+      background:#d4edda; color:#155724; border:1px solid #c3e6cb;
+      padding:10px 14px; border-radius:999px; font-weight:700;
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    .chip button {
+      border:none; border-radius:999px; padding:6px 10px; cursor:pointer;
+      background:#28a745; color:#fff; font-weight:700;
+    }
+    .chip button:hover { filter:brightness(.95); }
+
+    .text-center { text-align:center; }
+    .muted { color:#6b7280; }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <h2>醫院管理系統</h2>
-            <p>Hospital Management System</p>
-        </div>
-        
-        <a href="/medicine.html" class="nav-button">
-            <span class="icon">💊</span>
-            <span>藥物管理</span>
-        </a>
-        
-        <a href="/doctor.html" class="nav-button">
-            <span class="icon">👨‍⚕️</span>
-            <span>醫生工作台</span>
-        </a>
-        
-        <a href="/prescription.html" class="nav-button active">
-            <span class="icon">📋</span>
-            <span>處方籤管理</span>
-        </a>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>醫院管理系統</h2>
+      <p>Hospital Management System</p>
     </div>
 
-    <div class="main-content">
-        <div class="page-header">
-            <h1>處方籤管理系統</h1>
-            <p>監控和管理處方籤狀態</p>
-        </div>
+    <a href="/medicine.html" class="nav-button">
+      <span class="icon">💊</span><span>藥物管理</span>
+    </a>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="pendingCount">-</div>
-                <div class="stat-label">待處理</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="processingCount">-</div>
-                <div class="stat-label">處理中</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="completedCount">-</div>
-                <div class="stat-label">已完成</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalCount">-</div>
-                <div class="stat-label">總計</div>
-            </div>
-        </div>
+    <a href="/doctor.html" class="nav-button">
+      <span class="icon">👨‍⚕️</span><span>醫生工作台</span>
+    </a>
 
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h2>處方籤列表</h2>
-                <div>
-                    <button class="btn btn-success" onclick="loadPrescriptions()">
-                        <span>🔄</span> 重新載入
-                    </button>
-                    <button class="btn btn-warning" onclick="toggleAutoRefresh()">
-                        <span id="autoRefreshIcon">⏸️</span> <span id="autoRefreshText">停止自動更新</span>
-                    </button>
-                </div>
-            </div>
+    <a href="/prescription.html" class="nav-button active">
+      <span class="icon">📋</span><span>處方籤管理</span>
+    </a>
 
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>處方籤編號</th>
-                        <th>病患姓名</th>
-                        <th>建立時間</th>
-                        <th>更新時間</th>
-                        <th>狀態</th>
-                        <th>藥物清單</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="prescriptionList">
-                    <tr>
-                        <td colspan="7" class="text-center">
-                            <div class="loading"></div> 載入中...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <a href="/patient.html" class="nav-button">
+      <span class="icon">🧑‍🦽</span><span>病患查詢</span>
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1>處方籤管理系統</h1>
+      <p>監控和管理處方籤狀態</p>
     </div>
 
-    <script>
-        let autoRefreshTimer = null;
-        let isAutoRefreshing = true;
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="pendingCount">-</div>
+        <div class="stat-label">待處理</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="processingCount">-</div>
+        <div class="stat-label">處理中</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="completedCount">-</div>
+        <div class="stat-label">已完成</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalCount">-</div>
+        <div class="stat-label">總計</div>
+      </div>
+    </div>
 
-        function showAlert(message, type = 'success') {
-            document.querySelectorAll('.alert').forEach(alert => {
-                if (!alert.classList.contains('permanent')) {
-                    alert.remove();
-                }
-            });
+    <!-- 已完成待領取（編號籤） -->
+    <div class="content-card">
+      <h2>已完成待領取</h2>
+      <div id="pickupList" class="chip-list">
+        <span class="muted">載入中…</span>
+      </div>
+    </div>
 
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type === 'error' ? 'error' : 'success'}`;
-            alertDiv.innerHTML = message;
-            
-            const container = document.querySelector('.content-card');
-            if (container) {
-                container.insertBefore(alertDiv, container.firstChild);
-                setTimeout(() => alertDiv.remove(), 5000);
-            }
+    <div class="content-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+        <h2>處方籤列表</h2>
+        <div>
+          <button class="btn btn-success" onclick="loadPrescriptions()">
+            <span>🔄</span> 重新載入
+          </button>
+          <button class="btn btn-warning" onclick="toggleAutoRefresh()">
+            <span id="autoRefreshIcon">⏸️</span> <span id="autoRefreshText">停止自動更新</span>
+          </button>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>處方籤編號</th>
+            <th>病患姓名</th>
+            <th>建立時間</th>
+            <th>更新時間</th>
+            <th>狀態</th>
+            <th>藥物清單</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="prescriptionList">
+          <tr>
+            <td colspan="7" class="text-center">
+              <div class="loading"></div> 載入中...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let autoRefreshTimer = null;
+    let isAutoRefreshing = true;
+
+    function showAlert(message, type = 'success') {
+      document.querySelectorAll('.alert').forEach(a => { if (!a.classList.contains('permanent')) a.remove(); });
+      const el = document.createElement('div');
+      el.className = `alert alert-${type === 'error' ? 'error' : 'success'}`;
+      el.innerHTML = message;
+      const container = document.querySelector('.content-card');
+      if (container) {
+        container.insertBefore(el, container.firstChild);
+        setTimeout(() => el.remove(), 5000);
+      }
+    }
+
+    function getStatusText(status) {
+      const map = { pending:'待處理', processing:'處理中', completed:'已完成', failed:'失敗' };
+      return map[status] || status;
+    }
+
+    function updateStats(list) {
+      const stats = { pending:0, processing:0, completed:0, failed:0, total:list.length };
+      list.forEach(p => { if (stats.hasOwnProperty(p.status)) stats[p.status]++; });
+      document.getElementById('pendingCount').textContent = stats.pending;
+      document.getElementById('processingCount').textContent = stats.processing;
+      document.getElementById('completedCount').textContent = stats.completed;
+      document.getElementById('totalCount').textContent = stats.total;
+    }
+
+    async function loadPrescriptions() {
+      const tbody = document.getElementById('prescriptionList');
+      const pickupBox = document.getElementById('pickupList');
+
+      try {
+        const res = await fetch('/api/prescription/');
+        const prescriptions = await res.json();
+
+        // 上方：已完成但未領取 → 顯示編號籤（有間隔）
+        const waitingPick = prescriptions.filter(p => p.status === 'completed' && !p.picked_up);
+        if (waitingPick.length === 0) {
+          pickupBox.innerHTML = '<span class="muted">目前沒有待領取的處方籤</span>';
+        } else {
+          pickupBox.innerHTML = waitingPick.map(p => {
+            const id = String(p.id).padStart(6,'0');
+            return `<span class="chip">#${id}<button onclick="markPicked(${p.id})">已領藥</button></span>`;
+          }).join('');
         }
 
-        async function loadPrescriptions() {
-            const tbody = document.getElementById('prescriptionList');
-            
-            try {
-                const response = await fetch('/api/prescription/');
-                const prescriptions = await response.json();
-                
-                updateStats(prescriptions);
-                
-                if (prescriptions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">尚無處方籤資料</td></tr>';
-                    return;
-                }
+        // 下方：列表
+        updateStats(prescriptions);
 
-                tbody.innerHTML = prescriptions.map(p => {
-                    const createdDate = new Date(p.created_at);
-                    const updatedDate = new Date(p.updated_at);
-                    const medicineList = p.medicines.map(m => 
-                        `<span class="medicine-item">${m.name} (${m.amount}) [${m.position}]</span>`
-                    ).join(' ');
-                    
-                    let actions = '';
-                    if (p.status === 'pending') {
-                        actions = `<button class="btn btn-primary" onclick="updateStatus(${p.id}, 'processing')" style="padding: 8px 16px; font-size: 12px;">開始處理</button>`;
-                    } else if (p.status === 'processing') {
-                        actions = `<button class="btn btn-success" onclick="updateStatus(${p.id}, 'completed')" style="padding: 8px 16px; font-size: 12px;">標記完成</button>`;
-                    }
-                    
-                    return `
-                        <tr>
-                            <td><strong>#${p.id.toString().padStart(6, '0')}</strong></td>
-                            <td>${p.patient_name}</td>
-                            <td>${createdDate.toLocaleString('zh-TW')}</td>
-                            <td>${updatedDate.toLocaleString('zh-TW')}</td>
-                            <td><span class="status-badge status-${p.status}">${getStatusText(p.status)}</span></td>
-                            <td>${medicineList}</td>
-                            <td>${actions}</td>
-                        </tr>
-                    `;
-                }).join('');
-                
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center"><div class="alert alert-error">載入失敗: ${error.message}</div></td></tr>`;
-            }
+        if (prescriptions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center">尚無處方籤資料</td></tr>';
+          return;
         }
 
-        function updateStats(prescriptions) {
-            const stats = {
-                pending: 0,
-                processing: 0,
-                completed: 0,
-                failed: 0,
-                total: prescriptions.length
-            };
-            
-            prescriptions.forEach(p => {
-                if (stats.hasOwnProperty(p.status)) {
-                    stats[p.status]++;
-                }
-            });
-            
-            document.getElementById('pendingCount').textContent = stats.pending;
-            document.getElementById('processingCount').textContent = stats.processing;
-            document.getElementById('completedCount').textContent = stats.completed;
-            document.getElementById('totalCount').textContent = stats.total;
-        }
+        tbody.innerHTML = prescriptions.map(p => {
+          const createdDate = p.created_at ? new Date(p.created_at) : null;
+          const updatedDate = p.updated_at ? new Date(p.updated_at) : null;
+          const medicineList = (p.medicines || []).map(m =>
+            `<span class="medicine-item">${m.name} (${m.amount}) [${m.position}]</span>`
+          ).join(' ');
 
-        function getStatusText(status) {
-            const statusMap = {
-                'pending': '待處理',
-                'processing': '處理中',
-                'completed': '已完成',
-                'failed': '失敗'
-            };
-            return statusMap[status] || status;
-        }
+          let actions = '';
+          if (p.status === 'pending') {
+            actions = `<button class="btn btn-primary" onclick="updateStatus(${p.id}, 'processing')" style="padding:8px 16px; font-size:12px;">開始處理</button>`;
+          } else if (p.status === 'processing') {
+            actions = `<button class="btn btn-warning" onclick="updateStatus(${p.id}, 'completed')" style="padding:8px 16px; font-size:12px;">標記完成</button>`;
+          } else if (p.status === 'completed' && !p.picked_up) {
+            actions = `<button class="btn btn-success" onclick="markPicked(${p.id})" style="padding:8px 16px; font-size:12px;">已領藥</button>`;
+          } else if (p.status === 'completed' && p.picked_up) {
+            actions = `<span class="muted">已領取</span>`;
+          }
 
-        async function updateStatus(id, status) {
-            try {
-                const response = await fetch(`/api/prescription/${id}/status`, {
-                    method: 'PUT',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({status: status})
-                });
-                
-                if (response.ok) {
-                    showAlert(`處方籤 #${id.toString().padStart(6, '0')} 狀態已更新為: ${getStatusText(status)}`, 'success');
-                    loadPrescriptions();
-                } else {
-                    throw new Error('狀態更新失敗');
-                }
-            } catch (error) {
-                showAlert('錯誤: ' + error.message, 'error');
-            }
-        }
+          return `
+            <tr>
+              <td><strong>#${p.id.toString().padStart(6, '0')}</strong></td>
+              <td>${p.patient_name}</td>
+              <td>${createdDate ? createdDate.toLocaleString('zh-TW') : '-'}</td>
+              <td>${updatedDate ? updatedDate.toLocaleString('zh-TW') : '-'}</td>
+              <td><span class="status-badge status-${p.status}">${getStatusText(p.status)}</span></td>
+              <td>${medicineList}</td>
+              <td>${actions}</td>
+            </tr>
+          `;
+        }).join('');
 
-        function toggleAutoRefresh() {
-            if (isAutoRefreshing) {
-                clearInterval(autoRefreshTimer);
-                document.getElementById('autoRefreshIcon').textContent = '▶️';
-                document.getElementById('autoRefreshText').textContent = '開始自動更新';
-                isAutoRefreshing = false;
-            } else {
-                startAutoRefresh();
-                document.getElementById('autoRefreshIcon').textContent = '⏸️';
-                document.getElementById('autoRefreshText').textContent = '停止自動更新';
-                isAutoRefreshing = true;
-            }
-        }
+      } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center"><div class="alert alert-error">載入失敗: ${error.message}</div></td></tr>`;
+        document.getElementById('pickupList').innerHTML = `<span class="muted">載入失敗</span>`;
+      }
+    }
 
-        function startAutoRefresh() {
-            autoRefreshTimer = setInterval(loadPrescriptions, 3000);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadPrescriptions();
-            startAutoRefresh();
+    async function updateStatus(id, status) {
+      try {
+        const r = await fetch(`/api/prescription/${id}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
         });
-    </script>
+        if (!r.ok) throw new Error('狀態更新失敗');
+        showAlert(`處方籤 #${String(id).padStart(6,'0')} 狀態已更新為：${getStatusText(status)}`, 'success');
+        loadPrescriptions();
+      } catch (e) {
+        showAlert('錯誤：' + e.message, 'error');
+      }
+    }
+
+    async function markPicked(id) {
+      try {
+        const r = await fetch(`/api/prescription/${id}/pickup`, { method:'POST' });
+        if (!r.ok) {
+          const e = await r.json().catch(() => ({ detail:'已領藥失敗' }));
+          throw new Error(e.detail || '已領藥失敗');
+        }
+        showAlert(`處方籤 #${String(id).padStart(6,'0')} 已標記為「已領藥」`, 'success');
+        loadPrescriptions();
+      } catch (err) {
+        showAlert('錯誤：' + err.message, 'error');
+      }
+    }
+
+    function toggleAutoRefresh() {
+      if (isAutoRefreshing) {
+        clearInterval(autoRefreshTimer);
+        document.getElementById('autoRefreshIcon').textContent = '▶️';
+        document.getElementById('autoRefreshText').textContent = '開始自動更新';
+        isAutoRefreshing = false;
+      } else {
+        startAutoRefresh();
+        document.getElementById('autoRefreshIcon').textContent = '⏸️';
+        document.getElementById('autoRefreshText').textContent = '停止自動更新';
+        isAutoRefreshing = true;
+      }
+    }
+
+    function startAutoRefresh() {
+      autoRefreshTimer = setInterval(loadPrescriptions, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      loadPrescriptions();
+      startAutoRefresh();
+    });
+  </script>
 </body>
 </html>
-    """
+"""
+
+
+
+@app.get("/patient.html", response_class=HTMLResponse)
+async def patient_page():
+    return """<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>病患查詢 - 醫院管理系統</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Microsoft JhengHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    color:#2c3e50; line-height:1.6; min-height:100vh;
+    padding: 28px;
+  }
+
+  .page-header {
+    background:#fff; padding:28px; border-radius:16px;
+    box-shadow:0 8px 32px rgba(0,0,0,.08); margin-bottom:22px; text-align:center;
+  }
+  .page-header h1 { font-size:2.2rem; margin-bottom:6px; font-weight:800; }
+
+  .two-col { display:grid; grid-template-columns: 1fr 1fr; gap:22px; }
+
+  .panel {
+    background:#fff; border-radius:16px; padding:20px;
+    box-shadow:0 8px 24px rgba(0,0,0,.08); min-height: 60vh; display:flex; flex-direction:column;
+  }
+  .panel h2 {
+    font-size:24px; margin:0 0 12px 0; font-weight:900; letter-spacing:.5px;
+  }
+
+  .section-head {
+    background: linear-gradient(90deg,#6c63ff,#845ec2);
+    color:#fff; border-radius:10px; padding:12px 16px; font-weight:800; margin-bottom:12px;
+  }
+
+  /* chip 列表（水平排列、自動換行、留白） */
+  .chip-list { display:flex; flex-wrap:wrap; gap:12px; align-content:flex-start; }
+  .chip {
+    display:inline-flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:999px; font-weight:800;
+    background:#eef2ff; color:#312e81; border:1px solid #c7d2fe;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  .chip.processing { background:#e0f2fe; color:#0c4a6e; border-color:#bae6fd; }  /* 待處理/處理中 */
+  .chip.completed  { background:#d1fae5; color:#065f46; border-color:#a7f3d0; }  /* 已完成(待領取) */
+
+  .muted { color:#6b7280; }
+  .loading {
+    display:inline-block; width:18px; height:18px; border:3px solid #e5e7eb;
+    border-top:3px solid #6c63ff; border-radius:50%; animation:spin 1s linear infinite;
+    vertical-align:middle; margin-right:8px;
+  }
+  @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+  /* 整體字級加大一階 */
+    body { font-size: 30px; }
+
+    /* 標題更大更醒目 */
+    .page-header h1 { font-size: 2.8rem; }
+    .page-header p { font-size: 1.1rem; }
+
+    /* 兩欄容器：留更大間距 */
+    .two-col { gap: 28px; }
+
+    /* 面板：加高、內距加大、字體加大 */
+    .panel {
+    min-height: 70vh;      /* 原 60vh → 70vh */
+    padding: 28px;         /* 原 20px → 28px */
+    font-size: 1.05rem;
+    }
+
+    /* 區塊標頭更大 */
+    .section-head {
+    padding: 16px 20px;    /* 原 12/16 → 16/20 */
+    font-size: 1.25rem;
+    letter-spacing: .5px;
+    }
+
+    /* tag 列：間距放大 */
+    .chip-list { gap: 16px; }
+
+    /* 編號籤：尺寸、字重、圓角、陰影都放大 */
+    .chip {
+    padding: 12px 18px;    /* 原 10/14 → 12/18 */
+    font-size: 1.1rem;     /* 原本約 16px → 17~18px */
+    border-radius: 999px;
+    font-weight: 900;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    /* 狀態配色維持，但讓對比更清楚 */
+    .chip.processing {
+    background:#dbeafe; color:#0c4a6e; border-color:#93c5fd;
+    }
+    .chip.completed {
+    background:#bbf7d0; color:#065f46; border-color:#86efac;
+    }
+
+    /* 載入動畫也放大一點 */
+    .loading { width: 22px; height: 22px; border-width: 3px; }
+
+    /* 手機版：仍能塞下大籤，字再微縮避免換行太醜 */
+    @media (max-width: 980px) {
+    body { font-size: 17px; }
+    .panel { min-height: auto; }
+    .chip { font-size: 1.05rem; padding: 10px 16px; }
+    }
+
+
+  @media (max-width: 980px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>藥單處理狀況</h1>
+    <p class="muted">左側顯示「待處理 + 處理中」，右側顯示「已完成（尚未領取）」</p>
+  </div>
+
+  <div class="two-col">
+    <!-- 左：處理中（待處理 + 處理中） -->
+    <section class="panel">
+      <div class="section-head">處理中</div>
+      <div id="listProcessing" class="chip-list">
+        <span class="muted"><span class="loading"></span>載入中…</span>
+      </div>
+      <p class="muted" style="margin-top:10px;">包含「待處理」與「處理中」的訂單。</p>
+    </section>
+
+    <!-- 右：已完成（但尚未領取） -->
+    <section class="panel">
+      <div class="section-head">已完成</div>
+      <div id="listCompleted" class="chip-list">
+        <span class="muted"><span class="loading"></span>載入中…</span>
+      </div>
+    </section>
+  </div>
+
+<script>
+let timer=null;
+
+/** 從後端拉所有處方（含 picked_up） */
+async function fetchAll(){
+  const r = await fetch('/api/prescription/', {cache:'no-store', headers:{'cache-control':'no-cache','pragma':'no-cache'}});
+  if(!r.ok) throw new Error('資料讀取失敗');
+  return await r.json();
+}
+
+/** 產生 chip（#000123） */
+function chip(id, cls){
+  return `<span class="chip ${cls}">#${String(id).padStart(6,'0')}</span>`;
+}
+
+function render(processing, completed){
+  const boxP = document.getElementById('listProcessing');
+  const boxC = document.getElementById('listCompleted');
+
+  if(processing.length === 0){
+    boxP.innerHTML = '<span class="muted">目前沒有處理中的訂單</span>';
+  }else{
+    // 依訂單編號由小到大排列
+    processing.sort((a,b)=>a.id-b.id);
+    boxP.innerHTML = processing.map(p => chip(p.id, 'processing')).join('');
+  }
+
+  if(completed.length === 0){
+    boxC.innerHTML = '<span class="muted">目前沒有已完成（待領取）的訂單</span>';
+  }else{
+    completed.sort((a,b)=>a.id-b.id);
+    boxC.innerHTML = completed.map(p => chip(p.id, 'completed')).join('');
+  }
+}
+
+/** 主流程：拉資料→分組→渲染 */
+async function load(){
+  try{
+    const data = await fetchAll();
+    const processing = [];  // 待處理 + 處理中
+    const completed  = [];  // 已完成且未領取
+
+    for(const p of data){
+      if((p.status === 'pending') || (p.status === 'processing')){
+        processing.push({id:p.id});
+      }else if(p.status === 'completed' && !p.picked_up){
+        completed.push({id:p.id});
+      }
+      // 其他狀態（failed 或 completed+picked_up）此頁隱藏
+    }
+    render(processing, completed);
+  }catch(e){
+    document.getElementById('listProcessing').innerHTML =
+      `<span class="muted">載入失敗：${e.message}</span>`;
+    document.getElementById('listCompleted').innerHTML =
+      `<span class="muted">載入失敗：${e.message}</span>`;
+  }
+}
+
+function start(){ stop(); timer=setInterval(load, 3000); }
+function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ load(); } });
+document.addEventListener('DOMContentLoaded', ()=>{ load(); start(); });
+</script>
+</body>
+</html>
+"""
+
+
 
 if __name__ == "__main__":
     print("Starting Clean Hospital Medicine Management System...")
@@ -2296,6 +2383,7 @@ if __name__ == "__main__":
     print("  - Medicine Management: http://localhost:8001/medicine.html")
     print("  - Doctor Interface: http://localhost:8001/doctor.html") 
     print("  - Prescription Management: http://localhost:8001/prescription.html")
+    print("  - Prescription Management: http://localhost:8001/patient.html")
     print("  - Fast API Doc: http://localhost:8001/docs ")
     print("\n ROS2 Integration Endpoints:")
     print("  - Get Next Order: GET /api/ros2/order/next")

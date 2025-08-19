@@ -1,3 +1,4 @@
 #Second Camera
+int32 pic_cnt
 ---
 bool success 

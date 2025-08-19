@@ -108,6 +108,7 @@ class PlaneFittingNode(Node):
             self.latest_mask = self.bridge.imgmsg_to_cv2(request.mask, desired_encoding='mono8')
             self.get_logger().info("成功接收到 binary mask，開始估算抓取姿態")
             self.bbox = request.bbox
+            self.shelf_level = request.shelf_level
             self.fit_plane_from_bbox()
             response.success = True
         except Exception as e:
@@ -170,7 +171,7 @@ class PlaneFittingNode(Node):
         pts = np.array(region_pts, dtype=np.float32)
         # 取 z 欄的 50 分位做門檻
         z_vals = pts[:, 2]
-        z_thresh = np.percentile(z_vals,80)
+        z_thresh = np.percentile(z_vals,60)
         self.get_logger().warn(f"z_thresh: {z_thresh}")
         z_thresh += 0.00
         # 過濾出 z <= 門檻（後 50%）
@@ -361,6 +362,7 @@ class PlaneFittingNode(Node):
         # 呼叫 PoseSrv
         req = PoseSrv.Request()
         req.pose = pose_msg.pose
+        req.shelf_level = self.shelf_level
         self.sending = True
         future = self.pose_client.call_async(req)
 

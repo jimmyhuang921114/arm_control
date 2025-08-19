@@ -1,4 +1,5 @@
 geometry_msgs/Pose pose
+int32 shelf_level
 ---
 geometry_msgs/Pose transformed_pose
 bool success

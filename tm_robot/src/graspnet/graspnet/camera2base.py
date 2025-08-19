@@ -33,8 +33,6 @@ class Camera2Base(Node):
         self.get_logger().info("Camera2Base node initialized")
 
     def create_hand_eye_transform(self):
-        # trans = np.array([0.03259844647312995, 0.03353493542635663, 0.06710244944028136])
-        # quat = [0.002941215511589119, -0.0014954878102503809, 0.9999927889854823, 0.001880091636192428]
         trans = np.array([0.03519476430554744, 0.031179262982872283, 0.06895451368177878])
         quat = [0.001933996002298429, -0.000168483111231493, 0.9999942581113687, 0.0027775919782450868]
         T = np.eye(4)
@@ -89,59 +87,38 @@ class Camera2Base(Node):
         pos = T_base[:3, 3]
         quat = R.from_matrix(T_base[:3, :3]).as_quat()
         rpy = R.from_matrix(T_base[:3, :3]).as_euler('xyz', degrees=True)
+        shelf_level = 1
+        if shelf_level == 1:
+            base_pose = Pose()
+            pos[0] +=0.02115 
+            pos[2] += 0.0453
+            base_pose.position.x = pos[0]
+            base_pose.position.y = pos[1]
+            base_pose.position.z = pos[2]
+            base_pose.orientation.x = 0.6903455
+            base_pose.orientation.y = -0.6903455
+            base_pose.orientation.z = -0.1530459
+            base_pose.orientation.w = 0.1530459
 
-        ## offset
-        # pos[0] += 0.012
-        # pos[1] -= 0.005
-        # pos[2] += 0.10
+            
+        else:
+            base_pose =Pose()
+            pos[2] +=0.05
+            base_pose.position.x = pos[0]
+            base_pose.position.y = pos[1]
+            base_pose.position.z = pos[2]
+            base_pose.orientation.x = quat[0]
+            base_pose.orientation.y = quat[1]
+            base_pose.orientation.z = quat[2]
+            base_pose.orientation.w = quat[3]
 
-        # == 新增：呼叫機器人 /set_positions ==
-        # if not self.set_positions_client.wait_for_service(timeout_sec=1.0):
-        #     self.get_logger().error("❌ set_positions 服務未啟用")
-        #     response.success = False
-        #     return response
+        
 
-        # setpos_req = SetPositions.Request()
-        # setpos_req.motion_type = 2  # PTP_T
-        # setpos_req.positions = [
-        #     pos[0], pos[1], pos[2],
-        #     np.deg2rad(rpy[0]),
-        #     np.deg2rad(rpy[1]),
-        #     np.deg2rad(rpy[2])
-        # ]
-        # setpos_req.velocity = 0.2
-        # setpos_req.acc_time = 0.2
-        # setpos_req.blend_percentage = 0
-        # setpos_req.fine_goal = True
-
-        # future = self.set_positions_client.call_async(setpos_req)
-
-        # def callback(fut):
-        #     try:
-        #         result = fut.result()
-        #         if result.ok:
-        #             self.get_logger().info("機器人已接收 set_positions 並執行")
-        #         else:
-        #             self.get_logger().error("機器人 set_positions 執行失敗")
-        #     except Exception as e:
-        #         self.get_logger().error(f"set_positions 發送失敗: {e}")
-
-        # future.add_done_callback(callback)
-        pos[0] +=0.02115 
-        pos[2] += 0.0453
-
-        base_pose = Pose()
-        base_pose.position.x = pos[0]
-        base_pose.position.y = pos[1]
-        base_pose.position.z = pos[2]
         # base_pose.orientation.x = quat[0]
         # base_pose.orientation.y = quat[1]
         # base_pose.orientation.z = quat[2]
         # base_pose.orientation.w = quat[3]
-        base_pose.orientation.x = 0.6903455
-        base_pose.orientation.y = -0.6903455
-        base_pose.orientation.z = -0.1530459
-        base_pose.orientation.w = 0.1530459 
+
 
 
         self.get_logger().info(f"PoseStamped:\n{base_pose}")

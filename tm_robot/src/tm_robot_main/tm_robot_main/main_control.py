@@ -20,7 +20,7 @@ from scipy.spatial.transform import Rotation as R
 import threading
 
 WORKFLOW_PATH= "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/workflow.yaml"
-ARM_CONTROL_POINT = ""
+CLASS1_PIC_PATH="/workspace/tm_robot/src/visuial/sample_picture/img1.jpg"
 COMBINE_PIC_PATH = "/workspace/tm_robot/src/visuial/sample_picture/combined.jpg"
 MEDICINE_INFO_PATH = "/workspace/tm_robot/src/visuial/visuial/medicine_info2.yaml"
 ORDER_FOLDER = ""
@@ -66,7 +66,7 @@ class MainControl(Node):
             "llm": self.llm_client,
             "sencond_camera": self.second_camera_client,
             "grab_detect": self.grab_client,
-            "paddle_check": self.ocr_client,
+            "paddleocr_check": self.ocr_client,
             # "rail_control": self.slider_client,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
@@ -219,7 +219,7 @@ class MainControl(Node):
         req = Paddle.Request()
         req.image = self.bridge.cv2_to_imgmsg(self.color_image_np, encoding='bgr8')
         req.med_name = med_name
-        future = self.ocr_verify_client.call_async(req)
+        future = self.ocr_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         res = future.result()
         if res is None:
@@ -387,6 +387,7 @@ class MainControl(Node):
         req = CaptureImage.Request()
         req.mask = self.bridge.cv2_to_imgmsg(mask_img.astype(np.uint8), encoding='mono8')
         req.bbox = bbox
+        req.shelf_level = self.current_shelf_level
         self.get_logger().info("呼叫 grab_detect(mask 傳入中）...")
         future = self.grab_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
@@ -420,23 +421,34 @@ class MainControl(Node):
 
     ## ======= [Second Check] =======
 
-    def call_second_camera_and_spin(self) -> bool:
-       #==============request service===============
+    def call_second_camera_and_spin(self, med_class: int) -> bool:
+        # class1 -> 1 張；class2 -> 4 張（其餘值一律當 4）
+        try:
+            shots = 1 if int(med_class) == 1 else 4
+        except Exception:
+            shots = 4
+
         req = SecondCamera.Request()
+        req.pic_cnt = shots
         future = self.second_camera_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         res = future.result()
-        if res.success:
-            self.get_logger().info("SecondCamera finish combine picture")
+        if res and res.success:
+            self.get_logger().info(f"SecondCamera finish combine picture (shots={shots})")
             return True
         else:
             self.get_logger().warn("SecondCamera 啟動失敗")
             return False
+
         
 
-    def call_llm_and_spin(self, med_name: str) -> bool:
+    def call_llm_and_spin(self, med_name: str,med_class: int) -> bool:
+        time.sleep(0.5)
         req = DrugIdentify.Request()
-        img = cv2.imread(COMBINE_PIC_PATH)
+        if med_class==1:
+            img = cv2.imread(CLASS1_PIC_PATH)
+        else:
+            img = cv2.imread(COMBINE_PIC_PATH)
         req.image = self.bridge.cv2_to_imgmsg(img, encoding='bgr8')
         req.name = med_name
         future = self.llm_client.call_async(req)
@@ -720,16 +732,20 @@ def process_medicine(node: MainControl, medicine: dict):
 
 
         ##move to medicine box for check name
+        med_box_pose: list[float] = None
+        node.get_logger().info(f"med_box_num: {med_box_num}")
         if shelf_level == 1:
             med_box_pose = named_pose["med_box_start"]["first_med_front"]
             med_box_pose[1] -= 0.185 * med_box_num
         else:
             med_box_pose = named_pose["med_box_start"]["second_med_front"]
             med_box_pose[1] -= 0.185 * med_box_num
-
+        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
+        
         if not node.verify_medicine_by_ocr_service(name):
             node.get_logger().warn(f"OCR 驗證未通過：{name}")
             continue
+       
 
         ## curobo move to med_box
         med_box_pose: list[float] = None
@@ -784,8 +800,13 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call tm_flow_mode return failed")
         ## check SCT
         node.spin_until_sct_listen_flag()
+        
         # curobo move to safe point
-        if shelf_level == 1:
+        if shelf_level == 1 and med_box_num==-3:
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe"]))
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
+
+        elif shelf_level == 1:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         else:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["second_safe"]))
@@ -803,13 +824,13 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call tm_flow_leave return failed")
             continue
         ## take picture for medicine
-        if not node.call_second_camera_and_spin():
+        if not node.call_second_camera_and_spin(med_class):
             node.get_logger().error("call second camera return failed")
             continue
         ## send picture to llm
-        if not node.call_llm_and_spin(name):
+        if not node.call_llm_and_spin(name,med_class):
             node.get_logger().warn("call llm return failed")
-            continue
+            # continue
 
         ## check SCT
         node.spin_until_sct_listen_flag()

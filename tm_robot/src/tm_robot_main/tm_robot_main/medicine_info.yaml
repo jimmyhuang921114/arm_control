@@ -57,7 +57,7 @@ Andsodhcd:
     備註: "依照片辨讀彙整；實際劑量強度與用法以處方/外盒標示為準。"
 
 
-DexamethasoneNeomycinEyeDrops::
+埃康眼液::
   藥物基本資料:
       
       外觀類型: "眼藥水"
@@ -66,7 +66,7 @@ DexamethasoneNeomycinEyeDrops::
       信心值: 0.25
   
   藥物詳細資料:
-    名稱: "埃康 眼液 ICOM 5 mL（Dexamethasone phosphate sodium + Neomycin/Fradomycin Eye Drops）"
+    名稱: "埃康眼液 ICOM 5 mL（Dexamethasone phosphate sodium + Neomycin/Fradomycin Eye Drops）"
     劑量: ""                     
     服用方式: "眼用（滴眼）"
     單位劑量: "每次依醫囑滴數"
@@ -84,7 +84,7 @@ DexamethasoneNeomycinEyeDrops::
     備註: "屬『抗生素 + 類固醇』合劑；請嚴格依醫囑使用，勿自行長期點；開封後通常建議 1 個月內用畢；配戴隱形眼鏡者需遵醫囑間隔使用。"
 
 
-TAMAN_EyeDrops::
+淡安眼藥水::
   藥物基本資料:
       
       外觀類型: "眼藥水"
@@ -123,7 +123,7 @@ Urea_Vitamin_ointment:
       
   藥物詳細資料:
     名稱: "尿素維E乳膏（Urea Vitamin E Ointment）"
-    劑量: "每支 30 g"        # 依瓶身可見字樣；若不同請改
+    劑量: "每支 30 g"       
     服用方式: "外用（皮膚）"
     單位劑量: "薄塗患處，依醫囑"
     有效日期: ""
@@ -222,3 +222,4 @@ SuzinCapsule:
       包裝字樣: ["Suzin", "QR Code", "中文/英文藥名與劑量"]  
     條碼: "每格印有 QR Code（可掃描）"
     備註: "此檔案依照片外觀建檔，實際學名與劑量未在照片中清楚顯示，請依包裝正確字樣補齊後再用於庫存與配藥。"
+

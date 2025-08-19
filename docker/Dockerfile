@@ -52,7 +52,8 @@ RUN pip install --no-cache-dir \
     pyserial \
     crcmod \
     fastapi \
-    uvicorn
+    uvicorn \
+    easyocr
 
 
 

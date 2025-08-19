@@ -97,7 +97,7 @@ class DrugIdentifyService(Node):
                 {"role": "user", "content": f"以下是藥物的描述（YAML）：\n```yaml\n{yaml_text}\n```"},
                 {"role": "user", "content": [
                     {"type": "text", "text":
-                        "請根據下列藥物的影像和藥物的資料，判斷圖片中的藥品是否與YAML描述完全一致。"
+                        "請根據下列藥物的影像和藥物的資料，判斷圖片中的藥品是否與YAML差不多 。只要有一項對了就好"
                         "如果正確請回答 'yes'，如果不正確則回答 'no'，不要提供理由或其他文字。"},
                     {"type": "image_data", "data": cv_image}
                 ]}
