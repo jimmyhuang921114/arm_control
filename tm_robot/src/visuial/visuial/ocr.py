@@ -148,7 +148,7 @@ class OcrVerifyServiceImgApp:
             ts = time.strftime('%Y%m%d-%H%M%S')
             path = os.path.join(out_dir, f'{title}_{ts}.jpg')
             try:
-                # cv2.imwrite(path, img)
+                cv2.imwrite(path, img)
                 self.log().info(f"Saved: {path}")
             except Exception as e:
                 self.log().warn(f"Save failed ({path}): {e}")

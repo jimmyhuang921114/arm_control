@@ -17,7 +17,7 @@ import yaml
 from geometry_msgs.msg import Pose, Point, Quaternion
 import time
 from scipy.spatial.transform import Rotation as R
-import threading
+import copy
 
 WORKFLOW_PATH= "/workspace/tm_robot/src/tm_robot_main/tm_robot_main/workflow.yaml"
 CLASS1_PIC_PATH="/workspace/tm_robot/src/visuial/sample_picture/img1.jpg"
@@ -227,7 +227,7 @@ class MainControl(Node):
             return False
         return bool(res.matched)
 
-    def send_moveit_joint(self, joints: list[float], op_time: float = 5):
+    def send_moveit_joint(self, joints: list[float], op_time: float = 9):
         self.get_logger().info(f"moveit set joint: {joints}")
         setpos_req = SetPositions.Request()
         setpos_req.motion_type = 1  # PTP_J
@@ -639,8 +639,7 @@ def process_medicine(node: MainControl, medicine: dict):
     amount = medicine['amount']
     shelf_level = medicine['position'][0]
     med_box_num = medicine['position'][1]
-    med_class = medicine['category']
-    med_class = category_to_flag01(med_class)
+    med_class = category_to_flag01(medicine['category'])
     area = medicine['area']
     ## calculate medicine box num count from landmark
     if shelf_level == 1:
@@ -730,36 +729,34 @@ def process_medicine(node: MainControl, medicine: dict):
         else:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["second_safe"]))
 
-
-        ##move to medicine box for check name
+        ## move to medicine box for check name
         med_box_pose: list[float] = None
         node.get_logger().info(f"med_box_num: {med_box_num}")
         if shelf_level == 1:
-            med_box_pose = named_pose["med_box_start"]["first_med_front"]
+            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["first_med_front"])
             med_box_pose[1] -= 0.185 * med_box_num
         else:
-            med_box_pose = named_pose["med_box_start"]["second_med_front"]
+            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["second_med_front"])
             med_box_pose[1] -= 0.185 * med_box_num
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
         
         if not node.verify_medicine_by_ocr_service(name):
             node.get_logger().warn(f"OCR 驗證未通過：{name}")
-            continue
+            # continue
        
-
         ## curobo move to med_box
         med_box_pose: list[float] = None
         if shelf_level == 1:
-            med_box_pose = named_pose["med_box_start"]["first"]
+            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["first"])
             med_box_pose[1] -= 0.185 * med_box_num
         else:
-            med_box_pose = named_pose["med_box_start"]["second"]
+            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["second"])
             med_box_pose[1] -= 0.185 * med_box_num
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
         # input("press enter after move to med box...")
 
         ## groundSAM
-        confidence = medicine['confidence'] + 0.05
+        confidence = copy.deepcopy(medicine['confidence']) + 0.05
         pose = None
         time.sleep(0.5)
         for _ in range(3):
@@ -809,7 +806,8 @@ def process_medicine(node: MainControl, medicine: dict):
         elif shelf_level == 1:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         else:
-            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["second_safe"]))
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["second_safe"]))
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         ## curobo move to rail landmark
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["landmark"]))
         ## tm flow leave
@@ -817,7 +815,7 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call tm_flow_leave return failed")
             continue
         
-        ## check SCT
+        ## check SCT (Listen4)
         node.spin_until_sct_listen_flag()
         ## tm flow leave
         if not node.send_tm_flow_leave_and_spin():
@@ -828,18 +826,25 @@ def process_medicine(node: MainControl, medicine: dict):
             node.get_logger().error("call second camera return failed")
             continue
         ## send picture to llm
-        if not node.call_llm_and_spin(name,med_class):
-            node.get_logger().warn("call llm return failed")
-            # continue
+        # if not node.call_llm_and_spin(name, med_class):
+        #     node.get_logger().warn("call llm return failed")
+        #     # continue
 
-        ## check SCT
+        ## check SCT (Listen5)
         node.spin_until_sct_listen_flag()
+        ## curobo move to place
+        if med_class == '1':
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["place"]))
         ## tm flow leave
         node.send_tm_flow_leave_and_spin()
-        # ## check SCT
-        # node.spin_until_sct_listen_flag()
-        # ## tm flow leave
-        # node.send_tm_flow_leave_and_spin()
+
+        ## after stop suck
+        ## check SCT (Listen2)
+        node.spin_until_sct_listen_flag()
+        # if med_class == '1':
+        #     node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["place_return"]))
+        ## tm flow leave
+        node.send_tm_flow_leave_and_spin()
 
 
 
@@ -901,8 +906,8 @@ def main(args=None):
     if named_pose is None:
         raise("cannot find yaml")
     
-    # if not node.call_slider_and_wait(0):
-    #     node.get_logger().error("call slider with 0 return failed")
+    if not node.call_slider_and_wait(0):
+        node.get_logger().error("call slider with 0 return failed")
     # if not node.call_slider_and_wait(1):
     #     node.get_logger().error("call slider with 1 return failed")
     # if not node.call_slider_and_wait(2):
@@ -921,19 +926,19 @@ def main(args=None):
             order_id = order['id']
             node.get_logger().info(f"process order: {order_id}")
             ## slider get bag
-            # if not node.call_slider_and_wait(0):
-                # node.get_logger().error("call slider with 0 return failed")
-            # if not node.call_slider_and_wait(1):
-                # node.get_logger().error("call slider with 1 return failed")
-            # else:
-                # node.get_logger().info("slider get bag success")
+            if not node.call_slider_and_wait(0):
+                node.get_logger().error("call slider with 0 return failed")
+            if not node.call_slider_and_wait(1):
+                node.get_logger().error("call slider with 1 return failed")
+            else:
+                node.get_logger().info("slider get bag success")
             ## process medicine
             for medicine in order['medicine']:
                 process_medicine(node, medicine)
-            time.sleep(3)
-            # slider put bag
-            # if not node.call_slider_and_wait(2):
-            #     node.get_logger().error("call slider with 2 return failed")
+            time.sleep(1)
+            ## slider put bag
+            if not node.call_slider_and_wait(2):
+                node.get_logger().error("call slider with 2 return failed")
             ## UI complete
             node.complete_current_order(order_id)
         

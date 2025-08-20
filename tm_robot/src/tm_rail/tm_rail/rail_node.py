@@ -80,11 +80,18 @@ class TMRailNode(Node):
             self.get_logger().info(f"Create service")
             self.server = self.create_service(RailControl, 'rail_control', self.rail_control_callback)
             self.multi_runner = MultiRunner(2)
+            self.create_timer(2, self.debug_callback)
         ## Publishers
         # self.status_pub = self.create_publisher(Status, '/' + rail_name + '/status', 2)
         self.rail_nodes:  dict[str, TMRailNode] = {}
 
-    def transfer_to_main_rail(self, arm_rail_node: 'TMRailNode'):
+    def debug_callback(self):
+        status = self.controller.status()
+        if status is not None:
+            position, velocity, homed, busy, bag_detected = status
+            self.get_logger().info(f"position: {position}, velocity: {velocity}, homed: {homed}, busy: {busy}, bag_detected: {bag_detected}")
+
+    def transfer_to_main_rail(self, arm_rail_node: 'TMRailNode', debug: bool = False):
         '''
         `Require initial state` main and arm not at docking position\n
         `Exit state` docking position + dock move
@@ -100,10 +107,12 @@ class TMRailNode(Node):
             [partial(arm_rail_node.controller.goto, 
                      arm_rail_cfg["a_docking_pos"] + arm_rail_dock_cfg["a_move"], arm_rail_moving_vel)]
         ])
-        # input("enter after check...")
+        if debug:
+            input("enter after check...")
         ## transfer bag carrier to main rail (dock)
         arm_rail_node.controller.move(-arm_rail_dock_cfg["a_move"], 300),
-        # input("enter after check...")
+        if debug:
+            input("enter after check...")
         self.controller.move(arm_rail_dock_cfg["m_move"], 20),
         arm_rail_node.controller.move(arm_rail_dock_cfg["a_move"], 20)
 
@@ -151,6 +160,7 @@ class TMRailNode(Node):
         OPT_INIT = 0
         OPT_CALL_RAIL = 1
         OPT_RETURN_BAG = 2
+        OPT_TEST = 3
         opt = request.opt_code
         try:
             if opt == OPT_INIT:
@@ -205,7 +215,10 @@ class TMRailNode(Node):
                              arm_rail_standby_pos, arm_rail_moving_vel),
                      arm_rail_node.controller.home]
                 ])
-                
+                response.result = 0
+            elif opt == OPT_TEST:
+                self.get_logger().info(f"test: {rail_name}")
+                self.transfer_to_main_rail(arm_rail_node, True)
                 response.result = 0
             else:
                 self.get_logger().error("unknown opt")

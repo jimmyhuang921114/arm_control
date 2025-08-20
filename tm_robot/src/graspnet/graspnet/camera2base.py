@@ -68,7 +68,7 @@ class Camera2Base(Node):
         #     cam_pose.orientation.z,
         #     cam_pose.orientation.w
         # ]).as_matrix()
-        T_cam[:3, :3] = R.from_quat([1,0,0,0]).as_matrix()
+        T_cam[:3, :3] = R.from_quat([0,0,1,0]).as_matrix()
         T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z]
 
         # T_cam[:3, 3] = [cam_pose.position.x, cam_pose.position.y, cam_pose.position.z]
@@ -87,8 +87,9 @@ class Camera2Base(Node):
         pos = T_base[:3, 3]
         quat = R.from_matrix(T_base[:3, :3]).as_quat()
         rpy = R.from_matrix(T_base[:3, :3]).as_euler('xyz', degrees=True)
-        shelf_level = 1
-        if shelf_level == 1:
+        self.get_logger().info(f"shelf level: {request.shelf_level}")
+
+        if request.shelf_level == 1:
             base_pose = Pose()
             pos[0] +=0.02115 
             pos[2] += 0.0453
