@@ -134,8 +134,9 @@ class OcrVerifyServiceImgApp:
         except Exception:
             show_win = False
         if show_win:
-            cv2.imshow(title, img)
-            cv2.waitKey(1)
+            self.get_logger().info(f"Show")
+            # cv2.imshow(title, img)
+            # cv2.waitKey(1)
 
         # 存檔
         try:

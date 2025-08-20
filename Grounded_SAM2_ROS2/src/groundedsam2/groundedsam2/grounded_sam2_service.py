@@ -143,7 +143,7 @@ class GroundedSAM2Service(Node):
                     continue    
 
                 score = cy * 10000
-                score = cy - (abs(cx - half_width) * 10)
+                score = cy - (abs(cx - half_width) * 2)
                 candidates.append({
                     "score": score,
                     "box": box,

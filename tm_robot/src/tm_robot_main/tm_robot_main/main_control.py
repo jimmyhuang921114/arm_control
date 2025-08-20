@@ -730,18 +730,17 @@ def process_medicine(node: MainControl, medicine: dict):
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["second_safe"]))
 
         ## move to medicine box for check name
-        med_box_pose: list[float] = None
-        node.get_logger().info(f"med_box_num: {med_box_num}")
-        if shelf_level == 1:
-            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["first_med_front"])
-            med_box_pose[1] -= 0.185 * med_box_num
-        else:
-            med_box_pose = copy.deepcopy(named_pose["med_box_start"]["second_med_front"])
-            med_box_pose[1] -= 0.185 * med_box_num
-        node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
+        # med_box_pose: list[float] = None
+        # node.get_logger().info(f"med_box_num: {med_box_num}")
+        # if shelf_level == 1:
+        #     med_box_pose = copy.deepcopy(named_pose["med_box_start"]["first_med_front"])
+        #     med_box_pose[1] -= 0.185 * med_box_num
+        # else:
+        #     med_box_pose = copy.deepcopy(named_pose["med_box_start"]["second_med_front"])
+        #     med_box_pose[1] -= 0.185 * med_box_num
+        # node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
         
-        if not node.verify_medicine_by_ocr_service(name):
-            node.get_logger().warn(f"OCR 驗證未通過：{name}")
+
             # continue
        
         ## curobo move to med_box
@@ -754,7 +753,8 @@ def process_medicine(node: MainControl, medicine: dict):
             med_box_pose[1] -= 0.185 * med_box_num
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
         # input("press enter after move to med box...")
-
+        if not node.verify_medicine_by_ocr_service(name):
+            node.get_logger().warn(f"OCR 驗證未通過：{name}")
         ## groundSAM
         confidence = copy.deepcopy(medicine['confidence']) + 0.05
         pose = None
@@ -799,14 +799,14 @@ def process_medicine(node: MainControl, medicine: dict):
         node.spin_until_sct_listen_flag()
         
         # curobo move to safe point
-        if shelf_level == 1 and med_box_num==-3:
-            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe"]))
-            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
+        # if shelf_level == 1 and med_box_num==-3:
+        #     node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["shelf_landmark"]["second_safe"]))
+        #     node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
 
-        elif shelf_level == 1:
+        if shelf_level == 1:
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         else:
-            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["med_box_start"]["second_safe"]))
+            node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["second_safe"]))
             node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["first_safe"]))
         ## curobo move to rail landmark
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(named_pose["rail"]["landmark"]))
@@ -852,8 +852,8 @@ def grab_test(node: MainControl):
     ## groundSAM
     # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.1)  #1-1
     # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.01)  #1-3
-    # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.2, 0.05)  #2-4
-    gsam_result =  node.call_groundsam2_and_spin("bottle",0.35 ,0.05)
+    gsam_result =  node.call_groundsam2_and_spin("pill package", 0.35, 0.06)  #2-4
+    # gsam_result =  node.call_groundsam2_and_spin("bottle",0.35 ,0.05)
     # gsam_result =  node.call_groundsam2_and_spin("bottle, Usually 5–15 ml in volume, handheld size",0.2,0.05)
 
 
@@ -906,20 +906,21 @@ def main(args=None):
     if named_pose is None:
         raise("cannot find yaml")
     
-    if not node.call_slider_and_wait(0):
-        node.get_logger().error("call slider with 0 return failed")
+    # if not node.call_slider_and_wait(0):
+    #     node.get_logger().error("call slider with 0 return failed")
     # if not node.call_slider_and_wait(1):
     #     node.get_logger().error("call slider with 1 return failed")
     # if not node.call_slider_and_wait(2):
     #     node.get_logger().error("call slider with 2 return failed")
-    node.get_logger().info("wait sct finish")
-    node.spin_until_sct_listen_flag()
-    if not node.send_tm_flow_leave_and_spin():
-        node.get_logger().error("call tm_flow_leave return failed")
+    
+    # node.get_logger().info("wait sct finish")
+    # node.spin_until_sct_listen_flag()
+    # if not node.send_tm_flow_leave_and_spin():
+    #     node.get_logger().error("call tm_flow_leave return failed")
     
     while rclpy.ok():
         rclpy.spin_once(node, timeout_sec=0.1)
-        # grab_test(node)
+        grab_test(node)
         # test_med_class(node,"藥膏")
         order = node.get_order()
         if order is not None:
@@ -976,3 +977,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
