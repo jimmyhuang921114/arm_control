@@ -56,7 +56,7 @@ class CameraPublisher(Node):
 
     # === Service: 開 thread 跑拍照流程，等事件完成才回傳 ===
     def capture_callback(self, req, res):
-        shots = 1 if getattr(req, 'pic_cnt', 4) == 1 else 4
+        shots = 1 if getattr(req, 'pic_cnt', 2) == 1 else 2
 
         if not self.busy_lock.acquire(blocking=False):
             self.get_logger().warn("上一個拍攝流程尚未結束，拒絕新的請求")
@@ -235,11 +235,11 @@ class CameraPublisher(Node):
             self.get_logger().error(f"cv2.imwrite fail {out}")
             return False
 
-        if len(imgs) == 4:
+        if len(imgs) == 2:
             try:
-                top = cv2.hconcat([imgs[0], imgs[1]])
-                bottom = cv2.hconcat([imgs[2], imgs[3]])
-                combined = cv2.vconcat([top, bottom])
+                combined = cv2.hconcat([imgs[0], imgs[1]])
+                # bottom = cv2.hconcat([imgs[2], imgs[3]])
+                # combined = cv2.vconcat([top, bottom])
             except Exception as e:
                 self.get_logger().error(f"圖像合成失敗：{e}")
                 return False
@@ -250,7 +250,7 @@ class CameraPublisher(Node):
             self.get_logger().error(f"cv2.imwrite fail {out}")
             return False
 
-        self.get_logger().warn(f"combine_images only supports 1 or 4 images (got {len(imgs)}).")
+        self.get_logger().warn(f"combine_images only supports 1 or 2 images (got {len(imgs)}).")
         return False
 
 

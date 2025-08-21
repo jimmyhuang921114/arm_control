@@ -316,15 +316,16 @@ class SerialPacketController:
         Release bag and wait bag detected, then lock bag\n
         '''
         self.bag(release_deg)
-        while True:
+        valid_start = time.time()
+        while time.time() - valid_start < 1:
             status = self.status()
             if status is not None:
                 position, velocity, homed, busy, bag_detect = status
-                if bag_detect:
-                    time.sleep(0.2)
-                    self.bag(lock_deg)
-                    time.sleep(2)
-                    break
+                if not bag_detect:
+                    valid_start = time.time()
+            time.sleep(0.1)
+        self.bag(lock_deg)
+        time.sleep(2)
 
 
 
