@@ -22,7 +22,7 @@ class LandMarkNode(Node):
         return trans
 
     def connect(self):
-        HOST = '192.168.10.1'
+        HOST = '0.0.0.0'
         PORT = 5001
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)

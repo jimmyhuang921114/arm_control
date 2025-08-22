@@ -26,7 +26,7 @@ class SecondCamera(Node):
             self.get_logger().info('second camera open')
         # camera parameters
         self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1.0)
-        self.cap.set(cv2.CAP_PROP_EXPOSURE, 300.0)
+        self.cap.set(cv2.CAP_PROP_EXPOSURE, 100.0)
         self.cap.set(cv2.CAP_PROP_BRIGHTNESS, 1)
         self.cap.set(cv2.CAP_PROP_GAIN, 0.1)
         self.cap.set(cv2.CAP_PROP_GAMMA, 0.4)

@@ -13,9 +13,9 @@ class RealsenseColorPointCloudNode(Node):
         super().__init__('realsense_color_pcd_node')
         self.bridge = CvBridge()
 
-        self.color_pub = self.create_publisher(Image, '/tm_robot/color_image', 10)
-        self.depth_pub = self.create_publisher(Image, '/tm_robot/depth_image', 10)
-        self.pcd_pub = self.create_publisher(PointCloud2, '/tm_robot/pointcloud', 10)
+        self.color_pub = self.create_publisher(Image, '/tm_robot/color_image', 2)
+        self.depth_pub = self.create_publisher(Image, '/tm_robot/depth_image', 2)
+        self.pcd_pub = self.create_publisher(PointCloud2, '/tm_robot/pointcloud', 2)
         self.hole_filling = rs.hole_filling_filter()
         self.hole_filling.set_option(rs.option.holes_fill, 2)
         self.get_logger().info("RealSense color + pointcloud node started")
@@ -24,8 +24,8 @@ class RealsenseColorPointCloudNode(Node):
         self.pipeline = rs.pipeline()
         config = rs.config()
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-        # config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
-        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
+        # config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
         # 啟動攝影機
         self.pipeline.start(config)
@@ -39,7 +39,7 @@ class RealsenseColorPointCloudNode(Node):
             self.get_logger().info("關閉自動曝光")
 
         if color_sensor.supports(rs.option.exposure):
-            color_sensor.set_option(rs.option.exposure, 100.0)  # 單位 μs (200 非常小，建議測試大一點)
+            color_sensor.set_option(rs.option.exposure, 30.0)  # 單位 μs (200 非常小，建議測試大一點)
             self.get_logger().info("設定曝光時間為 100 μs")
 
         # 設定近距離模式：High Accuracy + min_distance + laser_power

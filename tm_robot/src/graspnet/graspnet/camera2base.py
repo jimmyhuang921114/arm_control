@@ -33,6 +33,8 @@ class Camera2Base(Node):
         self.get_logger().info("Camera2Base node initialized")
 
     def create_hand_eye_transform(self):
+        # trans = np.array([0.03519476430554744, 0.031179262982872283, 0.06895451368177878])
+        # quat = [0.001933996002298429, -0.000168483111231493, 0.9999942581113687, 0.0027775919782450868]
         trans = np.array([0.03519476430554744, 0.031179262982872283, 0.06895451368177878])
         quat = [0.001933996002298429, -0.000168483111231493, 0.9999942581113687, 0.0027775919782450868]
         T = np.eye(4)
@@ -88,6 +90,8 @@ class Camera2Base(Node):
         quat = R.from_matrix(T_base[:3, :3]).as_quat()
         rpy = R.from_matrix(T_base[:3, :3]).as_euler('xyz', degrees=True)
         self.get_logger().info(f"shelf level: {request.shelf_level}")
+
+        # pos[2] += 0.105
 
         if request.shelf_level == 1:
             base_pose = Pose()

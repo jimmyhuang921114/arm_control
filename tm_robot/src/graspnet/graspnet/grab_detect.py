@@ -46,6 +46,12 @@ class PlaneFittingNode(Node):
             'cx': 633.8065528892273,
             'cy': 363.5218153379028
         }
+        # self.intrinsic = {
+        #     'fx': 911.7187740837472,
+        #     'fy': 911.627468871065,
+        #     'cx': 642.9404893706942,
+        #     'cy': 363.4699824595889
+        # }
 
         self.K = np.array([[self.intrinsic['fx'], 0.0, self.intrinsic['cx']],
                            [0.0, self.intrinsic['fy'], self.intrinsic['cy']],
@@ -59,7 +65,13 @@ class PlaneFittingNode(Node):
             -0.0014113664491230658,
             0.09191879730682097
         ])
-
+        # self.dist_coeffs = np.array([
+        #     0.08479828524446463,
+        #     0.02742397719947147,
+        #     -0.0013083390668338541,
+        #     -0.0007294747189669083,
+        #     -0.6287974103491496
+        # ])
         # Latest buffers
         self.latest_depth = None
         self.latest_mask = None
@@ -76,6 +88,7 @@ class PlaneFittingNode(Node):
 
     def depth_callback(self, msg):
         try:
+            
             depth_mm = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
             depth_m = depth_mm.astype(np.float32) * 0.001
             self.latest_depth = depth_m

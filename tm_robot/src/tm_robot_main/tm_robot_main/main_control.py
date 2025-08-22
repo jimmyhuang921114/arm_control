@@ -105,7 +105,6 @@ class MainControl(Node):
     def depth_image_callback(self, msg) -> None:
         self.depth_image_np = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
 
-
     ## ======= [Curobo] =======
 
     def curobo_state_callback(self, msg) -> None:
@@ -215,7 +214,7 @@ class MainControl(Node):
         result = future.result()
         if result.ok:
             self.get_logger().info("set_positions success")
-            input("press enter after move finished...")
+            # input("press enter after move finished...")
         else:
             self.get_logger().error("set_positions failed")
         pass
@@ -811,6 +810,7 @@ def process_medicine(node: MainControl, medicine: dict, next_medicine: dict = No
         if shelf_level == 2:
             pose = node.ros2_pose_rotate_z(pose, 180)
         node.send_curobo_pose_and_spin(pose)
+        # node.send_moveit_point(pose)
         ## tm flow leave
         if not node.send_tm_flow_leave_and_spin():
             node.get_logger().error("call tm_flow_leave return failed")
@@ -889,11 +889,15 @@ def grab_test(node: MainControl):
 
     # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.15, 0.05)  #1-3
     #  
-    gsam_result =  node.call_groundsam2_and_spin("tube", 0.5, 0.06)  #2-1
+    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.06)  #2-1
     
     # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.1)  #1-2
     # gsam_result =  node.call_groundsam2_and_spin("White medicine jar with red lid", 0.4)
-
+    #==========================
+    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.06)  #2-1
+    # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.15, 0.05)
+    # gsam_result =  node.call_groundsam2_and_spin("bottle", 0.3, 0.05)  #2-1
+    gsam_result =  node.call_groundsam2_and_spin("circle label",0.3,0.05)
     if gsam_result is None:
         node.get_logger().error("call GroundedSAM2 return failed")
         return
@@ -938,8 +942,8 @@ def main(args=None):
     
     # node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose([50.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
     
-    # if not node.call_slider_and_wait(0):
-    #     node.get_logger().error("call slider with 0 return failed")
+    if not node.call_slider_and_wait(0):
+        node.get_logger().error("call slider with 0 return failed")
     # if not node.call_slider_and_wait(1):
     #     node.get_logger().error("call slider with 1 return failed")
     # if not node.call_slider_and_wait(2):

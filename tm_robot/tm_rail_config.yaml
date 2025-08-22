@@ -12,7 +12,7 @@ rails:
     moving_vel:     300
     funnel_pos:     0
     standby_pos:    30
-    m_docking_pos:  1068
+    m_docking_pos:  1071
     a_docking_pos:  746
     dock:      # bag give to main rail
       m_move:       30
