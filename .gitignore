@@ -16,4 +16,9 @@ Grounded_SAM2_ROS2/Grounded-SAM-2/checkpoints/*.bin*
 build/
 install/
 log/
-*.env
+*.env# Huggingface cache & models
+huggingface/
+**/huggingface/
+**/transformers_cache/
+**/chunk-cache/
+**/hub/
