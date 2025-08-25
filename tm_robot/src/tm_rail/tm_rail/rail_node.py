@@ -80,6 +80,7 @@ class TMRailNode(Node):
             self.get_logger().info(f"Create service")
             self.server = self.create_service(RailControl, 'rail_control', self.rail_control_callback)
             self.multi_runner = MultiRunner(2)
+            self.controller.bag(0)
             self.create_timer(2, self.debug_callback)
         ## Publishers
         # self.status_pub = self.create_publisher(Status, '/' + rail_name + '/status', 2)

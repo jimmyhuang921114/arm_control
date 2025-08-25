@@ -39,7 +39,7 @@ class RealsenseColorPointCloudNode(Node):
             self.get_logger().info("關閉自動曝光")
 
         if color_sensor.supports(rs.option.exposure):
-            color_sensor.set_option(rs.option.exposure, 30.0)  # 單位 μs (200 非常小，建議測試大一點)
+            color_sensor.set_option(rs.option.exposure, 100.0)  # 單位 μs (200 非常小，建議測試大一點)
             self.get_logger().info("設定曝光時間為 100 μs")
 
         # 設定近距離模式：High Accuracy + min_distance + laser_power

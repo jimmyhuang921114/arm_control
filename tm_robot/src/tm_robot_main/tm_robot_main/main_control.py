@@ -75,7 +75,7 @@ class MainControl(Node):
             # "rail_control": self.slider_client,
             "tm_flow_mode": self.tm_flow_mode_client,
             "tm_flow_script": self.tm_flow_script_client,
-            "curobo_state": self.curobo_state_client,
+            # "curobo_state": self.curobo_state_client,
             "moveit_set_pose": self.moveit_set_pose_client,
             "complete_order": self.complete_order_client,
         }
@@ -146,6 +146,7 @@ class MainControl(Node):
             while(time.time() - st < 5):
                 rclpy.spin_once(self)
             if not self.spin_until_curobo_finish():
+                self.send_moveit_joint([None, 0.0, 0.0, None, None, None])
                 self.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
                 self.get_logger().warn("curobo error, go home with moveit")
                 
@@ -234,7 +235,13 @@ class MainControl(Node):
             return False
         return bool(res.matched)
 
-    def send_moveit_joint(self, joints: list[float], op_time: float = 2):
+    def send_moveit_joint(self, joints: list[float | None], op_time: float = 2):
+        need_check_joints = [False]*6
+        for idx, joint in enumerate(joints):
+            if joint is None:
+                joints[idx] = self.tm_joint[idx]
+            else:
+                need_check_joints[idx] = True
         self.get_logger().info(f"moveit set joint: {joints}")
         setpos_req = SetPositions.Request()
         setpos_req.motion_type = 1  # PTP_J
@@ -248,10 +255,17 @@ class MainControl(Node):
         result = future.result()
         if result.ok:
             self.get_logger().info("moveit set joint success")
-            while abs(self.tm_joint[0]) >= 0.0174532925:
-                    rclpy.spin_once(self)
-                    self.get_logger().info(f"tm_joint: {self.tm_joint}")
-                    time.sleep(0.1)
+            check_ok = False
+            while not check_ok:
+                check_ok = True
+                ## check all need check joint in threshold
+                for idx, need_check in enumerate(need_check_joints):
+                    ## clear flag when need check and not in threshold
+                    if need_check and abs(self.tm_joint[idx]) >= 0.0174532925:
+                        check_ok = False
+                rclpy.spin_once(self)
+                self.get_logger().info(f"tm_joint: {self.tm_joint}")
+                time.sleep(0.1)
             # input("press enter after move finished...")
         else:
             self.get_logger().error("moveit set joint failed")
@@ -688,6 +702,8 @@ def process_medicine(node: MainControl, medicine: dict, next_medicine: dict = No
                 continue
             ## check SCT
             node.spin_until_sct_listen_flag()
+            node.send_moveit_joint([None, 0.0, 0.0, None, None, None], op_time=2)
+            node.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], op_time=2)
             ## curobo move to landmark 
             if node.current_shelf_level == 1:
                 pass
@@ -717,6 +733,8 @@ def process_medicine(node: MainControl, medicine: dict, next_medicine: dict = No
                 node.get_logger().error("call tm_flow_mode return failed")
             ## check SCT
             node.spin_until_sct_listen_flag()
+            node.send_moveit_joint([None, 0.0, 0.0, None, None, None], op_time=2)
+            node.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], op_time=2)
             ## curobo move to landmark 
             if shelf_level == 1:
                 node.get_logger().info("first shelf")
@@ -778,30 +796,37 @@ def process_medicine(node: MainControl, medicine: dict, next_medicine: dict = No
             med_box_pose[1] -= 0.185 * med_box_num
         node.send_curobo_pose_and_spin(node.vec_pose_to_ros2_pose(med_box_pose))
         # input("press enter after move to med box...")
-        if not node.verify_medicine_by_ocr_service(name):
-            node.get_logger().warn(f"OCR 驗證未通過：{name}")
+        # if not node.verify_medicine_by_ocr_service(name):
+        #     node.get_logger().warn(f"OCR 驗證未通過：{name}")
         ## groundSAM
         confidence = copy.deepcopy(medicine['confidence']) + 0.05
         pose = None
         time.sleep(0.5)
         for _ in range(3):
+            node.get_logger().info("gsam")
             confidence -= 0.05
             gsam_result =  node.call_groundsam2_and_spin(medicine['prompt'], confidence, medicine['area'])
             if gsam_result is None:
                 node.get_logger().error("call GroundedSAM2 return failed")
                 continue
             bbox, mask_img = gsam_result
-            ## call grab point estimation
-            if not node.call_grab_and_spin(bbox, mask_img):
-                node.get_logger().error("call grab return failed")
-                continue
-            ## receive grab pose
-            pose = node.spin_until_grab_pose_available()
-            if not pose:
-                node.get_logger().error("wait grab pose failed")
-                continue
+            ## loop until z valid
+            z_threshold = 0.6 if shelf_level == 1 else 0.28
+            pose = None
+            while not pose or pose.position.z < z_threshold:
+                node.get_logger().info("grab pose")
+                ## call grab point estimation
+                if not node.call_grab_and_spin(bbox, mask_img):
+                    node.get_logger().error("call grab return failed")
+                    continue
+                ## receive grab pose
+                pose = node.spin_until_grab_pose_available()
+                if not pose:
+                    node.get_logger().error("wait grab pose failed")
+                    continue
             ## success
             break
+        node.get_logger().info("grab ok")
         ## grab pose failed
         if pose is None:
             node.get_logger().error("failed to get grab pose after retry")
@@ -872,6 +897,7 @@ def process_medicine(node: MainControl, medicine: dict, next_medicine: dict = No
         node.spin_until_sct_listen_flag()
         ## curobo move to safe point
         if shelf_level == 2:
+            node.send_moveit_joint([None, 0.0, 0.0, None, None, None], op_time=2)
             node.send_moveit_joint([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], op_time=2)
         ## tm flow leave
         node.send_tm_flow_leave_and_spin()
@@ -882,14 +908,14 @@ def grab_test(node: MainControl):
     ## groundSAM
     # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.1)  #1-1
     # gsam_result =  node.call_groundsam2_and_spin("circle label", 0.4, 0.01)  #1-3
-    # gsam_result =  node.call_groundsam2_and_spin("pill package", 0.35, 0.06)  #2-4
+    gsam_result =  node.call_groundsam2_and_spin("pill package", 0.3, 0.04)  #2-4
     # gsam_result =  node.call_groundsam2_and_spin("bottle",0.35 ,0.05)
     # gsam_result =  node.call_groundsam2_and_spin("bottle, Usually 5–15 ml in volume, handheld size",0.2,0.05)
 
 
     # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.15, 0.05)  #1-3
     #  
-    # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.06)  #2-1
+    # gsam_result =  node.call_groundsam2_and_spin("white tube", 0.1, 0.05)  #2-1
     
     # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.1)  #1-2
     # gsam_result =  node.call_groundsam2_and_spin("White medicine jar with red lid", 0.4)
@@ -897,7 +923,7 @@ def grab_test(node: MainControl):
     # gsam_result =  node.call_groundsam2_and_spin("tube", 0.4, 0.06)  #2-1
     # gsam_result =  node.call_groundsam2_and_spin("backside of aluminum foil pill pack", 0.15, 0.05)
     # gsam_result =  node.call_groundsam2_and_spin("bottle", 0.3, 0.05)  #2-1
-    gsam_result =  node.call_groundsam2_and_spin("circle label",0.3,0.05)
+    # gsam_result =  node.call_groundsam2_and_spin("circle label",0.3,0.05)
     if gsam_result is None:
         node.get_logger().error("call GroundedSAM2 return failed")
         return
@@ -944,6 +970,8 @@ def main(args=None):
     
     if not node.call_slider_and_wait(0):
         node.get_logger().error("call slider with 0 return failed")
+    if not node.call_slider_and_wait(3):
+        node.get_logger().error("call slider with 0 return failed")
     # if not node.call_slider_and_wait(1):
     #     node.get_logger().error("call slider with 1 return failed")
     # if not node.call_slider_and_wait(2):
@@ -963,13 +991,13 @@ def main(args=None):
             order_id = order['id']
             node.get_logger().info(f"process order: {order_id}")
             ## slider get bag
-            # if not node.call_slider_and_wait(0):
-            #     node.get_logger().error("call slider with 0 return failed")
-            # if not node.call_slider_and_wait(1):
-            #     node.get_logger().error("call slider with 1 return failed")
-            # else:
-            #     node.get_logger().info("slider get bag success")
-            ## process medicine
+            if not node.call_slider_and_wait(0):
+                node.get_logger().error("call slider with 0 return failed")
+            if not node.call_slider_and_wait(1):
+                node.get_logger().error("call slider with 1 return failed")
+            else:
+                node.get_logger().info("slider get bag success")
+            # process medicine
             # for index,medicine in enumerate(order['medicine']):
             #     if index == len(order['medicine'])-1:
             #         process_medicine(node, medicine)
@@ -979,8 +1007,8 @@ def main(args=None):
                 process_medicine(node, medicine)
             time.sleep(1)
             ## slider put bag
-            # if not node.call_slider_and_wait(2):
-            #     node.get_logger().error("call slider with 2 return failed")
+            if not node.call_slider_and_wait(2):
+                node.get_logger().error("call slider with 2 return failed")
             ## UI complete
             node.complete_current_order(order_id)
         
@@ -1001,7 +1029,7 @@ def main(args=None):
 #                 node.get_logger().error("SecondCamera 失敗，無法進行 LLM 測試")
 #                 return
 
-#         # 只測一次，確保能看到結果
+#         # 只測一次，確保能看到結## groundSAM
 #         if not node.call_llm_and_spin(med_name):
 #             node.get_logger().error("call llm return failed")
 #         else:
